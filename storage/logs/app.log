@@ -1,0 +1,348 @@
+ 
+[2025-07-05 19:27:39] [INFO] User updated: ID 2, Username: Asante by User ID: 1
+[2025-07-09 19:03:22] [INFO] User created: ID 3, Username: Joojo by User ID: 1
+[2025-07-10 03:16:20] [INFO] Business created: KabTech Consulting (ID: 1) by user admin
+[2025-07-10 04:07:51] [INFO] Property created: Yaw Kusi property (ID: 1) by user admin
+[2025-07-10 09:00:51] [INFO] Business created: Kwabena Ewusi Enterprise (ID: 2) by user admin
+[2025-07-10 09:20:38] [INFO] Zone created: Eastern Zone (ID: 4) by user admin
+[2025-07-10 14:51:40] [INFO] Business fee created: Saloon - Large (GHS 100.00) as active by user Joojo
+[2025-07-10 14:52:18] [INFO] Business fee deactivated: Restaurant - Small Scale by user Joojo
+[2025-07-10 14:52:25] [INFO] Business fee activated: Restaurant - Small Scale by user Joojo
+[2025-07-10 19:51:49] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-10 19:51:49] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-10 19:51:49] [DEBUG] Existing bill found: BIL-BIZ2025-51A36E98
+[2025-07-10 19:51:49] [DEBUG] Account search successful
+[2025-07-10 19:53:46] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-10 19:53:46] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-10 19:53:46] [DEBUG] Existing bill found: BIL-BIZ2025-51A36E98
+[2025-07-10 19:53:46] [DEBUG] Account search successful
+[2025-07-10 19:55:51] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-10 19:55:51] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-10 19:55:51] [DEBUG] Existing bill found: BIL-BIZ2025-51A36E98
+[2025-07-10 19:55:51] [DEBUG] Account search successful
+[2025-07-10 20:03:37] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-10 20:03:37] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-10 20:03:37] [DEBUG] Existing bill found: BIL-BIZ2025-51A36E98
+[2025-07-10 20:03:37] [DEBUG] Account search successful
+[2025-07-11 01:03:36] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-11 01:03:36] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-11 01:03:36] [DEBUG] Existing bill found: BIL-BIZ2025-51A36E98
+[2025-07-11 01:03:36] [DEBUG] Account search successful
+[2025-07-11 01:24:17] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-11 01:24:17] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-11 01:24:17] [DEBUG] Existing bill found: BIL-BIZ2025-51A36E98
+[2025-07-11 01:24:17] [DEBUG] Account search successful
+[2025-07-11 02:32:02] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-11 02:32:02] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-11 02:32:02] [DEBUG] Existing bill found: BIL-BIZ2025-51A36E98
+[2025-07-11 02:32:02] [DEBUG] Account search successful
+[2025-07-11 09:55:32] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-11 09:55:32] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-11 09:55:32] [DEBUG] Existing bill found: BIL-BIZ2025-51A36E98
+[2025-07-11 09:55:32] [DEBUG] Account search successful
+[2025-07-11 11:52:59] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-11 11:52:59] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-11 11:52:59] [DEBUG] Existing bill found: BIL-BIZ2025-51A36E98
+[2025-07-11 11:52:59] [DEBUG] Account search successful
+[2025-07-11 11:53:27] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-11 11:53:27] [DEBUG] Business found: KabTech Consulting
+[2025-07-11 11:53:27] [DEBUG] Existing bill found: BILL2025B000001
+[2025-07-11 11:53:27] [DEBUG] Account search successful
+[2025-07-11 11:53:52] [DEBUG] Account search attempt - Number: BIZ000001, Type: Property
+[2025-07-11 11:53:52] [DEBUG] Account not found - Number: BIZ000001, Type: Property
+[2025-07-11 11:55:07] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-11 11:55:07] [DEBUG] Business found: KabTech Consulting
+[2025-07-11 11:55:07] [DEBUG] Existing bill found: BILL2025B000001
+[2025-07-11 11:55:07] [DEBUG] Account search successful
+[2025-07-11 15:21:00] [INFO] User created: ID 4, Username: Kusi by User ID: 1
+[2025-07-12 05:12:52] [INFO] User created: ID 5, Username: Aseye by User ID: 1
+[2025-07-12 07:18:33] [INFO] User created: ID 6, Username: David by User ID: 1
+[2025-07-12 19:47:53] [DEBUG] Account search attempt - Number: Prop0001, Type: Property
+[2025-07-12 19:47:53] [DEBUG] Account not found - Number: Prop0001, Type: Property
+[2025-07-12 19:48:46] [DEBUG] Account search attempt - Number: PROP000003, Type: Property
+[2025-07-12 19:48:46] [DEBUG] Property found: Martin Kpebu
+[2025-07-12 19:48:46] [DEBUG] Creating new bill for property ID: 3
+[2025-07-12 19:48:46] [DEBUG] Bill created successfully with number: BIL-PROP2025-C1EEC11F
+[2025-07-12 19:48:46] [DEBUG] Account search successful
+[2025-07-12 19:49:34] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-12 19:49:34] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-12 19:49:34] [DEBUG] Existing bill found: BIL-BIZ2025-51A36E98
+[2025-07-12 19:49:34] [DEBUG] Account search successful
+[2025-07-12 19:58:34] [INFO] Business fee updated: Restaurant - Large Scale (GHS 2100.00) as active by user Joojo
+[2025-07-12 20:17:28] [INFO] Property updated: Yaw Kusi property (ID: 1) by user Joojo
+[2025-07-13 13:01:57] [INFO] Property created: Joojo property (ID: 4) by user Joojo
+[2025-07-13 13:06:23] [DEBUG] Account search attempt - Number: 1, Type: Property
+[2025-07-13 13:06:23] [DEBUG] Account not found - Number: 1, Type: Property
+[2025-07-13 13:06:47] [DEBUG] Account search attempt - Number: Prop00001, Type: Property
+[2025-07-13 13:06:47] [DEBUG] Account not found - Number: Prop00001, Type: Property
+[2025-07-13 13:07:51] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-13 13:07:51] [DEBUG] Property found: Joojo
+[2025-07-13 13:07:51] [DEBUG] Creating new bill for property ID: 4
+[2025-07-13 13:07:51] [DEBUG] Bill created successfully with number: BIL-PROP2025-FA783C05
+[2025-07-13 13:07:51] [DEBUG] Account search successful
+[2025-07-14 11:25:40] [INFO] Business created: KabTech Consulting (ID: 6) by user admin
+[2025-07-14 11:26:20] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-14 11:26:20] [DEBUG] Business found: KabTech Consulting
+[2025-07-14 11:26:20] [DEBUG] Existing bill found: BILL2025B000006
+[2025-07-14 11:26:20] [DEBUG] Account search successful
+[2025-07-14 13:24:53] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-14 13:24:53] [DEBUG] Business found: KabTech Consulting
+[2025-07-14 13:24:53] [DEBUG] Bill found: BILL2025B000006
+[2025-07-14 13:24:53] [DEBUG] Account search successful with valid bill
+[2025-07-14 13:27:19] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-14 13:27:19] [DEBUG] Business found: KabTech Consulting
+[2025-07-14 13:27:19] [DEBUG] Bill found: BILL2025B000006
+[2025-07-14 13:27:19] [DEBUG] Account search successful with valid bill
+[2025-07-14 13:40:16] [INFO] Account search: BIZ000001 (Business)
+[2025-07-14 13:40:16] [INFO] Account found successfully: KabTech Consulting
+[2025-07-14 13:48:28] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-14 13:48:28] [DEBUG] Business found: KabTech Consulting
+[2025-07-14 13:48:28] [DEBUG] Bill found: BILL2025B000006
+[2025-07-14 13:48:28] [DEBUG] Account search successful with valid bill
+[2025-07-14 13:52:48] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-14 13:52:48] [DEBUG] Property found: Joojo
+[2025-07-14 13:52:48] [DEBUG] Bill found: BIL-PROP2025-FA783C0
+[2025-07-14 13:52:48] [DEBUG] Account search successful with valid bill
+[2025-07-14 13:59:52] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-14 13:59:52] [DEBUG] Property found: Joojo
+[2025-07-14 13:59:52] [DEBUG] Bill found: BIL-PROP2025-FA783C0
+[2025-07-14 13:59:52] [DEBUG] Account search successful with valid bill
+[2025-07-14 14:12:24] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-14 14:12:24] [DEBUG] Business found: KabTech Consulting
+[2025-07-14 14:12:24] [DEBUG] Bill found: BILL2025B000006
+[2025-07-14 14:12:24] [DEBUG] Account search successful with valid bill
+[2025-07-15 08:40:17] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-15 08:40:17] [DEBUG] Property found: Joojo
+[2025-07-15 08:40:17] [DEBUG] Bill found: BIL-PROP2025-FA783C0
+[2025-07-15 08:40:17] [DEBUG] Account search successful with valid bill
+[2025-07-15 08:56:41] [DEBUG] Database connection established successfully
+[2025-07-15 08:56:41] [DEBUG] Database connection test passed
+[2025-07-15 08:56:48] [DEBUG] Database connection established successfully
+[2025-07-15 08:56:48] [DEBUG] Database connection test passed
+[2025-07-15 08:56:48] [DEBUG] === ACCOUNT SEARCH STARTED ===
+[2025-07-15 08:56:48] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-15 08:56:48] [DEBUG] Searching for property account...
+[2025-07-15 08:56:48] [DEBUG] Executing property query: 
+                    SELECT 
+                        p.*,
+                        z.zone_name,
+                        pfs.fee_per_room
+                    FROM properties p
+                    LEFT JOIN zones z ON p.zone_id = z.zone_id
+                    LEFT JOIN property_fee_structure pfs ON p.structure = pfs.structure AND p.property_use = pfs.property_use
+                    WHERE p.property_number = ?
+                
+[2025-07-15 08:56:48] [DEBUG] Property found: Joojo
+[2025-07-15 08:56:48] [DEBUG] Property data: {"property_id":4,"property_number":"PROP000001","owner_name":"Joojo","telephone":"+233545041428","gender":"Male","location":"GPS: 5.593020, -0.077100","latitude":"5.59302000","longitude":"-0.07710000","structure":"Concrete Block","ownership_type":"Self","property_type":"Modern","number_of_rooms":5,"property_use":"Residential","old_bill":"0.00","previous_payments":"110.00","arrears":"0.00","current_bill":"250.00","amount_payable":"140.00","batch":"","zone_id":1,"sub_zone_id":1,"created_by":3,"created_at":"2025-07-13 13:01:57","updated_at":"2025-07-14 13:51:15","zone_name":"Central Zone","fee_per_room":"50.00"}
+[2025-07-15 08:56:48] [DEBUG] Checking for property bill in year: 2025
+[2025-07-15 08:56:48] [DEBUG] Executing property bill query: 
+                        SELECT * FROM bills 
+                        WHERE bill_type = 'Property' AND reference_id = ? AND billing_year = ?
+                    
+[2025-07-15 08:56:48] [DEBUG] Property bill query parameters: [4, 2025]
+[2025-07-15 08:56:48] [DEBUG] Property bill found: BIL-PROP2025-FA783C0
+[2025-07-15 08:56:48] [DEBUG] Property bill data: {"bill_id":16,"bill_number":"BIL-PROP2025-FA783C0","bill_type":"Property","reference_id":4,"billing_year":"2025","old_bill":"0.00","previous_payments":"0.00","arrears":"0.00","current_bill":"250.00","amount_payable":"250.00","qr_code":null,"status":"Partially Paid","generated_by":3,"generated_at":"2025-07-13 13:07:51","due_date":null}
+[2025-07-15 08:56:48] [DEBUG] Account search successful with valid bill
+[2025-07-15 08:56:48] [DEBUG] === ACCOUNT SEARCH COMPLETED ===
+[2025-07-15 08:57:14] [DEBUG] Database connection established successfully
+[2025-07-15 08:57:14] [DEBUG] Database connection test passed
+[2025-07-15 09:00:17] [DEBUG] Database connection established successfully
+[2025-07-15 09:00:17] [DEBUG] Database connection test passed
+[2025-07-15 09:00:25] [DEBUG] Database connection established successfully
+[2025-07-15 09:00:25] [DEBUG] Database connection test passed
+[2025-07-15 09:00:25] [DEBUG] === ACCOUNT SEARCH STARTED ===
+[2025-07-15 09:00:25] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 09:00:25] [DEBUG] Searching for business account...
+[2025-07-15 09:00:25] [DEBUG] Executing business query: 
+                    SELECT 
+                        b.*,
+                        z.zone_name,
+                        sz.sub_zone_name,
+                        bfs.fee_amount
+                    FROM businesses b
+                    LEFT JOIN zones z ON b.zone_id = z.zone_id
+                    LEFT JOIN sub_zones sz ON b.sub_zone_id = sz.sub_zone_id
+                    LEFT JOIN business_fee_structure bfs ON b.business_type = bfs.business_type AND b.category = bfs.category
+                    WHERE b.account_number = ?
+                
+[2025-07-15 09:00:25] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 09:00:25] [DEBUG] Business data: {"business_id":6,"account_number":"BIZ000001","business_name":"KabTech Consulting","owner_name":"Joojo Megas","business_type":"Restaurant","category":"Large Scale","telephone":"","exact_location":"GPS: 6.046436, 0.400592","latitude":"6.04643561","longitude":"0.40059174","old_bill":"0.00","previous_payments":"1540.00","arrears":"0.00","current_bill":"2100.00","amount_payable":"560.00","batch":"","status":"Active","zone_id":1,"sub_zone_id":2,"created_by":1,"created_at":"2025-07-14 11:25:40","updated_at":"2025-07-14 15:41:28","zone_name":"Central Zone","sub_zone_name":"Government Area","fee_amount":"2100.00"}
+[2025-07-15 09:00:25] [DEBUG] Checking for bill in year: 2025
+[2025-07-15 09:00:25] [DEBUG] Executing bill query: 
+                        SELECT * FROM bills 
+                        WHERE bill_type = 'Business' AND reference_id = ? AND billing_year = ?
+                    
+[2025-07-15 09:00:25] [DEBUG] Bill query parameters: [6, 2025]
+[2025-07-15 09:00:25] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 09:00:25] [DEBUG] Bill data: {"bill_id":17,"bill_number":"BILL2025B000006","bill_type":"Business","reference_id":6,"billing_year":"2025","old_bill":"0.00","previous_payments":"0.00","arrears":"0.00","current_bill":"2100.00","amount_payable":"2060.00","qr_code":null,"status":"Partially Paid","generated_by":1,"generated_at":"2025-07-14 11:25:58","due_date":null}
+[2025-07-15 09:00:25] [DEBUG] Account search successful with valid bill
+[2025-07-15 09:00:25] [DEBUG] === ACCOUNT SEARCH COMPLETED ===
+[2025-07-15 09:00:41] [DEBUG] Database connection established successfully
+[2025-07-15 09:00:41] [DEBUG] Database connection test passed
+[2025-07-15 09:06:34] [DEBUG] Database connection established successfully
+[2025-07-15 09:06:34] [DEBUG] Database connection test passed
+[2025-07-15 09:18:03] [DEBUG] === PAYMENT SYSTEM STARTING ===
+[2025-07-15 09:18:03] [DEBUG] POST data received: []
+[2025-07-15 09:18:03] [DEBUG] Current user: {"user_id":1,"username":"admin","email":"admin@quickbill305.com","password_hash":"$2y$10$e4YGmKebT13JFeJVTNJTr.oWNFXUzfTYqhmQEco1\/VF\/hVOSPCdYS","role_id":2,"first_name":"System","last_name":"Administrator","phone":"+233000000000","is_active":1,"first_login":0,"last_login":"2025-07-15 08:29:19","created_at":"2025-07-04 18:57:35","updated_at":"2025-07-15 08:29:19","role_name":"Admin"}
+[2025-07-15 09:18:03] [DEBUG] Attempting database connection...
+[2025-07-15 09:18:03] [DEBUG] Database connection established successfully
+[2025-07-15 09:18:03] [ERROR] ❌ Critical system error: Database connection test failed - no response from query
+[2025-07-15 09:18:19] [DEBUG] === PAYMENT SYSTEM STARTING ===
+[2025-07-15 09:18:19] [DEBUG] POST data received: []
+[2025-07-15 09:18:19] [DEBUG] Current user: {"user_id":1,"username":"admin","email":"admin@quickbill305.com","password_hash":"$2y$10$e4YGmKebT13JFeJVTNJTr.oWNFXUzfTYqhmQEco1\/VF\/hVOSPCdYS","role_id":2,"first_name":"System","last_name":"Administrator","phone":"+233000000000","is_active":1,"first_login":0,"last_login":"2025-07-15 08:29:19","created_at":"2025-07-04 18:57:35","updated_at":"2025-07-15 08:29:19","role_name":"Admin"}
+[2025-07-15 09:18:19] [DEBUG] Attempting database connection...
+[2025-07-15 09:18:19] [DEBUG] Database connection established successfully
+[2025-07-15 09:18:19] [ERROR] ❌ Critical system error: Database connection test failed - no response from query
+[2025-07-15 09:18:55] [DEBUG] === PAYMENT SYSTEM STARTING ===
+[2025-07-15 09:18:55] [DEBUG] POST data received: {"account_type":"Business","account_number":"BIZ000001","search_account":""}
+[2025-07-15 09:18:55] [DEBUG] Current user: {"user_id":1,"username":"admin","email":"admin@quickbill305.com","password_hash":"$2y$10$e4YGmKebT13JFeJVTNJTr.oWNFXUzfTYqhmQEco1\/VF\/hVOSPCdYS","role_id":2,"first_name":"System","last_name":"Administrator","phone":"+233000000000","is_active":1,"first_login":0,"last_login":"2025-07-15 08:29:19","created_at":"2025-07-04 18:57:35","updated_at":"2025-07-15 08:29:19","role_name":"Admin"}
+[2025-07-15 09:18:55] [DEBUG] Attempting database connection...
+[2025-07-15 09:18:55] [DEBUG] Database connection established successfully
+[2025-07-15 09:18:55] [ERROR] ❌ Critical system error: Database connection test failed - no response from query
+[2025-07-15 09:19:08] [DEBUG] Database connection established successfully
+[2025-07-15 09:19:08] [DEBUG] Database connection test passed
+[2025-07-15 09:19:08] [DEBUG] === ACCOUNT SEARCH STARTED ===
+[2025-07-15 09:19:08] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 09:19:08] [DEBUG] Searching for business account...
+[2025-07-15 09:19:08] [DEBUG] Executing business query: 
+                    SELECT 
+                        b.*,
+                        z.zone_name,
+                        sz.sub_zone_name,
+                        bfs.fee_amount
+                    FROM businesses b
+                    LEFT JOIN zones z ON b.zone_id = z.zone_id
+                    LEFT JOIN sub_zones sz ON b.sub_zone_id = sz.sub_zone_id
+                    LEFT JOIN business_fee_structure bfs ON b.business_type = bfs.business_type AND b.category = bfs.category
+                    WHERE b.account_number = ?
+                
+[2025-07-15 09:19:08] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 09:19:08] [DEBUG] Business data: {"business_id":6,"account_number":"BIZ000001","business_name":"KabTech Consulting","owner_name":"Joojo Megas","business_type":"Restaurant","category":"Large Scale","telephone":"","exact_location":"GPS: 6.046436, 0.400592","latitude":"6.04643561","longitude":"0.40059174","old_bill":"0.00","previous_payments":"1540.00","arrears":"0.00","current_bill":"2100.00","amount_payable":"560.00","batch":"","status":"Active","zone_id":1,"sub_zone_id":2,"created_by":1,"created_at":"2025-07-14 11:25:40","updated_at":"2025-07-14 15:41:28","zone_name":"Central Zone","sub_zone_name":"Government Area","fee_amount":"2100.00"}
+[2025-07-15 09:19:08] [DEBUG] Checking for bill in year: 2025
+[2025-07-15 09:19:08] [DEBUG] Executing bill query: 
+                        SELECT * FROM bills 
+                        WHERE bill_type = 'Business' AND reference_id = ? AND billing_year = ?
+                    
+[2025-07-15 09:19:08] [DEBUG] Bill query parameters: [6, 2025]
+[2025-07-15 09:19:08] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 09:19:08] [DEBUG] Bill data: {"bill_id":17,"bill_number":"BILL2025B000006","bill_type":"Business","reference_id":6,"billing_year":"2025","old_bill":"0.00","previous_payments":"0.00","arrears":"0.00","current_bill":"2100.00","amount_payable":"2060.00","qr_code":null,"status":"Partially Paid","generated_by":1,"generated_at":"2025-07-14 11:25:58","due_date":null}
+[2025-07-15 09:19:08] [DEBUG] Account search successful with valid bill
+[2025-07-15 09:19:08] [DEBUG] === ACCOUNT SEARCH COMPLETED ===
+[2025-07-15 09:49:03] [DEBUG] Database connection established successfully
+[2025-07-15 09:49:03] [DEBUG] Database connection test passed
+[2025-07-15 09:49:11] [DEBUG] Database connection established successfully
+[2025-07-15 09:49:11] [DEBUG] Database connection test passed
+[2025-07-15 09:49:11] [DEBUG] === ACCOUNT SEARCH STARTED ===
+[2025-07-15 09:49:11] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 09:49:11] [DEBUG] Searching for business account...
+[2025-07-15 09:49:11] [DEBUG] Executing business query: 
+                    SELECT 
+                        b.*,
+                        z.zone_name,
+                        sz.sub_zone_name,
+                        bfs.fee_amount
+                    FROM businesses b
+                    LEFT JOIN zones z ON b.zone_id = z.zone_id
+                    LEFT JOIN sub_zones sz ON b.sub_zone_id = sz.sub_zone_id
+                    LEFT JOIN business_fee_structure bfs ON b.business_type = bfs.business_type AND b.category = bfs.category
+                    WHERE b.account_number = ?
+                
+[2025-07-15 09:49:11] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 09:49:11] [DEBUG] Business data: {"business_id":6,"account_number":"BIZ000001","business_name":"KabTech Consulting","owner_name":"Joojo Megas","business_type":"Restaurant","category":"Large Scale","telephone":"","exact_location":"GPS: 6.046436, 0.400592","latitude":"6.04643561","longitude":"0.40059174","old_bill":"0.00","previous_payments":"1540.00","arrears":"0.00","current_bill":"2100.00","amount_payable":"560.00","batch":"","status":"Active","zone_id":1,"sub_zone_id":2,"created_by":1,"created_at":"2025-07-14 11:25:40","updated_at":"2025-07-14 15:41:28","zone_name":"Central Zone","sub_zone_name":"Government Area","fee_amount":"2100.00"}
+[2025-07-15 09:49:11] [DEBUG] Checking for bill in year: 2025
+[2025-07-15 09:49:11] [DEBUG] Executing bill query: 
+                        SELECT * FROM bills 
+                        WHERE bill_type = 'Business' AND reference_id = ? AND billing_year = ?
+                    
+[2025-07-15 09:49:11] [DEBUG] Bill query parameters: [6, 2025]
+[2025-07-15 09:49:11] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 09:49:11] [DEBUG] Bill data: {"bill_id":17,"bill_number":"BILL2025B000006","bill_type":"Business","reference_id":6,"billing_year":"2025","old_bill":"0.00","previous_payments":"0.00","arrears":"0.00","current_bill":"2100.00","amount_payable":"2060.00","qr_code":null,"status":"Partially Paid","generated_by":1,"generated_at":"2025-07-14 11:25:58","due_date":null}
+[2025-07-15 09:49:11] [DEBUG] Account search successful with valid bill
+[2025-07-15 09:49:11] [DEBUG] === ACCOUNT SEARCH COMPLETED ===
+[2025-07-15 09:49:24] [DEBUG] Database connection established successfully
+[2025-07-15 09:49:24] [DEBUG] Database connection test passed
+[2025-07-15 12:43:46] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 12:43:46] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 12:43:46] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 12:43:46] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:11:54] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 14:11:54] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 14:11:54] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 14:11:54] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:13:02] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 14:13:02] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 14:13:02] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 14:13:02] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:16:34] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-15 14:16:34] [DEBUG] Property found: Joojo
+[2025-07-15 14:16:34] [DEBUG] Bill found: BIL-PROP2025-FA783C0
+[2025-07-15 14:16:34] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:21:55] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 14:21:55] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 14:21:55] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 14:21:55] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:27:08] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 14:27:08] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 14:27:08] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 14:27:08] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:29:48] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 14:29:48] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 14:29:48] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 14:29:48] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:40:00] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-15 14:40:00] [DEBUG] Account not found - Number: BIZ000002, Type: Business
+[2025-07-15 14:40:20] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 14:40:20] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 14:40:21] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 14:40:21] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:41:03] [INFO] Payment recorded: GHS 15 for KabTech Consulting (BIZ000001) via Cash by user admin
+[2025-07-15 14:52:15] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 14:52:15] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 14:52:15] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 14:52:15] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:52:29] [INFO] Payment recorded: GHS 12 for KabTech Consulting (BIZ000001) via Cash by user admin
+[2025-07-15 14:53:45] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 14:53:45] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 14:53:45] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 14:53:45] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:58:59] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-15 14:58:59] [DEBUG] Business found: KabTech Consulting
+[2025-07-15 14:58:59] [DEBUG] Bill found: BILL2025B000006
+[2025-07-15 14:58:59] [DEBUG] Account search successful with valid bill
+[2025-07-15 14:59:08] [INFO] Payment recorded: GHS 4 for KabTech Consulting (BIZ000001) via Cash by user admin
+[2025-07-15 15:04:07] [WARNING] User permanently deleted: ID 2, Username: abismark by User ID: 1
+[2025-07-16 08:42:19] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-16 08:42:19] [DEBUG] Property found: Joojo
+[2025-07-16 08:42:19] [DEBUG] Bill found: BIL-PROP2025-FA783C0
+[2025-07-16 08:42:19] [DEBUG] Account search successful with valid bill
+[2025-07-16 08:42:31] [INFO] Payment recorded: GHS 1 for Joojo (PROP000001) via Cash by user admin
+[2025-07-16 08:46:43] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-16 08:46:43] [DEBUG] Property found: Joojo
+[2025-07-16 08:46:43] [DEBUG] Bill found: BIL-PROP2025-FA783C0
+[2025-07-16 08:46:43] [DEBUG] Account search successful with valid bill
+[2025-07-16 08:46:55] [INFO] Payment recorded: GHS 30 for Joojo (PROP000001) via Cash by user admin
+[2025-07-16 08:58:27] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-16 08:58:27] [DEBUG] Property found: Joojo
+[2025-07-16 08:58:27] [DEBUG] Bill found: BIL-PROP2025-FA783C0
+[2025-07-16 08:58:27] [DEBUG] Account search successful with valid bill
+[2025-07-16 08:58:54] [INFO] Payment recorded: GHS 12 for Joojo (PROP000001) via Cash by user admin
+[2025-07-16 09:04:01] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-16 09:04:01] [DEBUG] Property found: Joojo
+[2025-07-16 09:04:01] [DEBUG] Bill found: BIL-PROP2025-FA783C0
+[2025-07-16 09:04:01] [DEBUG] Account search successful with valid bill
+[2025-07-16 09:04:24] [INFO] Payment recorded: GHS 50 for Joojo (PROP000001) via Cash by user admin
+[2025-07-16 11:27:11] [INFO] Business fee created: I.T firm - Small (GHS 500.00) as active by user Joojo
+[2025-07-16 11:28:15] [INFO] Business created: Kwabena Ewusi Enterprise (ID: 7) by user admin
+[2025-07-16 11:29:05] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-16 11:29:05] [DEBUG] Account not found - Number: BIZ000002, Type: Business
+[2025-07-16 11:29:34] [DEBUG] Account search attempt - Number: BIZ000007, Type: Business
+[2025-07-16 11:29:34] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-16 11:29:34] [DEBUG] Bill found: BILL2025B000007
+[2025-07-16 11:29:34] [DEBUG] Account search successful with valid bill
+[2025-07-16 11:29:52] [INFO] Payment recorded: GHS 250 for Kwabena Ewusi Enterprise (BIZ000007) via Cash by user admin
+[2025-07-16 12:42:00] [INFO] Business created: Media General (ID: 8) by user admin
+[2025-07-16 16:08:28] [DEBUG] Account search attempt - Number: BIZ000007, Type: Business
+[2025-07-16 16:08:28] [DEBUG] Business found: Kwabena Ewusi Enterprise
+[2025-07-16 16:08:28] [DEBUG] Bill found: BILL2025B000007
+[2025-07-16 16:08:28] [DEBUG] Account search successful with valid bill
+[2025-07-16 16:08:49] [INFO] Payment recorded: GHS 1 for Kwabena Ewusi Enterprise (BIZ000007) via Cash by user admin
