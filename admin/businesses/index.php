@@ -1,6 +1,10 @@
 <?php
 /**
+<<<<<<< HEAD
  * Business Management - List All Businesses (Updated without Category Filter)
+=======
+ * Business Management - List All Businesses with Map View Integration
+>>>>>>> c9ccaba (Initial commit)
  * QUICKBILL 305 - Admin Panel
  */
 
@@ -178,6 +182,10 @@ try {
         .icon-trash::before { content: "🗑️"; }
         .icon-eye::before { content: "👁️"; }
         .icon-money::before { content: "💰"; }
+<<<<<<< HEAD
+=======
+        .icon-list::before { content: "📋"; }
+>>>>>>> c9ccaba (Initial commit)
         
         /* Top Navigation */
         .top-nav {
@@ -540,6 +548,43 @@ try {
             color: white;
         }
         
+<<<<<<< HEAD
+=======
+        /* View Toggle */
+        .view-toggle-container {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 4px;
+            display: flex;
+            gap: 2px;
+        }
+        
+        .view-toggle-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+        }
+        
+        .view-toggle-btn.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .view-toggle-btn:hover:not(.active) {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Stats Cards */
         .stats-row {
             display: grid;
@@ -956,6 +1001,10 @@ try {
             display: flex;
             gap: 10px;
             justify-content: center;
+<<<<<<< HEAD
+=======
+            flex-wrap: wrap;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .map-btn {
@@ -1022,6 +1071,26 @@ try {
                 gap: 15px;
             }
             
+<<<<<<< HEAD
+=======
+            .header-content > div:last-child {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .view-toggle-container {
+                order: 1;
+            }
+            
+            .add-business-btn {
+                order: 2;
+            }
+            
+>>>>>>> c9ccaba (Initial commit)
             .stats-row {
                 grid-template-columns: 1fr;
             }
@@ -1039,6 +1108,13 @@ try {
                 flex-direction: column;
                 gap: 5px;
             }
+<<<<<<< HEAD
+=======
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Animations */
@@ -1310,7 +1386,11 @@ try {
                 <?php endforeach; ?>
             <?php endif; ?>
 
+<<<<<<< HEAD
             <!-- Page Header -->
+=======
+            <!-- Page Header with View Toggle -->
+>>>>>>> c9ccaba (Initial commit)
             <div class="page-header">
                 <div class="header-content">
                     <div>
@@ -1320,6 +1400,7 @@ try {
                         </h1>
                         <p style="color: #64748b; margin: 5px 0 0 0;">Manage registered businesses, billing, and compliance</p>
                     </div>
+<<<<<<< HEAD
                     <a href="add.php" class="add-business-btn">
                         <i class="fas fa-plus"></i>
                         Register New Business
@@ -1328,6 +1409,33 @@ try {
             </div>
 
             <!-- Statistics Cards -->
+=======
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <!-- View Toggle Buttons -->
+                        <div class="view-toggle-container">
+                            <button class="view-toggle-btn active" onclick="switchToListView()">
+                                <i class="fas fa-list"></i>
+                                <span class="icon-list" style="display: none;"></span>
+                                List View
+                            </button>
+                            <button class="view-toggle-btn" onclick="switchToMapView()">
+                                <i class="fas fa-map"></i>
+                                <span class="icon-map" style="display: none;"></span>
+                                Map View
+                            </button>
+                        </div>
+                        
+                        <!-- Add Business Button -->
+                        <a href="add.php" class="add-business-btn">
+                            <i class="fas fa-plus"></i>
+                            Register New Business
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards (Original Style) -->
+>>>>>>> c9ccaba (Initial commit)
             <div class="stats-row">
                 <div class="stat-card primary">
                     <div class="stat-header">
@@ -1672,6 +1780,58 @@ try {
             });
         }
 
+<<<<<<< HEAD
+=======
+        // View toggle functions
+        function switchToListView() {
+            // Already on list view, just update button states
+            updateToggleButtons('list');
+        }
+
+        function switchToMapView() {
+            // Preserve current filters when switching to map view
+            const urlParams = new URLSearchParams(window.location.search);
+            let mapUrl = 'map.php';
+            
+            // Add current filters to map URL
+            if (urlParams.toString()) {
+                mapUrl += '?' + urlParams.toString();
+            }
+            
+            window.location.href = mapUrl;
+        }
+
+        function updateToggleButtons(activeView) {
+            const buttons = document.querySelectorAll('.view-toggle-btn');
+            
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.background = 'transparent';
+                btn.style.color = '#64748b';
+                btn.style.boxShadow = 'none';
+            });
+
+            if (activeView === 'list') {
+                const listBtn = buttons[0]; // First button is list view
+                listBtn.classList.add('active');
+                listBtn.style.background = 'white';
+                listBtn.style.color = '#667eea';
+                listBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            } else if (activeView === 'map') {
+                const mapBtn = buttons[1]; // Second button is map view
+                mapBtn.classList.add('active');
+                mapBtn.style.background = 'white';
+                mapBtn.style.color = '#667eea';
+                mapBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            }
+        }
+
+        // Initialize view toggle on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateToggleButtons('list'); // Currently on list view
+        });
+
+>>>>>>> c9ccaba (Initial commit)
         // Auto-submit form on filter change
         document.querySelectorAll('select[name="type"], select[name="status"], select[name="zone"]').forEach(function(select) {
             select.addEventListener('change', function() {

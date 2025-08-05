@@ -1,6 +1,12 @@
+<<<<<<< HEAD
  <?php
 /**
  * Billing Management - Bulk Print Bills
+=======
+<?php
+/**
+ * Billing Management - Bulk Print Bills with Official Format
+>>>>>>> c9ccaba (Initial commit)
  * QUICKBILL 305 - Admin Panel
  */
 
@@ -11,6 +17,14 @@ define('QUICKBILL_305', true);
 require_once '../../config/config.php';
 require_once '../../config/database.php';
 require_once '../../includes/functions.php';
+<<<<<<< HEAD
+=======
+require_once '../../vendor/autoload.php';
+
+// QR Code libraries
+use chillerlan\QRCode\QRCode as ChillerlanQRCode;
+use chillerlan\QRCode\QROptions;
+>>>>>>> c9ccaba (Initial commit)
 
 // Start session
 session_start();
@@ -30,6 +44,18 @@ if (!hasPermission('billing.print')) {
     header('Location: index.php');
     exit();
 }
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+>>>>>>> c9ccaba (Initial commit)
 
 $pageTitle = 'Bulk Print Bills';
 $currentUser = getCurrentUser();
@@ -41,6 +67,10 @@ $bills = [];
 $printStats = [];
 $zones = [];
 $businessTypes = [];
+<<<<<<< HEAD
+=======
+$assemblyName = 'Anloga District Assembly'; // Default fallback
+>>>>>>> c9ccaba (Initial commit)
 
 // Get filter options
 $filterType = sanitizeInput($_GET['type'] ?? $_POST['filter_type'] ?? '');
@@ -52,6 +82,15 @@ $filterYear = intval($_GET['year'] ?? $_POST['filter_year'] ?? 0);
 try {
     $db = new Database();
     
+<<<<<<< HEAD
+=======
+    // Get assembly name from settings
+    $assemblyNameSetting = $db->fetchRow("SELECT setting_value FROM system_settings WHERE setting_key = 'assembly_name'");
+    if ($assemblyNameSetting && !empty($assemblyNameSetting['setting_value'])) {
+        $assemblyName = $assemblyNameSetting['setting_value'];
+    }
+    
+>>>>>>> c9ccaba (Initial commit)
     // Get zones for filter
     $zones = $db->fetchAll("SELECT * FROM zones ORDER BY zone_name");
     
@@ -136,6 +175,11 @@ try {
         
         $billsQuery = "
             SELECT b.*,
+<<<<<<< HEAD
+=======
+                   u.first_name as generated_by_name, 
+                   u.last_name as generated_by_surname,
+>>>>>>> c9ccaba (Initial commit)
                    CASE 
                        WHEN b.bill_type = 'Business' THEN bs.business_name
                        WHEN b.bill_type = 'Property' THEN pr.owner_name
@@ -160,6 +204,7 @@ try {
                        WHEN b.bill_type = 'Business' THEN z1.zone_name
                        WHEN b.bill_type = 'Property' THEN z2.zone_name
                    END as zone_name,
+<<<<<<< HEAD
                    -- Business specific fields
                    bs.business_type,
                    bs.category,
@@ -168,16 +213,146 @@ try {
                    pr.property_use,
                    pr.number_of_rooms
             FROM bills b
+=======
+                   CASE 
+                       WHEN b.bill_type = 'Business' THEN sz1.sub_zone_name
+                       WHEN b.bill_type = 'Property' THEN sz2.sub_zone_name
+                   END as sub_zone_name,
+                   -- Business specific fields
+                   bs.business_type,
+                   bs.category,
+                   bfs.fee_amount as annual_fee,
+                   -- Property specific fields
+                   pr.structure,
+                   pr.property_use,
+                   pr.number_of_rooms,
+                   pr.gender,
+                   pr.ownership_type,
+                   pr.property_type,
+                   pfs.fee_per_room
+            FROM bills b
+            LEFT JOIN users u ON b.generated_by = u.user_id
+>>>>>>> c9ccaba (Initial commit)
             LEFT JOIN businesses bs ON b.bill_type = 'Business' AND b.reference_id = bs.business_id
             LEFT JOIN properties pr ON b.bill_type = 'Property' AND b.reference_id = pr.property_id
             LEFT JOIN zones z1 ON bs.zone_id = z1.zone_id
             LEFT JOIN zones z2 ON pr.zone_id = z2.zone_id
+<<<<<<< HEAD
+=======
+            LEFT JOIN sub_zones sz1 ON bs.sub_zone_id = sz1.sub_zone_id
+            LEFT JOIN sub_zones sz2 ON pr.sub_zone_id = sz2.sub_zone_id
+            LEFT JOIN business_fee_structure bfs ON b.bill_type = 'Business' AND bs.business_type = bfs.business_type AND bs.category = bfs.category AND bfs.is_active = 1
+            LEFT JOIN property_fee_structure pfs ON b.bill_type = 'Property' AND pr.structure = pfs.structure AND pr.property_use = pfs.property_use AND pfs.is_active = 1
+>>>>>>> c9ccaba (Initial commit)
             WHERE b.bill_id IN ({$placeholders})
             ORDER BY b.bill_type, b.bill_number
         ";
         
         $bills = $db->fetchAll($billsQuery, $selectedBillIds);
         
+<<<<<<< HEAD
+=======
+        // Generate QR codes for all bills
+        $qr_dir = __DIR__ . '/../../assets/qr_codes/';
+        if (!is_dir($qr_dir)) {
+            mkdir($qr_dir, 0755, true);
+        }
+        
+        foreach ($bills as &$bill) {
+            // Create complete bill content for QR code
+            $bill_type_full = $bill['bill_type'] === 'Business' ? 'Business License Bill' : 'Property Rate Bill';
+            $bill_date = date('d/m/Y', strtotime($bill['generated_at']));
+            
+            $qr_data = $assemblyName . "\n";
+            $qr_data .= str_repeat("=", 40) . "\n";
+            $qr_data .= $bill_type_full . "\n";
+            $qr_data .= "Bill Date: " . $bill_date . "\n";
+            $qr_data .= "Zone: " . ($bill['zone_name'] ?? '') . "\n";
+            $qr_data .= str_repeat("-", 40) . "\n\n";
+            
+            // Payer Information
+            if ($bill['bill_type'] === 'Business') {
+                $qr_data .= "BUSINESS INFORMATION:\n";
+                $qr_data .= "Business Name: " . ($bill['payer_name'] ?? '') . "\n";
+                $qr_data .= "Owner: " . ($bill['owner_name'] ?? '') . "\n";
+                $qr_data .= "Telephone: " . ($bill['telephone'] ?? '') . "\n";
+                $qr_data .= "Account#: " . ($bill['account_number'] ?? '') . "\n";
+                $qr_data .= "Zone: " . ($bill['zone_name'] ?? '') . "\n";
+                $qr_data .= "Business Type: " . ($bill['business_type'] ?? '') . "\n";
+            } else {
+                $qr_data .= "PROPERTY INFORMATION:\n";
+                $qr_data .= "Owner Name: " . ($bill['owner_name'] ?? '') . "\n";
+                $qr_data .= "Telephone: " . ($bill['telephone'] ?? '') . "\n";
+                $qr_data .= "Property#: " . ($bill['account_number'] ?? '') . "\n";
+                $qr_data .= "Zone: " . ($bill['zone_name'] ?? '') . "\n";
+                $qr_data .= "Structure: " . ($bill['structure'] ?? '') . "\n";
+            }
+            
+            $qr_data .= "\nBILL DETAILS:\n";
+            $qr_data .= "Bill Number: " . ($bill['bill_number'] ?? '') . "\n";
+            $qr_data .= "Bill Year: " . ($bill['billing_year'] ?? '') . "\n";
+            $qr_data .= str_repeat("-", 40) . "\n";
+            
+            // Financial breakdown
+            $qr_data .= "FINANCIAL BREAKDOWN:\n";
+            $qr_data .= "Old Fee: GHS " . number_format($bill['old_bill'] ?? 0, 2) . "\n";
+            $qr_data .= "Previous Payments: GHS " . number_format($bill['previous_payments'] ?? 0, 2) . "\n";
+            $qr_data .= "Arrears: GHS " . number_format($bill['arrears'] ?? 0, 2) . "\n";
+            $qr_data .= "Current Rate: GHS " . number_format($bill['current_bill'] ?? 0, 2) . "\n";
+            $qr_data .= str_repeat("-", 40) . "\n";
+            $qr_data .= "TOTAL AMOUNT DUE: GHS " . number_format($bill['amount_payable'] ?? 0, 2) . "\n";
+            $qr_data .= str_repeat("=", 40) . "\n\n";
+            
+            $qr_data .= "PAYMENT INSTRUCTIONS:\n";
+            $qr_data .= "Please present this bill when making payment.\n";
+            $qr_data .= "Pay to DISTRICT FINANCE OFFICER or\n";
+            $qr_data .= "authorized Revenue Collector.\n";
+            $qr_data .= "Payment Due: 1st September 2025\n\n";
+            $qr_data .= "For inquiries: 0249579191\n";
+            $qr_data .= str_repeat("=", 40) . "\n";
+            $qr_data .= $assemblyName;
+            
+            // Generate QR code if data is not too large
+            $bill['qr_url'] = null;
+            if (strlen($qr_data) <= 2500) {
+                $qr_file = $qr_dir . 'bill_' . $bill['bill_id'] . '.png';
+                try {
+                    $options = new QROptions([
+                        'outputType' => ChillerlanQRCode::OUTPUT_IMAGE_PNG,
+                        'eccLevel' => ChillerlanQRCode::ECC_M,
+                        'imageBase64' => false,
+                        'scale' => 2, // Reduced from 3 to make the QR code smaller
+                        'imageTransparent' => false,
+                        'quietzoneSize' => 1, // Reduced from 2 for a smaller border
+                    ]);
+
+                    if (file_exists($qr_file)) {
+                        unlink($qr_file);
+                    }
+
+                    $qrcode = new ChillerlanQRCode($options);
+                    $qrcode->render($qr_data, $qr_file);
+
+                    if (file_exists($qr_file) && filesize($qr_file) > 0) {
+                        $bill['qr_url'] = '../../assets/qr_codes/bill_' . $bill['bill_id'] . '.png';
+                    }
+                } catch (Exception $e) {
+                    writeLog("QR code generation failed for bill ID {$bill['bill_id']}: " . $e->getMessage(), 'ERROR');
+                }
+            }
+        }
+        unset($bill); // Break the reference
+        
+        // Count successfully generated QR codes
+        $qrGeneratedCount = count(array_filter($bills, function($bill) {
+            return !empty($bill['qr_url']);
+        }));
+        
+        if ($qrGeneratedCount > 0) {
+            writeLog("Successfully generated {$qrGeneratedCount} QR codes for bulk print", 'INFO');
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         // Calculate print statistics
         $printStats = [
             'total_bills' => count($bills),
@@ -186,7 +361,12 @@ try {
             'total_amount' => array_sum(array_column($bills, 'amount_payable')),
             'pending_bills' => count(array_filter($bills, function($bill) { return $bill['status'] === 'Pending'; })),
             'paid_bills' => count(array_filter($bills, function($bill) { return $bill['status'] === 'Paid'; })),
+<<<<<<< HEAD
             'overdue_bills' => count(array_filter($bills, function($bill) { return in_array($bill['status'], ['Overdue', 'Partially Paid']); }))
+=======
+            'overdue_bills' => count(array_filter($bills, function($bill) { return in_array($bill['status'], ['Overdue', 'Partially Paid']); })),
+            'qr_codes_generated' => $qrGeneratedCount
+>>>>>>> c9ccaba (Initial commit)
         ];
     }
     
@@ -617,6 +797,7 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             font-size: 16px;
         }
         
+<<<<<<< HEAD
         /* Print Options */
         .print-options {
             background: white;
@@ -654,6 +835,8 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             cursor: pointer;
         }
         
+=======
+>>>>>>> c9ccaba (Initial commit)
         /* Empty state */
         .empty-state {
             text-align: center;
@@ -719,7 +902,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                 <i class="fas fa-print"></i>
                 Bulk Print Bills
             </h1>
+<<<<<<< HEAD
             <p style="color: #64748b;">Print multiple bills at once with customizable options</p>
+=======
+            <p style="color: #64748b;">Print multiple bills at once with official formatting</p>
+>>>>>>> c9ccaba (Initial commit)
         </div>
 
         <!-- Flash Messages -->
@@ -901,6 +1088,7 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             <div class="stat-number">GHS <?php echo number_format($printStats['total_amount'], 0); ?></div>
                             <div class="stat-label">Total Amount</div>
                         </div>
+<<<<<<< HEAD
                     </div>
                 </div>
             </div>
@@ -940,6 +1128,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                         <div class="checkbox-item">
                             <input type="radio" id="format_print" name="output_format" class="checkbox" value="print">
                             <label for="format_print">Direct Print</label>
+=======
+                        <div class="stat-item">
+                            <div class="stat-number"><?php echo number_format($printStats['qr_codes_generated']); ?></div>
+                            <div class="stat-label">QR Codes Generated</div>
+>>>>>>> c9ccaba (Initial commit)
                         </div>
                     </div>
                 </div>
@@ -976,6 +1169,10 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                                 <th>Payer</th>
                                 <th>Account</th>
                                 <th>Amount</th>
+<<<<<<< HEAD
+=======
+                                <th>QR</th>
+>>>>>>> c9ccaba (Initial commit)
                                 <th>Status</th>
                                 <th>Zone</th>
                             </tr>
@@ -984,7 +1181,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             <?php foreach ($bills as $bill): ?>
                                 <tr>
                                     <td>
+<<<<<<< HEAD
                                         <input type="checkbox" class="checkbox print-checkbox" 
+=======
+                                        <input type="checkbox" class="print-checkbox" 
+>>>>>>> c9ccaba (Initial commit)
                                                value="<?php echo $bill['bill_id']; ?>" checked>
                                     </td>
                                     <td>
@@ -1014,6 +1215,16 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                                         <span class="amount">GHS <?php echo number_format($bill['amount_payable'], 2); ?></span>
                                     </td>
                                     <td>
+<<<<<<< HEAD
+=======
+                                        <?php if (!empty($bill['qr_url']) && file_exists(__DIR__ . '/../../assets/qr_codes/bill_' . $bill['bill_id'] . '.png')): ?>
+                                            <span style="color: #10b981; font-weight: 600;">✓</span>
+                                        <?php else: ?>
+                                            <span style="color: #ef4444; font-weight: 600;">✗</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+>>>>>>> c9ccaba (Initial commit)
                                         <span class="status-badge status-<?php echo strtolower(str_replace(' ', '-', $bill['status'])); ?>">
                                             <?php echo htmlspecialchars($bill['status']); ?>
                                         </span>
@@ -1054,19 +1265,36 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                 return;
             }
 
+<<<<<<< HEAD
             const twoPerPage = document.getElementById('two_per_page').checked;
             const includeQR = document.getElementById('include_qr').checked;
             const includeWatermark = document.getElementById('include_watermark').checked;
             const outputFormat = document.querySelector('input[name="output_format"]:checked').value;
+=======
+            // Fixed default settings (no checkboxes to read from)
+            const twoPerPage = true;        // Two bills per page (vertically stacked)
+            const includeQR = true;         // Include QR codes
+            const includeWatermark = true;  // Add watermark
+            const officialFormat = true;    // Official format
+            const outputFormat = 'print';   // Direct print
+>>>>>>> c9ccaba (Initial commit)
 
             // Create print window
             const printWindow = window.open('', '_blank');
             
+<<<<<<< HEAD
             // Build print content
+=======
+            // Assembly name from PHP
+            const assemblyName = <?php echo json_encode($assemblyName); ?>;
+            
+            // Build print content with official format and enhanced watermarks
+>>>>>>> c9ccaba (Initial commit)
             let printContent = `
                 <!DOCTYPE html>
                 <html>
                 <head>
+<<<<<<< HEAD
                     <title>Bulk Bills Print - <?php echo APP_NAME; ?></title>
                     <style>
                         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
@@ -1097,17 +1325,327 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             body { margin: 0; } 
                             .bill { page-break-after: ${twoPerPage ? 'auto' : 'always'}; }
                             .no-print { display: none; }
+=======
+                    <title>Bulk Bills Print - ${assemblyName}</title>
+                    <style>
+                        * { 
+                            margin: 0; 
+                            padding: 0; 
+                            box-sizing: border-box; 
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                        body { 
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                            margin: 0; 
+                            padding: ${twoPerPage ? '10px' : '20px'}; 
+                            background: white;
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                        
+                        .bill-container { 
+                            width: ${twoPerPage ? '100%' : '100%'}; 
+                            margin-bottom: ${twoPerPage ? '20px' : '30px'}; 
+                            position: relative;
+                            overflow: hidden;
+                            min-height: ${twoPerPage ? '380px' : '600px'};
+                            display: block;
+                            vertical-align: top;
+                            page-break-inside: avoid;
+                            background: white;
+                        }
+                        
+                        .bill-wrapper {
+                            width: 100%;
+                            padding: ${twoPerPage ? '12px' : '30px'};
+                            position: relative;
+                            overflow: hidden;
+                            z-index: 1;
+                            background-color: #fff;
+                            box-sizing: border-box;
+                        }
+                        
+                        /* Enhanced Watermark System - Using HTML elements for better print support */
+                        .watermark {
+                            position: absolute;
+                            font-size: ${twoPerPage ? '40px' : '65px'};
+                            font-weight: bold;
+                            font-family: Arial, Helvetica, sans-serif;
+                            color: rgba(0,0,0,0.12) !important;
+                            z-index: 0;
+                            pointer-events: none;
+                            opacity: 1 !important;
+                            transform: rotate(-45deg);
+                            user-select: none;
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                        
+                        .watermark-top-left {
+                            top: 15%;
+                            left: 15%;
+                            transform: translate(-50%, -50%) rotate(-45deg);
+                        }
+                        
+                        .watermark-center {
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%) rotate(-45deg);
+                        }
+                        
+                        .watermark-bottom-right {
+                            bottom: 15%;
+                            right: 15%;
+                            transform: translate(50%, 50%) rotate(-45deg);
+                        }
+                        
+                        .watermark-top-right {
+                            top: 20%;
+                            right: 20%;
+                            transform: translate(50%, -50%) rotate(-45deg);
+                        }
+                        
+                        .watermark-bottom-left {
+                            bottom: 20%;
+                            left: 20%;
+                            transform: translate(-50%, 50%) rotate(-45deg);
+                        }
+                        
+                        .bill-header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            border-bottom: 1px solid #000;
+                            padding-bottom: ${twoPerPage ? '8px' : '15px'};
+                            position: relative;
+                            z-index: 2;
+                            margin-bottom: ${twoPerPage ? '10px' : '20px'};
+                            flex-wrap: wrap;
+                            gap: ${twoPerPage ? '8px' : '15px'};
+                        }
+                        
+                        .bill-logo {
+                            width: ${twoPerPage ? '45px' : '80px'};
+                            height: auto;
+                            z-index: 2;
+                            flex-shrink: 0;
+                        }
+                        
+                        .bill-header-text {
+                            text-align: center;
+                            flex-grow: 1;
+                            z-index: 2;
+                            min-width: ${twoPerPage ? '150px' : '200px'};
+                        }
+                        
+                        .bill-header-text h1 {
+                            margin: 0;
+                            font-size: ${twoPerPage ? '16px' : '28px'};
+                            font-weight: bold;
+                            color: #000;
+                        }
+                        
+                        .bill-header-text h2 {
+                            margin: ${twoPerPage ? '5px 0' : '8px 0'};
+                            font-size: ${twoPerPage ? '12px' : '18px'};
+                            font-weight: normal;
+                            color: #333;
+                        }
+                        
+                        .bill-header-text p {
+                            margin: 0;
+                            font-size: ${twoPerPage ? '10px' : '14px'};
+                            color: #666;
+                        }
+                        
+                        .bill-header-right {
+                            text-align: right;
+                            z-index: 2;
+                            flex-shrink: 0;
+                            min-width: ${twoPerPage ? '110px' : '150px'};
+                        }
+                        
+                        .bill-header-right h2 {
+                            margin: 0;
+                            font-size: ${twoPerPage ? '12px' : '16px'};
+                            font-weight: bold;
+                            color: #000;
+                        }
+                        
+                        .bill-header-right p {
+                            margin: ${twoPerPage ? '3px 0' : '4px 0'};
+                            font-size: ${twoPerPage ? '10px' : '14px'};
+                            color: #333;
+                        }
+                        
+                        .bill-content {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: ${twoPerPage ? '12px' : '20px'};
+                            position: relative;
+                            z-index: 2;
+                            gap: ${twoPerPage ? '10px' : '20px'};
+                            flex-wrap: wrap;
+                            align-items: flex-start;
+                        }
+                        
+                        .bill-left-section, .bill-right-section {
+                            flex: 1;
+                            min-width: ${twoPerPage ? '160px' : '300px'};
+                            max-width: calc(50% - ${twoPerPage ? '5px' : '10px'});
+                            box-sizing: border-box;
+                        }
+                        
+                        .bill-info-box {
+                            border: 1px solid #000;
+                            padding: ${twoPerPage ? '8px' : '15px'};
+                            margin-bottom: ${twoPerPage ? '10px' : '15px'};
+                            position: relative;
+                            z-index: 2;
+                            background: white;
+                            word-wrap: break-word;
+                            overflow-wrap: break-word;
+                            box-sizing: border-box;
+                        }
+                        
+                        .bill-info-box p {
+                            margin: ${twoPerPage ? '5px 0' : '8px 0'};
+                            font-size: ${twoPerPage ? '10px' : '14px'};
+                            color: #000;
+                            word-wrap: break-word;
+                            overflow-wrap: break-word;
+                        }
+                        
+                        .bill-info-box p strong {
+                            display: inline-block;
+                            width: ${twoPerPage ? '75px' : '130px'};
+                            font-weight: bold;
+                            vertical-align: top;
+                        }
+                        
+                        .bill-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: ${twoPerPage ? '8px' : '10px'};
+                            position: relative;
+                            z-index: 2;
+                            table-layout: fixed;
+                            overflow-x: auto;
+                        }
+                        
+                        .bill-table, .bill-table th, .bill-table td {
+                            border: 1px solid #000;
+                            padding: ${twoPerPage ? '3px 2px' : '6px 4px'};
+                            text-align: center;
+                            font-size: ${twoPerPage ? '9px' : '12px'};
+                            word-wrap: break-word;
+                            overflow-wrap: break-word;
+                        }
+                        
+                        .bill-table th {
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                            color: #000;
+                            line-height: 1.2;
+                        }
+                        
+                        .bill-table td {
+                            color: #000;
+                            line-height: 1.2;
+                        }
+                        
+                        .bill-note {
+                            font-size: ${twoPerPage ? '10px' : '14px'};
+                            text-align: right;
+                            margin-bottom: ${twoPerPage ? '8px' : '10px'};
+                            position: relative;
+                            z-index: 2;
+                            color: #000;
+                            font-weight: 500;
+                        }
+                        
+                        .bill-qr-code {
+                            text-align: center;
+                            margin-top: ${twoPerPage ? '4px' : '5px'};
+                            position: relative;
+                            z-index: 2;
+                            padding: ${twoPerPage ? '4px 0' : '5px 0'};
+                        }
+                        
+                        .bill-qr-code img {
+                            width: ${twoPerPage ? '70px' : '120px'};
+                            height: ${twoPerPage ? '70px' : '120px'};
+                            border: 1px solid #ddd;
+                        }
+                        
+                        .qr-placeholder {
+                            width: ${twoPerPage ? '70px' : '120px'};
+                            height: ${twoPerPage ? '70px' : '120px'};
+                            border: 1px solid #ddd;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0 auto;
+                            background: #f8f9fa;
+                            color: #666;
+                            font-size: ${twoPerPage ? '9px' : '12px'};
+                            text-align: center;
+                        }
+                        
+                        .bill-footer {
+                            border-top: 1px solid #000;
+                            padding-top: ${twoPerPage ? '10px' : '15px'};
+                            text-align: center;
+                            font-size: ${twoPerPage ? '9px' : '13px'};
+                            position: relative;
+                            z-index: 2;
+                            color: #000;
+                            margin-top: ${twoPerPage ? '10px' : '15px'};
+                            clear: both;
+                        }
+                        
+                        .bill-footer p {
+                            margin: ${twoPerPage ? '5px 0' : '8px 0'};
+                            line-height: ${twoPerPage ? '1.3' : '1.4'};
+                        }
+                        
+                        @media print { 
+                            body { margin: 0; padding: 5px; }
+                            .no-print { display: none; } 
+                            .bill-container { 
+                                page-break-inside: avoid;
+                                margin-bottom: ${twoPerPage ? '12px' : '30px'};
+                            }
+                            .bill-container:nth-child(2n) { 
+                                page-break-after: ${twoPerPage ? 'always' : 'auto'}; 
+                            }
+                            .bill-content { gap: ${twoPerPage ? '8px' : '15px'}; }
+                            .bill-left-section, .bill-right-section { max-width: 48%; }
+                            
+                            /* Enhanced watermark visibility for print */
+                            .watermark {
+                                color: rgba(0,0,0,0.15) !important;
+                                opacity: 1 !important;
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
+>>>>>>> c9ccaba (Initial commit)
                         }
                     </style>
                 </head>
                 <body>
+<<<<<<< HEAD
                     ${includeWatermark ? '<div class="watermark">OFFICIAL</div>' : ''}
+=======
+>>>>>>> c9ccaba (Initial commit)
             `;
 
             // Add bills to print content
             <?php if (!empty($bills)): ?>
                 const billsData = <?php echo json_encode($bills); ?>;
                 
+<<<<<<< HEAD
                 selectedBills.forEach(billId => {
                     const bill = billsData.find(b => b.bill_id == billId);
                     if (!bill) return;
@@ -1173,13 +1711,135 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             </div>
                         </div>
                     `;
+=======
+                // Debug: Log bills data to see QR URLs
+                console.log('Bills data with QR URLs:', billsData.map(b => ({
+                    bill_id: b.bill_id,
+                    bill_number: b.bill_number,
+                    qr_url: b.qr_url,
+                    qr_available: !!b.qr_url
+                })));
+                
+                selectedBills.forEach((billId, index) => {
+                    const bill = billsData.find(b => b.bill_id == billId);
+                    if (!bill) return;
+
+                    const billDate = new Date(bill.generated_at).toLocaleDateString();
+                    const billTypeTitle = bill.bill_type === 'Business' ? 'Business License Bill' : 'Property Rate Bill';
+
+                    printContent += `
+                        <div class="bill-container">
+                            <div class="bill-wrapper">
+                                ${includeWatermark ? `
+                                    <div class="watermark watermark-top-left">AnDA</div>
+                                    <div class="watermark watermark-center">AnDA</div>
+                                    <div class="watermark watermark-bottom-right">AnDA</div>
+                                    <div class="watermark watermark-top-right">AnDA</div>
+                                    <div class="watermark watermark-bottom-left">AnDA</div>
+                                ` : ''}
+                                
+                                <!-- Bill Header -->
+                                <div class="bill-header">
+                                    <img src="../../assets/images/download.png" alt="${assemblyName} Logo" class="bill-logo">
+                                    <div class="bill-header-text">
+                                        <h1>${assemblyName}</h1>
+                                        <h2>${billTypeTitle}</h2>
+                                        <p>Bill Date: ${billDate} / Zone: ${bill.zone_name || ''}</p>
+                                    </div>
+                                    <div class="bill-header-right">
+                                        <h2>${assemblyName}</h2>
+                                        <p>${billTypeTitle}</p>
+                                        <p>Bill Date: ${billDate}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Bill Content -->
+                                <div class="bill-content">
+                                    <div class="bill-left-section">
+                                        <div class="bill-info-box">
+                                            ${bill.bill_type === 'Business' ? `
+                                                <p><strong>Business Name:</strong> ${bill.payer_name || ''}</p>
+                                                <p><strong>Owner / Tel:</strong> ${bill.owner_name || ''} / ${bill.telephone || ''}</p>
+                                                <p><strong>Acct#:</strong> ${bill.account_number || ''}</p>
+                                                <p><strong>Location:</strong> ${bill.location || ''}</p>
+                                                <p><strong>Bus.Type:</strong> ${bill.business_type || ''}</p>
+                                            ` : `
+                                                <p><strong>Owner Name:</strong> ${bill.owner_name || ''}</p>
+                                                <p><strong>Owner / Tel:</strong> ${bill.owner_name || ''} / ${bill.telephone || ''}</p>
+                                                <p><strong>Property#:</strong> ${bill.account_number || ''}</p>
+                                                <p><strong>Location:</strong> ${bill.location || ''}</p>
+                                                <p><strong>Structure:</strong> ${bill.structure || ''}</p>
+                                            `}
+                                        </div>
+                                        <div class="bill-qr-code">
+                                            ${includeQR ? `
+                                                ${bill.qr_url ? `
+                                                    <img src="${bill.qr_url}" alt="QR Code for Bill ${bill.bill_number}" 
+                                                         style="width: ${twoPerPage ? '100px' : '150px'}; height: ${twoPerPage ? '100px' : '150px'}; border: 1px solid #ddd;"
+                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                    <div class="qr-placeholder" style="display: none;">QR Code<br>Load Error</div>
+                                                ` : `
+                                                    <div class="qr-placeholder">QR Code<br>Not Available</div>
+                                                `}
+                                            ` : ''}
+                                        </div>
+                                    </div>
+
+                                    <div class="bill-right-section">
+                                        <div class="bill-info-box">
+                                            <p><strong>Owner:</strong> ${bill.owner_name || bill.payer_name || ''}</p>
+                                            <p><strong>${bill.bill_type === 'Business' ? 'Acct#' : 'Property#'}:</strong> ${bill.account_number || ''}</p>
+                                            <p><strong>Bill Year:</strong> ${bill.billing_year}</p>
+                                            <p><strong>Total Amount Due:</strong> GHS ${parseFloat(bill.amount_payable).toFixed(2)}</p>
+                                        </div>
+                                        <div style="overflow-x: auto;">
+                                            <table class="bill-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Old Fee</th>
+                                                        <th>Previous Payments</th>
+                                                        <th>Arrears</th>
+                                                        <th>Current Rate</th>
+                                                        <th>Total Amount Due</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>GHS ${parseFloat(bill.old_bill).toFixed(2)}</td>
+                                                        <td>GHS ${parseFloat(bill.previous_payments).toFixed(2)}</td>
+                                                        <td>GHS ${parseFloat(bill.arrears).toFixed(2)}</td>
+                                                        <td>GHS ${parseFloat(bill.current_bill).toFixed(2)}</td>
+                                                        <td>GHS ${parseFloat(bill.amount_payable).toFixed(2)}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <p class="bill-note">Please present this bill when making a payment</p>
+                                    </div>
+                                </div>
+
+                                <!-- Bill Footer -->
+                                <div class="bill-footer">
+                                    <p>KINDLY pay the amount involved to the DISTRICT FINANCE OFFICER or to any Revenue Collector appointed by the Assembly ON OR BEFORE 1st of September 2025.</p>
+                                    <p>For inquiries, please call: 0545041428</p>
+                                </div>
+                            </div>
+                        </div>
+		            `;
+>>>>>>> c9ccaba (Initial commit)
                 });
             <?php endif; ?>
 
             printContent += `
+<<<<<<< HEAD
                     <div class="no-print" style="margin-top: 30px; text-align: center;">
                         <button onclick="window.print()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 5px; margin-right: 10px;">Print Bills</button>
                         <button onclick="window.close()" style="padding: 10px 20px; background: #64748b; color: white; border: none; border-radius: 5px;">Close</button>
+=======
+                    <div class="no-print" style="margin-top: 30px; text-align: center; page-break-before: always;">
+                        <button onclick="window.print()" style="padding: 15px 30px; background: #10b981; color: white; border: none; border-radius: 8px; margin-right: 15px; font-size: 16px; cursor: pointer;">Print Bills</button>
+                        <button onclick="window.close()" style="padding: 15px 30px; background: #64748b; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">Close</button>
+>>>>>>> c9ccaba (Initial commit)
                     </div>
                 </body>
                 </html>
@@ -1196,10 +1856,14 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             }
 
             // Log the print action
+<<<<<<< HEAD
             <?php if (function_exists('logAuditActivity')): ?>
                 // This would be implemented server-side
                 console.log('Print action logged for bills:', selectedBills);
             <?php endif; ?>
+=======
+            console.log('Bills printed:', selectedBills.length);
+>>>>>>> c9ccaba (Initial commit)
         }
 
         // Initialize
@@ -1211,4 +1875,8 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         });
     </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> c9ccaba (Initial commit)

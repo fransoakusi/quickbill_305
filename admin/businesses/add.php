@@ -1,6 +1,10 @@
 <?php
 /**
+<<<<<<< HEAD
  * Business Management - Add New Business
+=======
+ * Business Management - Add New Business (Enhanced with Advanced GPS)
+>>>>>>> c9ccaba (Initial commit)
  * QUICKBILL 305 - Admin Panel
  */
 
@@ -123,6 +127,18 @@ try {
             $errors[] = 'Please enter a valid telephone number.';
         }
         
+<<<<<<< HEAD
+=======
+        // Validate latitude and longitude if provided
+        if (!empty($formData['latitude']) && (!is_numeric($formData['latitude']) || $formData['latitude'] < -90 || $formData['latitude'] > 90)) {
+            $errors[] = 'Latitude must be a valid number between -90 and 90.';
+        }
+        
+        if (!empty($formData['longitude']) && (!is_numeric($formData['longitude']) || $formData['longitude'] < -180 || $formData['longitude'] > 180)) {
+            $errors[] = 'Longitude must be a valid number between -180 and 180.';
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         if ($formData['zone_id'] <= 0) {
             $errors[] = 'Please select a zone.';
         }
@@ -229,6 +245,12 @@ $businessTypesJson = json_encode($businessFees);
     <!-- Bootstrap for backup -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
+<<<<<<< HEAD
+=======
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg1CWNtJ8BHeclYP7VfltZZLIcY3TVHaI&libraries=places"></script>
+    
+>>>>>>> c9ccaba (Initial commit)
     <style>
         * {
             margin: 0;
@@ -671,6 +693,13 @@ $businessTypesJson = json_encode($businessFees);
             grid-template-columns: 1fr 1fr 1fr;
         }
         
+<<<<<<< HEAD
+=======
+        .form-row.quad {
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .form-group {
             display: flex;
             flex-direction: column;
@@ -720,7 +749,18 @@ $businessTypesJson = json_encode($businessFees);
             margin-top: 5px;
         }
         
+<<<<<<< HEAD
         /* Location Picker */
+=======
+        /* Enhanced Location Section */
+        .location-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .location-picker {
             position: relative;
         }
@@ -728,6 +768,14 @@ $businessTypesJson = json_encode($businessFees);
         .location-input-group {
             display: flex;
             gap: 10px;
+<<<<<<< HEAD
+=======
+            align-items: flex-end;
+        }
+        
+        .location-input-group .form-group {
+            flex: 1;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .location-btn {
@@ -743,6 +791,10 @@ $businessTypesJson = json_encode($businessFees);
             gap: 8px;
             transition: all 0.3s;
             white-space: nowrap;
+<<<<<<< HEAD
+=======
+            height: fit-content;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .location-btn:hover {
@@ -750,6 +802,15 @@ $businessTypesJson = json_encode($businessFees);
             box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
         }
         
+<<<<<<< HEAD
+=======
+        .location-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .location-status {
             padding: 8px 12px;
             border-radius: 8px;
@@ -769,6 +830,86 @@ $businessTypesJson = json_encode($businessFees);
             color: #991b1b;
         }
         
+<<<<<<< HEAD
+=======
+        /* GPS Coordinates Styling Enhanced */
+        .gps-coordinates {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #bae6fd;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .gps-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0369a1;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .coordinate-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .coordinate-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .coordinate-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #0369a1;
+            margin-bottom: 5px;
+        }
+        
+        .coordinate-input {
+            padding: 10px 12px;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            transition: all 0.3s;
+        }
+        
+        .coordinate-input:focus {
+            outline: none;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        }
+        
+        .coordinates-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .coordinate-item {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .coordinate-item-label {
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+        
+        .coordinate-value {
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Dynamic Fee Display */
         .fee-display {
             background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
@@ -813,6 +954,15 @@ $businessTypesJson = json_encode($businessFees);
             color: #991b1b;
         }
         
+<<<<<<< HEAD
+=======
+        .alert-info {
+            background: #bee3f8;
+            color: #2a4365;
+            border: 1px solid #90cdf4;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Buttons */
         .btn {
             padding: 12px 24px;
@@ -897,7 +1047,11 @@ $businessTypesJson = json_encode($businessFees);
                 gap: 15px;
             }
             
+<<<<<<< HEAD
             .form-row.triple {
+=======
+            .form-row.triple, .form-row.quad {
+>>>>>>> c9ccaba (Initial commit)
                 grid-template-columns: 1fr;
             }
             
@@ -911,10 +1065,31 @@ $businessTypesJson = json_encode($businessFees);
                 flex-direction: column;
             }
             
+<<<<<<< HEAD
+=======
+            .coordinate-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+>>>>>>> c9ccaba (Initial commit)
             .form-actions {
                 flex-direction: column;
             }
         }
+<<<<<<< HEAD
+=======
+        
+        /* Animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100%); }
+        }
+>>>>>>> c9ccaba (Initial commit)
     </style>
 </head>
 <body>
@@ -1297,6 +1472,7 @@ $businessTypesJson = json_encode($businessFees);
                             Location Information
                         </h3>
                         
+<<<<<<< HEAD
                         <div class="form-row single">
                             <div class="form-group">
                                 <label class="form-label">
@@ -1316,6 +1492,54 @@ $businessTypesJson = json_encode($businessFees);
                                 <div class="location-status" id="locationStatus"></div>
                                 <div class="form-help">Business physical address or use GPS for precise location</div>
                             </div>
+=======
+                        <div class="location-section">
+                            <div class="alert alert-info" style="margin-bottom: 15px;">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>GPS Tips:</strong> For best accuracy, ensure GPS is enabled, allow location access when prompted, and capture location while outdoors or near windows.
+                            </div>
+                            
+                            <div class="form-row single">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-map-pin"></i>
+                                        Business Address/Location
+                                    </label>
+                                    <div class="location-input-group">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <input type="text" name="exact_location" id="exactLocation" class="form-control" 
+                                                   value="<?php echo htmlspecialchars($formData['exact_location']); ?>" 
+                                                   placeholder="Enter detailed business address or use GPS capture button...">
+                                            <div class="form-help">Detailed business address, landmark descriptions, or street location</div>
+                                        </div>
+                                        <button type="button" class="location-btn" onclick="getCurrentLocation()" id="locationBtn">
+                                            <i class="fas fa-crosshairs"></i>
+                                            <span class="icon-location" style="display: none;"></span>
+                                            Capture GPS Location
+                                        </button>
+                                    </div>
+                                    <div class="location-status" id="locationStatus"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="coordinates-display">
+                                <div class="coordinate-item">
+                                    <div class="coordinate-item-label">Latitude</div>
+                                    <div class="coordinate-value" id="latitudeDisplay">
+                                        <?php echo isset($formData['latitude']) && $formData['latitude'] !== '' ? number_format(floatval($formData['latitude']), 6) : 'Not captured'; ?>
+                                    </div>
+                                </div>
+                                <div class="coordinate-item">
+                                    <div class="coordinate-item-label">Longitude</div>
+                                    <div class="coordinate-value" id="longitudeDisplay">
+                                        <?php echo isset($formData['longitude']) && $formData['longitude'] !== '' ? number_format(floatval($formData['longitude']), 6) : 'Not captured'; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <input type="hidden" name="latitude" id="latitude" value="<?php echo htmlspecialchars($formData['latitude']); ?>">
+                            <input type="hidden" name="longitude" id="longitude" value="<?php echo htmlspecialchars($formData['longitude']); ?>">
+>>>>>>> c9ccaba (Initial commit)
                         </div>
                         
                         <div class="form-row">
@@ -1347,10 +1571,13 @@ $businessTypesJson = json_encode($businessFees);
                                 <div class="form-help">Specific sub-zone within the selected zone</div>
                             </div>
                         </div>
+<<<<<<< HEAD
                         
                         <!-- Hidden GPS coordinates -->
                         <input type="hidden" name="latitude" id="latitude" value="<?php echo htmlspecialchars($formData['latitude']); ?>">
                         <input type="hidden" name="longitude" id="longitude" value="<?php echo htmlspecialchars($formData['longitude']); ?>">
+=======
+>>>>>>> c9ccaba (Initial commit)
                     </div>
                 </div>
 
@@ -1503,6 +1730,13 @@ $businessTypesJson = json_encode($businessFees);
                 }
             });
             
+<<<<<<< HEAD
+=======
+            // Add coordinate validation
+            document.getElementById('latitude').addEventListener('input', validateCoordinates);
+            document.getElementById('longitude').addEventListener('input', validateCoordinates);
+            
+>>>>>>> c9ccaba (Initial commit)
             // Initialize calculations
             calculateAmountPayable();
             
@@ -1513,6 +1747,41 @@ $businessTypesJson = json_encode($businessFees);
             if (document.getElementById('zoneSelect').value) {
                 updateSubZones();
             }
+<<<<<<< HEAD
+=======
+            
+            // Display saved coordinates
+            const latitude = document.getElementById('latitude').value;
+            const longitude = document.getElementById('longitude').value;
+            
+            if (latitude && longitude) {
+                document.getElementById('latitudeDisplay').textContent = parseFloat(latitude).toFixed(6);
+                document.getElementById('longitudeDisplay').textContent = parseFloat(longitude).toFixed(6);
+            }
+        }
+
+        // Validate coordinate inputs
+        function validateCoordinates() {
+            const latInput = document.getElementById('latitude');
+            const lngInput = document.getElementById('longitude');
+            
+            const lat = parseFloat(latInput.value);
+            const lng = parseFloat(lngInput.value);
+            
+            // Validate latitude
+            if (latInput.value && (isNaN(lat) || lat < -90 || lat > 90)) {
+                latInput.style.borderColor = '#e53e3e';
+            } else {
+                latInput.style.borderColor = '#bae6fd';
+            }
+            
+            // Validate longitude
+            if (lngInput.value && (isNaN(lng) || lng < -180 || lng > 180)) {
+                lngInput.style.borderColor = '#e53e3e';
+            } else {
+                lngInput.style.borderColor = '#bae6fd';
+            }
+>>>>>>> c9ccaba (Initial commit)
         }
 
         // Update categories based on selected business type
@@ -1619,6 +1888,7 @@ $businessTypesJson = json_encode($businessFees);
             document.getElementById('amountPayable').value = `₵ ${amountPayable.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
         }
 
+<<<<<<< HEAD
         // Get current GPS location
         function getCurrentLocation() {
             const locationBtn = document.querySelector('.location-btn');
@@ -1681,6 +1951,233 @@ $businessTypesJson = json_encode($businessFees);
                 locationBtn.innerHTML = '<i class="fas fa-crosshairs"></i> Get GPS Location';
                 locationBtn.disabled = false;
             }
+=======
+        // Enhanced GPS location function with high precision and fallback
+        function getCurrentLocation() {
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by this browser.');
+                return;
+            }
+            
+            // Show loading state
+            const locationBtn = document.getElementById('locationBtn');
+            const originalText = locationBtn.innerHTML;
+            locationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Capturing Location...';
+            locationBtn.disabled = true;
+            
+            // First attempt with high accuracy
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    handleLocationSuccess(position, locationBtn, originalText);
+                },
+                function(error) {
+                    console.warn('High accuracy failed, trying standard accuracy:', error.message);
+                    
+                    // Second attempt with standard accuracy
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            handleLocationSuccess(position, locationBtn, originalText);
+                        },
+                        function(error) {
+                            handleLocationError(error, locationBtn, originalText);
+                        },
+                        {
+                            enableHighAccuracy: false,
+                            timeout: 15000,
+                            maximumAge: 60000
+                        }
+                    );
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+        
+        // Handle successful location capture
+        function handleLocationSuccess(position, locationBtn, originalText) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            
+            // Update hidden inputs
+            document.getElementById('latitude').value = latitude;
+            document.getElementById('longitude').value = longitude;
+            
+            // Update display
+            document.getElementById('latitudeDisplay').textContent = latitude.toFixed(6);
+            document.getElementById('longitudeDisplay').textContent = longitude.toFixed(6);
+            
+            // Reset button
+            locationBtn.innerHTML = originalText;
+            locationBtn.disabled = false;
+            
+            // Show accuracy info
+            console.log(`Location captured with ${accuracy}m accuracy`);
+            
+            // Get detailed address
+            getAddressFromCoordinates(latitude, longitude);
+        }
+        
+        // Handle location capture error
+        function handleLocationError(error, locationBtn, originalText) {
+            let errorMessage = 'Error getting location: ';
+            let solution = '';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage += "Location access denied.";
+                    solution = "Please enable location access in your browser settings and try again.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage += "Location information is unavailable.";
+                    solution = "Please ensure GPS is enabled and you have a stable internet connection.";
+                    break;
+                case error.TIMEOUT:
+                    errorMessage += "Location request timed out.";
+                    solution = "Please try again. Make sure you're in an area with good GPS signal.";
+                    break;
+                default:
+                    errorMessage += "An unknown error occurred.";
+                    solution = "Please try again or enter the location manually.";
+                    break;
+            }
+            
+            // Reset button
+            locationBtn.innerHTML = originalText;
+            locationBtn.disabled = false;
+            
+            // Show detailed error
+            alert(errorMessage + '\n\n' + solution);
+        }
+        
+        // Get address from coordinates with precise local area detection
+        function getAddressFromCoordinates(latitude, longitude) {
+            const geocoder = new google.maps.Geocoder();
+            const latLng = new google.maps.LatLng(latitude, longitude);
+            
+            // Use more precise geocoding settings
+            geocoder.geocode({ 
+                location: latLng,
+                region: 'GH' // Ghana region for better local results
+            }, function(results, status) {
+                if (status === 'OK' && results.length > 0) {
+                    let specificLocation = '';
+                    
+                    // Look through all results to find the most specific location
+                    for (let i = 0; i < Math.min(results.length, 3); i++) {
+                        const result = results[i];
+                        const components = result.address_components;
+                        
+                        // Extract specific area information
+                        let neighborhood = '';
+                        let sublocality = '';
+                        let locality = '';
+                        let adminArea = '';
+                        
+                        components.forEach(function(component) {
+                            const types = component.types;
+                            
+                            if (types.includes('neighborhood') || types.includes('sublocality_level_2')) {
+                                neighborhood = component.long_name;
+                            } else if (types.includes('sublocality_level_1') || types.includes('sublocality')) {
+                                sublocality = component.long_name;
+                            } else if (types.includes('locality')) {
+                                locality = component.long_name;
+                            } else if (types.includes('administrative_area_level_2')) {
+                                adminArea = component.long_name;
+                            }
+                        });
+                        
+                        // Build the most specific location string
+                        if (neighborhood) {
+                            specificLocation = neighborhood;
+                            if (sublocality && sublocality !== neighborhood) {
+                                specificLocation += ', ' + sublocality;
+                            }
+                            break;
+                        } else if (sublocality) {
+                            specificLocation = sublocality;
+                            break;
+                        } else if (locality) {
+                            specificLocation = locality;
+                            break;
+                        }
+                    }
+                    
+                    // If no specific location found, use the first result's formatted address
+                    if (!specificLocation) {
+                        specificLocation = results[0].formatted_address;
+                    }
+                    
+                    // Create location description
+                    const locationDescription = `Location: ${specificLocation}\nGPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                    
+                    const exactLocationField = document.getElementById('exactLocation');
+                    
+                    if (exactLocationField.value.trim() === '') {
+                        exactLocationField.value = locationDescription;
+                    } else if (confirm(`Update location with captured GPS location?\n\n${specificLocation}`)) {
+                        exactLocationField.value = locationDescription;
+                    }
+                    
+                    // Show success message
+                    showLocationSuccess(specificLocation);
+                } else {
+                    // Fallback: just use coordinates
+                    const locationDescription = `GPS Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                    const exactLocationField = document.getElementById('exactLocation');
+                    
+                    if (exactLocationField.value.trim() === '') {
+                        exactLocationField.value = locationDescription;
+                    }
+                    
+                    console.warn('Geocoding failed:', status);
+                }
+            });
+        }
+        
+        // Show location capture success
+        function showLocationSuccess(locationName) {
+            // Create temporary success message
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: #48bb78;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease-out;
+            `;
+            successDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-map-marker-alt" style="color: #68d391;"></i>
+                    <div>
+                        <div>Location Captured!</div>
+                        <div style="font-size: 12px; opacity: 0.9;">${locationName}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                successDiv.style.animation = 'slideOut 0.3s ease-in forwards';
+                setTimeout(() => {
+                    if (successDiv.parentNode) {
+                        successDiv.parentNode.removeChild(successDiv);
+                    }
+                }, 300);
+            }, 4000);
+>>>>>>> c9ccaba (Initial commit)
         }
 
         // Sidebar toggle
@@ -1720,7 +2217,11 @@ $businessTypesJson = json_encode($businessFees);
             }
         });
 
+<<<<<<< HEAD
         // Form validation before submit
+=======
+        // Enhanced form validation before submit
+>>>>>>> c9ccaba (Initial commit)
         document.getElementById('businessForm').addEventListener('submit', function(e) {
             const requiredFields = this.querySelectorAll('[required]');
             let isValid = true;
@@ -1734,9 +2235,29 @@ $businessTypesJson = json_encode($businessFees);
                 }
             });
             
+<<<<<<< HEAD
             if (!isValid) {
                 e.preventDefault();
                 alert('Please fill in all required fields.');
+=======
+            // Validate coordinates if provided
+            const lat = document.getElementById('latitude').value;
+            const lng = document.getElementById('longitude').value;
+            
+            if (lat && (isNaN(parseFloat(lat)) || parseFloat(lat) < -90 || parseFloat(lat) > 90)) {
+                alert('Please enter a valid latitude between -90 and 90.');
+                isValid = false;
+            }
+            
+            if (lng && (isNaN(parseFloat(lng)) || parseFloat(lng) < -180 || parseFloat(lng) > 180)) {
+                alert('Please enter a valid longitude between -180 and 180.');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fix the validation errors and try again.');
+>>>>>>> c9ccaba (Initial commit)
                 return false;
             }
         });

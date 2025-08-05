@@ -1,4 +1,8 @@
+<<<<<<< HEAD
  <?php
+=======
+<?php
+>>>>>>> c9ccaba (Initial commit)
 /**
  * Properties Management - View Property Profile
  * QUICKBILL 305 - Admin Panel
@@ -31,6 +35,21 @@ if (!hasPermission('properties.view')) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+// Update last activity time
+$_SESSION['LAST_ACTIVITY'] = time();
+
+>>>>>>> c9ccaba (Initial commit)
 $pageTitle = 'Property Profile';
 $currentUser = getCurrentUser();
 $userDisplayName = getUserDisplayName($currentUser);
@@ -48,11 +67,19 @@ try {
     $db = new Database();
     
     // Get property details with related data
+<<<<<<< HEAD
     $propertyQuery = "SELECT p.*, z.zone_name,
+=======
+    $propertyQuery = "SELECT p.*, z.zone_name, sz.sub_zone_name, sz.sub_zone_code,
+>>>>>>> c9ccaba (Initial commit)
                              u.first_name, u.last_name, u.username,
                              pf.fee_per_room as fee_structure_amount
                       FROM properties p 
                       LEFT JOIN zones z ON p.zone_id = z.zone_id 
+<<<<<<< HEAD
+=======
+                      LEFT JOIN sub_zones sz ON p.sub_zone_id = sz.sub_zone_id
+>>>>>>> c9ccaba (Initial commit)
                       LEFT JOIN users u ON p.created_by = u.user_id
                       LEFT JOIN property_fee_structure pf ON p.structure = pf.structure 
                                                           AND p.property_use = pf.property_use 
@@ -67,6 +94,21 @@ try {
         exit();
     }
     
+<<<<<<< HEAD
+=======
+    // Calculate remaining balance (outstanding amount after all payments)
+    $totalPaymentsQuery = "SELECT COALESCE(SUM(p.amount_paid), 0) as total_paid
+                          FROM payments p 
+                          INNER JOIN bills b ON p.bill_id = b.bill_id 
+                          WHERE b.bill_type = 'Property' AND b.reference_id = ? 
+                          AND p.payment_status = 'Successful'";
+    $totalPaymentsResult = $db->fetchRow($totalPaymentsQuery, [$propertyId]);
+    $totalPaid = $totalPaymentsResult['total_paid'] ?? 0;
+    
+    // Calculate remaining balance: amount payable minus total successful payments
+    $remainingBalance = max(0, $property['amount_payable'] - $totalPaid);
+    
+>>>>>>> c9ccaba (Initial commit)
     // Get billing history
     $billsQuery = "SELECT * FROM bills 
                    WHERE bill_type = 'Property' AND reference_id = ? 
@@ -95,6 +137,10 @@ try {
         'total_bills' => count($bills),
         'total_payments' => count($payments),
         'total_paid' => array_sum(array_column($payments, 'amount_paid')),
+<<<<<<< HEAD
+=======
+        'remaining_balance' => $remainingBalance,
+>>>>>>> c9ccaba (Initial commit)
         'last_payment' => !empty($payments) ? $payments[0]['payment_date'] : null
     ];
     
@@ -115,11 +161,19 @@ try {
     <!-- Multiple Icon Sources -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
+=======
+>>>>>>> c9ccaba (Initial commit)
     
     <!-- Bootstrap for backup -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
+<<<<<<< HEAD
+=======
+    <!-- Google Maps styling will be handled via JavaScript -->
+    
+>>>>>>> c9ccaba (Initial commit)
     <style>
         * {
             margin: 0;
@@ -156,8 +210,14 @@ try {
         .icon-location::before { content: "📍"; }
         .icon-house::before { content: "🏘️"; }
         .icon-person::before { content: "👤"; }
+<<<<<<< HEAD
         
         /* Top Navigation - Same as business pages */
+=======
+        .icon-balance::before { content: "⚖️"; }
+        
+        /* Top Navigation */
+>>>>>>> c9ccaba (Initial commit)
         .top-nav {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -618,6 +678,14 @@ try {
             color: white;
         }
         
+<<<<<<< HEAD
+=======
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Content Grid */
         .content-grid {
             display: grid;
@@ -637,7 +705,11 @@ try {
         
         .card-header {
             display: flex;
+<<<<<<< HEAD
             justify-content: between;
+=======
+            justify-content: space-between;
+>>>>>>> c9ccaba (Initial commit)
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
@@ -706,6 +778,19 @@ try {
             color: #059669;
         }
         
+<<<<<<< HEAD
+=======
+        .detail-value.balance {
+            color: #7c2d12;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .detail-value.balance.zero {
+            color: #059669;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Stats Cards */
         .stats-grid {
             display: grid;
@@ -746,6 +831,14 @@ try {
             color: white;
         }
         
+<<<<<<< HEAD
+=======
+        .stat-card.danger {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .stat-icon {
             font-size: 32px;
             margin-bottom: 15px;
@@ -764,6 +857,7 @@ try {
             font-weight: 500;
         }
         
+<<<<<<< HEAD
         /* Map Section */
         .map-container {
             height: 300px;
@@ -778,6 +872,126 @@ try {
             margin-top: 15px;
         }
         
+=======
+        /* Map Styles */
+        .map-container {
+            height: 350px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+            margin-top: 15px;
+            position: relative;
+            background: #f8fafc;
+        }
+        
+        .map-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 16px;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .map-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px dashed #f87171;
+        }
+        
+        .map-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .map-control-btn {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        .map-control-btn:hover {
+            background: #f3f4f6;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        /* No Location State */
+        .no-location {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 200px;
+            color: #64748b;
+            font-size: 16px;
+            text-align: center;
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+        
+        .no-location i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        /* Balance Highlight */
+        .balance-highlight {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .balance-highlight.paid {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-color: #10b981;
+        }
+        
+        .balance-highlight h4 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #92400e;
+        }
+        
+        .balance-highlight.paid h4 {
+            color: #065f46;
+        }
+        
+        .balance-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #92400e;
+            margin: 10px 0;
+        }
+        
+        .balance-highlight.paid .balance-amount {
+            color: #065f46;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Tables */
         .data-table {
             width: 100%;
@@ -862,6 +1076,7 @@ try {
             margin-bottom: 20px;
         }
         
+<<<<<<< HEAD
         /* Map Modal */
         .map-modal {
             position: fixed;
@@ -941,6 +1156,59 @@ try {
         
         .close-btn:hover {
             background: #475569;
+=======
+        /* Custom marker animations */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .custom-property-marker {
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        /* Google Maps popup customization */
+        .gm-style-iw {
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+        }
+        
+        .gm-style-iw-d {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+        
+        .property-popup {
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        .property-popup h4 {
+            margin: 0 0 10px 0;
+            color: #2d3748;
+            font-size: 16px;
+        }
+        
+        .property-popup p {
+            margin: 5px 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .property-popup .coordinates {
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Responsive Design */
@@ -1050,7 +1318,11 @@ try {
         <div class="user-section">
             <!-- Notification Bell -->
             <div style="position: relative; margin-right: 10px;">
+<<<<<<< HEAD
                 <button style="
+=======
+                <a href="../notifications/index.php" style="
+>>>>>>> c9ccaba (Initial commit)
                     background: rgba(255,255,255,0.2);
                     border: none;
                     color: white;
@@ -1059,12 +1331,22 @@ try {
                     border-radius: 50%;
                     cursor: pointer;
                     transition: all 0.3s;
+<<<<<<< HEAD
                 " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
                    onmouseout="this.style.background='rgba(255,255,255,0.2)'"
                    onclick="showComingSoon('Notifications')">
                     <i class="fas fa-bell"></i>
                     <span class="icon-bell" style="display: none;"></span>
                 </button>
+=======
+                    text-decoration: none;
+                    display: inline-block;
+                " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+                   onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                    <i class="fas fa-bell"></i>
+                    <span class="icon-bell" style="display: none;"></span>
+                </a>
+>>>>>>> c9ccaba (Initial commit)
                 <span class="notification-badge" style="
                     position: absolute;
                     top: -2px;
@@ -1103,26 +1385,41 @@ try {
                         <div class="dropdown-role"><?php echo htmlspecialchars(getCurrentUserRole()); ?></div>
                     </div>
                     <div class="dropdown-menu">
+<<<<<<< HEAD
                         <a href="#" class="dropdown-item" onclick="showComingSoon('User Profile')">
+=======
+                        <a href="../users/view.php?id=<?php echo $currentUser['user_id']; ?>" class="dropdown-item">
+>>>>>>> c9ccaba (Initial commit)
                             <i class="fas fa-user"></i>
                             <span class="icon-user" style="display: none;"></span>
                             My Profile
                         </a>
+<<<<<<< HEAD
                         <a href="#" class="dropdown-item" onclick="showComingSoon('Account Settings')">
+=======
+                        <a href="../settings/index.php" class="dropdown-item">
+>>>>>>> c9ccaba (Initial commit)
                             <i class="fas fa-cog"></i>
                             <span class="icon-cog" style="display: none;"></span>
                             Account Settings
                         </a>
+<<<<<<< HEAD
                         <a href="#" class="dropdown-item" onclick="showComingSoon('Activity Log')">
+=======
+                        <a href="../logs/audit_logs.php" class="dropdown-item">
+>>>>>>> c9ccaba (Initial commit)
                             <i class="fas fa-history"></i>
                             <span class="icon-chart" style="display: none;"></span>
                             Activity Log
                         </a>
+<<<<<<< HEAD
                         <a href="#" class="dropdown-item" onclick="showComingSoon('Help & Support')">
                             <i class="fas fa-question-circle"></i>
                             <span class="icon-bell" style="display: none;"></span>
                             Help & Support
                         </a>
+=======
+>>>>>>> c9ccaba (Initial commit)
                         <div style="height: 1px; background: #e2e8f0; margin: 10px 0;"></div>
                         <a href="../../auth/logout.php" class="dropdown-item logout">
                             <i class="fas fa-sign-out-alt"></i>
@@ -1183,7 +1480,11 @@ try {
                         </a>
                     </div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Zones')">
+=======
+                        <a href="../zones/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-map-marked-alt"></i>
                                 <span class="icon-map" style="display: none;"></span>
@@ -1197,7 +1498,11 @@ try {
                 <div class="nav-section">
                     <div class="nav-title">Billing & Payments</div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Billing')">
+=======
+                        <a href="../billing/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-file-invoice"></i>
                                 <span class="icon-invoice" style="display: none;"></span>
@@ -1206,7 +1511,11 @@ try {
                         </a>
                     </div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Payments')">
+=======
+                        <a href="../payments/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-credit-card"></i>
                                 <span class="icon-credit" style="display: none;"></span>
@@ -1215,7 +1524,11 @@ try {
                         </a>
                     </div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Fee Structure')">
+=======
+                        <a href="../fee_structure/property_fees.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-tags"></i>
                                 <span class="icon-tags" style="display: none;"></span>
@@ -1229,7 +1542,11 @@ try {
                 <div class="nav-section">
                     <div class="nav-title">Reports & System</div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Reports')">
+=======
+                        <a href="../reports/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-chart-bar"></i>
                                 <span class="icon-chart" style="display: none;"></span>
@@ -1238,7 +1555,11 @@ try {
                         </a>
                     </div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Notifications')">
+=======
+                        <a href="../notifications/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-bell"></i>
                                 <span class="icon-bell" style="display: none;"></span>
@@ -1247,7 +1568,11 @@ try {
                         </a>
                     </div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Settings')">
+=======
+                        <a href="../settings/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-cog"></i>
                                 <span class="icon-cog" style="display: none;"></span>
@@ -1321,6 +1646,7 @@ try {
                             Edit Property
                         </a>
                         
+<<<<<<< HEAD
                         <button class="btn btn-success" onclick="generateBill(<?php echo $property['property_id']; ?>)">
                             <i class="fas fa-file-invoice"></i>
                             <span class="icon-invoice" style="display: none;"></span>
@@ -1332,6 +1658,19 @@ try {
                             <span class="icon-credit" style="display: none;"></span>
                             Record Payment
                         </button>
+=======
+                        <a href="../billing/generate.php?property_id=<?php echo $property['property_id']; ?>" class="btn btn-success">
+                            <i class="fas fa-file-invoice"></i>
+                            <span class="icon-invoice" style="display: none;"></span>
+                            Generate Bill
+                        </a>
+                        
+                        <a href="../payments/record.php?property_number=<?php echo urlencode($property['property_number']); ?>" class="btn btn-warning">
+                            <i class="fas fa-credit-card"></i>
+                            <span class="icon-credit" style="display: none;"></span>
+                            Record Payment
+                        </a>
+>>>>>>> c9ccaba (Initial commit)
                         
                         <?php if ($property['latitude'] && $property['longitude']): ?>
                             <button class="btn btn-info" onclick="showOnMap(<?php echo $property['latitude']; ?>, <?php echo $property['longitude']; ?>, '<?php echo htmlspecialchars($property['owner_name']); ?> Property')">
@@ -1375,6 +1714,18 @@ try {
                     <div class="stat-label">Amount Paid</div>
                 </div>
 
+<<<<<<< HEAD
+=======
+                <div class="stat-card <?php echo $remainingBalance > 0 ? 'danger' : 'success'; ?>">
+                    <div class="stat-icon">
+                        <i class="fas fa-balance-scale"></i>
+                        <span class="icon-balance" style="display: none;"></span>
+                    </div>
+                    <div class="stat-value">₵ <?php echo number_format($remainingBalance, 2); ?></div>
+                    <div class="stat-label">Remaining Balance</div>
+                </div>
+
+>>>>>>> c9ccaba (Initial commit)
                 <div class="stat-card warning">
                     <div class="stat-icon">
                         <i class="fas fa-calendar-alt"></i>
@@ -1448,6 +1799,14 @@ try {
                             </div>
                             
                             <div class="detail-item">
+<<<<<<< HEAD
+=======
+                                <div class="detail-label">Sub-Zone</div>
+                                <div class="detail-value"><?php echo htmlspecialchars($property['sub_zone_name'] ?: 'Not assigned'); ?></div>
+                            </div>
+                            
+                            <div class="detail-item">
+>>>>>>> c9ccaba (Initial commit)
                                 <div class="detail-label">Batch</div>
                                 <div class="detail-value"><?php echo htmlspecialchars($property['batch'] ?: 'Not assigned'); ?></div>
                             </div>
@@ -1489,10 +1848,37 @@ try {
                             <?php endif; ?>
                         </div>
                         
+<<<<<<< HEAD
                         <?php if ($property['latitude'] && $property['longitude']): ?>
                             <div class="map-container">
                                 <i class="fas fa-map-marked-alt" style="font-size: 32px; margin-right: 10px;"></i>
                                 <span>Map integration coming soon</span>
+=======
+                        <!-- Map Container -->
+                        <?php if ($property['latitude'] && $property['longitude']): ?>
+                            <div class="map-container" id="propertyMap">
+                                <div class="map-loading" id="mapLoading">
+                                    <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                                    <span>Loading interactive map...</span>
+                                </div>
+                                <div class="map-controls" style="display: none;" id="mapControls">
+                                    <button class="map-control-btn" onclick="centerMap()" title="Center on Property">
+                                        <i class="fas fa-crosshairs"></i>
+                                    </button>
+                                    <button class="map-control-btn" onclick="toggleMapType()" title="Toggle Map Type">
+                                        <i class="fas fa-layer-group"></i>
+                                    </button>
+                                    <button class="map-control-btn" onclick="fullscreenMap()" title="Fullscreen">
+                                        <i class="fas fa-expand"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        <?php else: ?>
+                            <div class="no-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <h3>No Location Data</h3>
+                                <p>GPS coordinates not available for this property</p>
+>>>>>>> c9ccaba (Initial commit)
                             </div>
                         <?php endif; ?>
                     </div>
@@ -1513,9 +1899,15 @@ try {
                                 <i class="fas fa-file-invoice"></i>
                                 <h3>No Bills Generated</h3>
                                 <p>No bills have been generated for this property yet.</p>
+<<<<<<< HEAD
                                 <button class="btn btn-primary" onclick="generateBill(<?php echo $property['property_id']; ?>)" style="margin-top: 15px;">
                                     <i class="fas fa-plus"></i> Generate First Bill
                                 </button>
+=======
+                                <a href="../billing/generate.php?property_id=<?php echo $property['property_id']; ?>" class="btn btn-primary" style="margin-top: 15px;">
+                                    <i class="fas fa-plus"></i> Generate First Bill
+                                </a>
+>>>>>>> c9ccaba (Initial commit)
                             </div>
                         <?php else: ?>
                             <table class="data-table">
@@ -1546,9 +1938,15 @@ try {
                                             </td>
                                             <td><?php echo date('M d, Y', strtotime($bill['generated_at'])); ?></td>
                                             <td>
+<<<<<<< HEAD
                                                 <button class="btn btn-sm btn-primary" onclick="viewBill(<?php echo $bill['bill_id']; ?>)">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
+=======
+                                                <a href="../billing/bill_preview.php?id=<?php echo $bill['bill_id']; ?>" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+>>>>>>> c9ccaba (Initial commit)
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -1604,6 +2002,30 @@ try {
                             </div>
                         </div>
                         
+<<<<<<< HEAD
+=======
+                        <!-- Remaining Balance Highlight -->
+                        <div class="balance-highlight <?php echo $remainingBalance <= 0 ? 'paid' : ''; ?>">
+                            <h4>
+                                <i class="fas fa-balance-scale"></i>
+                                <span class="icon-balance" style="display: none;"></span>
+                                <?php echo $remainingBalance <= 0 ? 'Property Fully Paid' : 'Outstanding Balance'; ?>
+                            </h4>
+                            <div class="balance-amount">
+                                ₵ <?php echo number_format($remainingBalance, 2); ?>
+                            </div>
+                            <?php if ($remainingBalance > 0): ?>
+                                <p style="margin: 10px 0 0 0; font-size: 14px; color: #92400e;">
+                                    This amount needs to be paid
+                                </p>
+                            <?php else: ?>
+                                <p style="margin: 10px 0 0 0; font-size: 14px; color: #065f46;">
+                                    ✅ All bills have been settled
+                                </p>
+                            <?php endif; ?>
+                        </div>
+                        
+>>>>>>> c9ccaba (Initial commit)
                         <?php if ($property['fee_structure_amount']): ?>
                             <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 15px;">
                                 <div class="detail-label">Fee Structure</div>
@@ -1635,9 +2057,15 @@ try {
                                 <i class="fas fa-credit-card"></i>
                                 <h3>No Payments Recorded</h3>
                                 <p>No payments have been recorded for this property.</p>
+<<<<<<< HEAD
                                 <button class="btn btn-warning" onclick="recordPayment(<?php echo $property['property_id']; ?>)" style="margin-top: 15px;">
                                     <i class="fas fa-plus"></i> Record Payment
                                 </button>
+=======
+                                <a href="../payments/record.php?property_number=<?php echo urlencode($property['property_number']); ?>" class="btn btn-warning" style="margin-top: 15px;">
+                                    <i class="fas fa-plus"></i> Record Payment
+                                </a>
+>>>>>>> c9ccaba (Initial commit)
                             </div>
                         <?php else: ?>
                             <table class="data-table">
@@ -1670,9 +2098,15 @@ try {
                             
                             <?php if (count($payments) > 5): ?>
                                 <div style="text-align: center; margin-top: 15px;">
+<<<<<<< HEAD
                                     <button class="btn btn-secondary" onclick="showComingSoon('Full Payment History')">
                                         View All Payments (<?php echo count($payments); ?>)
                                     </button>
+=======
+                                    <a href="../payments/index.php?property_number=<?php echo urlencode($property['property_number']); ?>" class="btn btn-secondary">
+                                        View All Payments (<?php echo count($payments); ?>)
+                                    </a>
+>>>>>>> c9ccaba (Initial commit)
                                 </div>
                             <?php endif; ?>
                         <?php endif; ?>
@@ -1716,7 +2150,35 @@ try {
         </div>
     </div>
 
+<<<<<<< HEAD
     <script>
+=======
+    <!-- Load Google Maps JavaScript API -->
+    <!-- IMPORTANT: Replace YOUR_API_KEY with your actual Google Maps API key -->
+    <!-- Get your API key from: https://developers.google.com/maps/documentation/javascript/get-api-key -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg1CWNtJ8BHeclYP7VfltZZLIcY3TVHaI&callback=initMap&libraries=geometry"></script>
+
+    <script>
+        // Global map variables
+        let propertyMap = null;
+        let propertyMarker = null;
+        let currentMapType = 'roadmap';
+        
+        // Property coordinates from PHP
+        const propertyLat = <?php echo $property['latitude'] ? $property['latitude'] : 'null'; ?>;
+        const propertyLng = <?php echo $property['longitude'] ? $property['longitude'] : 'null'; ?>;
+        const propertyName = <?php echo json_encode($property['owner_name']); ?>;
+        const propertyNumber = <?php echo json_encode($property['property_number']); ?>;
+        const remainingBalance = <?php echo $remainingBalance; ?>;
+        
+        // Google Maps callback function
+        window.initMap = function() {
+            if (propertyLat && propertyLng) {
+                initializePropertyMap();
+            }
+        };
+        
+>>>>>>> c9ccaba (Initial commit)
         // Check if Font Awesome loaded, if not show emoji icons
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
@@ -1730,7 +2192,305 @@ try {
                     });
                 }
             }, 100);
+<<<<<<< HEAD
         });
+=======
+            
+            // Initialize map if coordinates are available and Google Maps is loaded
+            if (propertyLat && propertyLng && window.google && window.google.maps) {
+                initializePropertyMap();
+            }
+            
+            // Display balance notification
+            displayBalanceNotification();
+        });
+        
+        function initializePropertyMap() {
+            try {
+                console.log('Initializing Google Map for coordinates:', propertyLat, propertyLng);
+                
+                // Hide loading indicator after a brief delay
+                setTimeout(() => {
+                    const loadingElement = document.getElementById('mapLoading');
+                    if (loadingElement) {
+                        loadingElement.style.display = 'none';
+                    }
+                    
+                    const controlsElement = document.getElementById('mapControls');
+                    if (controlsElement) {
+                        controlsElement.style.display = 'flex';
+                    }
+                }, 1500);
+                
+                // Initialize the Google Map
+                const mapOptions = {
+                    center: { lat: propertyLat, lng: propertyLng },
+                    zoom: 16,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    zoomControl: true,
+                    zoomControlOptions: {
+                        position: google.maps.ControlPosition.BOTTOM_RIGHT
+                    },
+                    streetViewControl: true,
+                    streetViewControlOptions: {
+                        position: google.maps.ControlPosition.BOTTOM_RIGHT
+                    },
+                    fullscreenControl: false, // We'll add our own
+                    mapTypeControl: false // We'll add our own
+                };
+                
+                propertyMap = new google.maps.Map(document.getElementById('propertyMap'), mapOptions);
+                
+                // Create custom property marker
+                propertyMarker = new google.maps.Marker({
+                    position: { lat: propertyLat, lng: propertyLng },
+                    map: propertyMap,
+                    title: `${propertyName} Property`,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 20,
+                        fillColor: '#38a169',
+                        fillOpacity: 1,
+                        strokeColor: '#ffffff',
+                        strokeWeight: 3
+                    },
+                    animation: google.maps.Animation.BOUNCE
+                });
+                
+                // Stop bouncing after 3 seconds
+                setTimeout(() => {
+                    propertyMarker.setAnimation(null);
+                }, 3000);
+                
+                // Create info window content
+                const infoWindowContent = `
+                    <div class="property-popup" style="min-width: 200px; text-align: center;">
+                        <h4 style="margin: 0 0 10px 0; color: #2d3748; font-size: 16px;">🏠 ${propertyName} Property</h4>
+                        <p style="margin: 5px 0; color: #64748b; font-size: 14px;"><strong>Property Number:</strong> ${propertyNumber}</p>
+                        <p style="margin: 5px 0; color: #64748b; font-size: 14px;"><strong>Structure:</strong> <?php echo htmlspecialchars($property['structure']); ?></p>
+                        <p style="margin: 5px 0; color: #64748b; font-size: 14px;"><strong>Rooms:</strong> <?php echo htmlspecialchars($property['number_of_rooms']); ?></p>
+                        <p style="margin: 5px 0; font-size: 14px; ${remainingBalance > 0 ? 'color: #dc2626; font-weight: bold;' : 'color: #059669; font-weight: bold;'}">
+                            <strong>Balance:</strong> ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                        </p>
+                        <div style="background: #f8fafc; padding: 8px; border-radius: 6px; margin-top: 10px; font-family: monospace; font-size: 12px;">
+                            <strong>Coordinates:</strong><br>
+                            Lat: ${propertyLat}<br>
+                            Lng: ${propertyLng}
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <a href="https://www.google.com/maps?q=${propertyLat},${propertyLng}" 
+                               target="_blank" 
+                               style="
+                                   background: #38a169; 
+                                   color: white; 
+                                   padding: 6px 12px; 
+                                   border-radius: 6px; 
+                                   text-decoration: none; 
+                                   font-size: 12px;
+                                   display: inline-block;
+                                   margin-top: 8px;
+                               ">
+                                🔗 Open in Google Maps
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                const infoWindow = new google.maps.InfoWindow({
+                    content: infoWindowContent
+                });
+                
+                // Open info window by default
+                infoWindow.open(propertyMap, propertyMarker);
+                
+                // Add click listener to marker
+                propertyMarker.addListener('click', () => {
+                    infoWindow.open(propertyMap, propertyMarker);
+                });
+                
+                // Add circle around property
+                new google.maps.Circle({
+                    strokeColor: '#38a169',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#38a169',
+                    fillOpacity: 0.1,
+                    map: propertyMap,
+                    center: { lat: propertyLat, lng: propertyLng },
+                    radius: 50
+                });
+                
+                // Add map click listener
+                propertyMap.addListener('click', (e) => {
+                    const clickedLat = e.latLng.lat();
+                    const clickedLng = e.latLng.lng();
+                    
+                    // Calculate distance using Google Maps geometry library
+                    const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                        new google.maps.LatLng(propertyLat, propertyLng),
+                        new google.maps.LatLng(clickedLat, clickedLng)
+                    );
+                    
+                    const clickInfoWindow = new google.maps.InfoWindow({
+                        content: `
+                            <div style="text-align: center;">
+                                <p><strong>📍 Clicked Location</strong></p>
+                                <p>Lat: ${clickedLat.toFixed(6)}<br>
+                                   Lng: ${clickedLng.toFixed(6)}</p>
+                                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                                    Distance from property: ${Math.round(distance)}m
+                                </p>
+                            </div>
+                        `,
+                        position: e.latLng
+                    });
+                    
+                    clickInfoWindow.open(propertyMap);
+                });
+                
+                console.log('✅ Google Map initialized successfully');
+                
+            } catch (error) {
+                console.error('❌ Error initializing map:', error);
+                showMapError('Failed to load map. Please check your internet connection.');
+            }
+        }
+        
+        function displayBalanceNotification() {
+            // Show balance status notification on page load
+            if (remainingBalance > 0) {
+                setTimeout(() => {
+                    showNotification(`⚠️ Outstanding balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 'warning');
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    showNotification('✅ Property fully paid - No outstanding balance', 'success');
+                }, 2000);
+            }
+        }
+        
+        function centerMap() {
+            if (propertyMap && propertyLat && propertyLng) {
+                propertyMap.setCenter({ lat: propertyLat, lng: propertyLng });
+                propertyMap.setZoom(16);
+                if (propertyMarker) {
+                    // Bounce the marker briefly
+                    propertyMarker.setAnimation(google.maps.Animation.BOUNCE);
+                    setTimeout(() => {
+                        propertyMarker.setAnimation(null);
+                    }, 2000);
+                }
+            }
+        }
+        
+        function toggleMapType() {
+            if (!propertyMap) return;
+            
+            if (currentMapType === 'roadmap') {
+                propertyMap.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+                currentMapType = 'satellite';
+            } else {
+                propertyMap.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+                currentMapType = 'roadmap';
+            }
+        }
+        
+        function fullscreenMap() {
+            if (!propertyLat || !propertyLng) return;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.9); z-index: 10000;
+                display: flex; align-items: center; justify-content: center;
+                animation: fadeIn 0.3s ease; cursor: pointer;
+            `;
+            
+            const mapContainer = document.createElement('div');
+            mapContainer.style.cssText = `
+                width: 95%; height: 90%; background: white;
+                border-radius: 15px; overflow: hidden; position: relative;
+                box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+            `;
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '❌ Close';
+            closeBtn.style.cssText = `
+                position: absolute; top: 20px; right: 20px; z-index: 1001;
+                background: rgba(0,0,0,0.7); color: white; border: none;
+                padding: 12px 20px; border-radius: 8px; cursor: pointer;
+                font-weight: 600; backdrop-filter: blur(10px);
+            `;
+            
+            const fullMapDiv = document.createElement('div');
+            fullMapDiv.style.cssText = 'width: 100%; height: 100%;';
+            fullMapDiv.id = 'fullscreenMap';
+            
+            mapContainer.appendChild(closeBtn);
+            mapContainer.appendChild(fullMapDiv);
+            modal.appendChild(mapContainer);
+            document.body.appendChild(modal);
+            
+            // Initialize fullscreen map
+            setTimeout(() => {
+                const fullscreenMap = new google.maps.Map(fullMapDiv, {
+                    center: { lat: propertyLat, lng: propertyLng },
+                    zoom: 18,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
+                
+                const fullscreenMarker = new google.maps.Marker({
+                    position: { lat: propertyLat, lng: propertyLng },
+                    map: fullscreenMap,
+                    title: `${propertyName} Property`,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 25,
+                        fillColor: '#38a169',
+                        fillOpacity: 1,
+                        strokeColor: '#ffffff',
+                        strokeWeight: 4
+                    }
+                });
+                
+                const fullscreenInfoWindow = new google.maps.InfoWindow({
+                    content: `<h4>${propertyName} Property</h4><p>Remaining Balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}</p>`
+                });
+                
+                fullscreenInfoWindow.open(fullscreenMap, fullscreenMarker);
+            }, 100);
+            
+            closeBtn.onclick = () => modal.remove();
+            modal.onclick = (e) => {
+                if (e.target === modal) modal.remove();
+            };
+        }
+        
+        function showMapError(message) {
+            const mapContainer = document.getElementById('propertyMap');
+            if (mapContainer) {
+                mapContainer.innerHTML = `
+                    <div class="map-loading map-error">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 32px; margin-bottom: 10px;"></i>
+                        <span>⚠️</span>
+                        <br>
+                        ${message}
+                        <br><br>
+                        <button onclick="initializePropertyMap()" style="
+                            background: #38a169; 
+                            color: white; 
+                            border: none; 
+                            padding: 8px 16px; 
+                            border-radius: 6px; 
+                            cursor: pointer;
+                        ">
+                            🔄 Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        }
+>>>>>>> c9ccaba (Initial commit)
 
         // Sidebar toggle
         function toggleSidebar() {
@@ -1769,16 +2529,24 @@ try {
             }
         });
 
+<<<<<<< HEAD
         // Coming soon modal
         function showComingSoon(feature) {
             const backdrop = document.createElement('div');
             backdrop.style.cssText = `
+=======
+        function showOnMap(lat, lng, name) {
+            // Create enhanced map modal
+            const mapModal = document.createElement('div');
+            mapModal.style.cssText = `
+>>>>>>> c9ccaba (Initial commit)
                 position: fixed; top: 0; left: 0; width: 100%; height: 100%;
                 background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 10000;
                 display: flex; align-items: center; justify-content: center;
                 animation: fadeIn 0.3s ease; cursor: pointer;
             `;
             
+<<<<<<< HEAD
             const modal = document.createElement('div');
             modal.style.cssText = `
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1877,6 +2645,21 @@ try {
                     Property Location
                 </h3>
                 <div class="location-info">
+=======
+            const mapContent = document.createElement('div');
+            mapContent.style.cssText = `
+                background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 90%;
+                box-shadow: 0 25px 80px rgba(0,0,0,0.4); text-align: center;
+                animation: modalSlideIn 0.4s ease; cursor: default;
+            `;
+            
+            mapContent.innerHTML = `
+                <h3 style="margin: 0 0 20px 0; color: #2d3748; display: flex; align-items: center; gap: 10px; justify-content: center;">
+                    <i class="fas fa-map-marker-alt" style="color: #38a169;"></i>
+                    📍 Property Location
+                </h3>
+                <div style="background: #f8fafc; padding: 20px; border-radius: 10px; margin: 20px 0;">
+>>>>>>> c9ccaba (Initial commit)
                     <h4 style="margin: 0 0 15px 0; color: #38a169; font-size: 18px;">${name}</h4>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left;">
                         <div>
@@ -1888,6 +2671,7 @@ try {
                             <div style="color: #64748b; font-family: monospace; background: #f1f5f9; padding: 5px 8px; border-radius: 4px; margin-top: 3px;">${lng}</div>
                         </div>
                     </div>
+<<<<<<< HEAD
                 </div>
                 <div class="modal-actions">
                     <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="map-btn">
@@ -1898,10 +2682,32 @@ try {
                     </a>
                     <button onclick="this.closest('.map-modal').remove()" class="close-btn">
                         <i class="fas fa-times"></i> Close
+=======
+                    <div style="margin-top: 15px; padding: 10px; border-radius: 8px; ${remainingBalance > 0 ? 'background: #fef3c7; color: #92400e;' : 'background: #d1fae5; color: #065f46;'}">
+                        <strong>Remaining Balance:</strong> ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="
+                        background: #38a169; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                        text-decoration: none; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                        align-items: center; gap: 8px; font-size: 14px;">
+                        <i class="fas fa-route"></i> 🗺️ Get Directions
+                    </a>
+                    <button onclick="this.closest('.map-modal').remove()" style="
+                        background: #64748b; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                        cursor: pointer; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                        align-items: center; gap: 8px; font-size: 14px;">
+                        <i class="fas fa-times"></i> ❌ Close
+>>>>>>> c9ccaba (Initial commit)
                     </button>
                 </div>
             `;
             
+<<<<<<< HEAD
+=======
+            mapModal.className = 'map-modal';
+>>>>>>> c9ccaba (Initial commit)
             mapModal.appendChild(mapContent);
             document.body.appendChild(mapModal);
             
@@ -1919,7 +2725,559 @@ try {
             if (window.innerWidth <= 768) {
                 sidebar.classList.remove('hidden');
             }
+<<<<<<< HEAD
         });
     </script>
 </body>
 </html>
+=======
+            
+            // Resize map if it exists (Google Maps)
+            if (propertyMap) {
+                setTimeout(() => {
+                    google.maps.event.trigger(propertyMap, 'resize');
+                    if (propertyLat && propertyLng) {
+                        propertyMap.setCenter({ lat: propertyLat, lng: propertyLng });
+                    }
+                }, 300);
+            }
+        });
+
+        // Print functionality
+        function printPropertyDetails() {
+            const printWindow = window.open('', '_blank');
+            const propertyData = {
+                name: <?php echo json_encode($property['owner_name']); ?>,
+                number: <?php echo json_encode($property['property_number']); ?>,
+                structure: <?php echo json_encode($property['structure']); ?>,
+                rooms: <?php echo json_encode($property['number_of_rooms']); ?>,
+                location: <?php echo json_encode($property['location']); ?>,
+                amountPayable: <?php echo json_encode($property['amount_payable']); ?>,
+                remainingBalance: remainingBalance
+            };
+            
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Property Details - ${propertyData.name}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; border-bottom: 2px solid #38a169; padding-bottom: 20px; margin-bottom: 30px; }
+                        .detail-row { display: flex; margin-bottom: 10px; }
+                        .label { font-weight: bold; width: 150px; }
+                        .value { flex: 1; }
+                        .amount { font-size: 24px; color: #dc2626; font-weight: bold; }
+                        .balance { font-size: 28px; color: ${propertyData.remainingBalance > 0 ? '#dc2626' : '#059669'}; font-weight: bold; }
+                        .balance-section { border: 2px solid ${propertyData.remainingBalance > 0 ? '#fbbf24' : '#10b981'}; 
+                                         background: ${propertyData.remainingBalance > 0 ? '#fef3c7' : '#d1fae5'}; 
+                                         padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; }
+                        @media print { body { margin: 0; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>🏠 Property Details</h1>
+                        <h2>${propertyData.name} Property</h2>
+                        <p>Property Number: ${propertyData.number}</p>
+                    </div>
+                    <div class="details">
+                        <div class="detail-row">
+                            <div class="label">Owner Name:</div>
+                            <div class="value">${propertyData.name}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="label">Property Number:</div>
+                            <div class="value">${propertyData.number}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="label">Structure:</div>
+                            <div class="value">${propertyData.structure}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="label">Number of Rooms:</div>
+                            <div class="value">${propertyData.rooms}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="label">Location:</div>
+                            <div class="value">${propertyData.location || 'Not provided'}</div>
+                        </div>
+                        <div class="detail-row" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0;">
+                            <div class="label">Amount Payable:</div>
+                            <div class="value amount">₵ ${parseFloat(propertyData.amountPayable).toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                        </div>
+                    </div>
+                    <div class="balance-section">
+                        <h3>${propertyData.remainingBalance > 0 ? '⚠️ Outstanding Balance' : '✅ Property Status'}</h3>
+                        <div class="balance">₵ ${propertyData.remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                        <p>${propertyData.remainingBalance > 0 ? 'This amount needs to be paid to clear the property' : 'All bills have been fully settled'}</p>
+                    </div>
+                    <div style="margin-top: 50px; text-align: center; color: #64748b; font-size: 14px;">
+                        Generated on ${new Date().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 500);
+        }
+
+        // Export functionality
+        function exportPropertyData() {
+            const propertyData = {
+                property_number: <?php echo json_encode($property['property_number']); ?>,
+                owner_name: <?php echo json_encode($property['owner_name']); ?>,
+                telephone: <?php echo json_encode($property['telephone']); ?>,
+                gender: <?php echo json_encode($property['gender']); ?>,
+                structure: <?php echo json_encode($property['structure']); ?>,
+                property_use: <?php echo json_encode($property['property_use']); ?>,
+                number_of_rooms: <?php echo json_encode($property['number_of_rooms']); ?>,
+                ownership_type: <?php echo json_encode($property['ownership_type']); ?>,
+                property_type: <?php echo json_encode($property['property_type']); ?>,
+                location: <?php echo json_encode($property['location']); ?>,
+                latitude: <?php echo json_encode($property['latitude']); ?>,
+                longitude: <?php echo json_encode($property['longitude']); ?>,
+                old_bill: <?php echo json_encode($property['old_bill']); ?>,
+                previous_payments: <?php echo json_encode($property['previous_payments']); ?>,
+                arrears: <?php echo json_encode($property['arrears']); ?>,
+                current_bill: <?php echo json_encode($property['current_bill']); ?>,
+                amount_payable: <?php echo json_encode($property['amount_payable']); ?>,
+                remaining_balance: remainingBalance,
+                zone_name: <?php echo json_encode($property['zone_name']); ?>,
+                sub_zone_name: <?php echo json_encode($property['sub_zone_name']); ?>,
+                created_at: <?php echo json_encode($property['created_at']); ?>,
+                updated_at: <?php echo json_encode($property['updated_at']); ?>
+            };
+            
+            // Convert to CSV
+            const csvContent = Object.keys(propertyData).map(key => 
+                `"${key}","${propertyData[key] || ''}"`
+            ).join('\n');
+            
+            const csvHeader = '"Field","Value"\n';
+            const fullCsv = csvHeader + csvContent;
+            
+            // Create and download file
+            const blob = new Blob([fullCsv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `property_${propertyData.property_number}_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Search functionality
+        function searchInPage() {
+            const searchTerm = prompt('🔍 Search in property details:');
+            if (searchTerm && searchTerm.trim()) {
+                const content = document.body.innerText.toLowerCase();
+                if (content.includes(searchTerm.toLowerCase())) {
+                    // Highlight search term (basic implementation)
+                    if (window.find) {
+                        window.find(searchTerm, false, false, true);
+                    } else if (document.body.createTextRange) {
+                        const textRange = document.body.createTextRange();
+                        textRange.findText(searchTerm);
+                        textRange.select();
+                    }
+                    
+                    showNotification('✅ Search term found!', 'success');
+                } else {
+                    showNotification('❌ Search term not found.', 'error');
+                }
+            }
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 100px; right: 20px; z-index: 10001;
+                background: ${type === 'success' ? '#d1fae5' : type === 'error' ? '#fee2e2' : type === 'warning' ? '#fef3c7' : '#dbeafe'};
+                color: ${type === 'success' ? '#065f46' : type === 'error' ? '#991b1b' : type === 'warning' ? '#92400e' : '#1e40af'};
+                border: 1px solid ${type === 'success' ? '#9ae6b4' : type === 'error' ? '#f87171' : type === 'warning' ? '#fbbf24' : '#93c5fd'};
+                border-radius: 10px; padding: 15px 20px; max-width: 300px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-weight: 500;
+                animation: slideInRight 0.3s ease, slideOutRight 0.3s ease 2.7s forwards;
+            `;
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Add animations if not already present
+            if (!document.getElementById('notificationAnimations')) {
+                const style = document.createElement('style');
+                style.id = 'notificationAnimations';
+                style.textContent = `
+                    @keyframes slideInRight { 
+                        from { transform: translateX(100%); opacity: 0; } 
+                        to { transform: translateX(0); opacity: 1; } 
+                    }
+                    @keyframes slideOutRight { 
+                        from { transform: translateX(0); opacity: 1; } 
+                        to { transform: translateX(100%); opacity: 0; } 
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + P for print
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                printPropertyDetails();
+            }
+            
+            // Ctrl/Cmd + E for export
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                exportPropertyData();
+            }
+            
+            // Ctrl/Cmd + F for search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                searchInPage();
+            }
+            
+            // Ctrl/Cmd + B for balance info
+            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+                e.preventDefault();
+                showBalanceDetails();
+            }
+            
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                const modals = document.querySelectorAll('.map-modal, .user-dropdown.show');
+                modals.forEach(modal => {
+                    if (modal.classList && modal.classList.contains('map-modal')) {
+                        modal.remove();
+                    } else if (modal.classList && modal.classList.contains('show')) {
+                        modal.classList.remove('show');
+                    }
+                });
+            }
+        });
+
+        // Show detailed balance information
+        function showBalanceDetails() {
+            const balanceModal = document.createElement('div');
+            balanceModal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 10000;
+                display: flex; align-items: center; justify-content: center;
+                animation: fadeIn 0.3s ease; cursor: pointer;
+            `;
+            
+            const balanceContent = document.createElement('div');
+            balanceContent.style.cssText = `
+                background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 90%;
+                box-shadow: 0 25px 80px rgba(0,0,0,0.4); text-align: center;
+                animation: modalSlideIn 0.4s ease; cursor: default;
+            `;
+            
+            const amountPayable = <?php echo $property['amount_payable']; ?>;
+            const totalPaid = <?php echo $stats['total_paid']; ?>;
+            const paymentProgress = amountPayable > 0 ? (totalPaid / amountPayable) * 100 : 100;
+            
+            balanceContent.innerHTML = `
+                <h3 style="margin: 0 0 20px 0; color: #2d3748; display: flex; align-items: center; gap: 10px; justify-content: center;">
+                    <i class="fas fa-balance-scale" style="color: #38a169;"></i>
+                    ⚖️ Balance Analysis
+                </h3>
+                <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div style="text-align: left;">
+                            <strong style="color: #2d3748;">Total Amount Payable:</strong>
+                            <div style="font-size: 24px; font-weight: bold; color: #38a169; margin-top: 5px;">
+                                ₵ ${amountPayable.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                            </div>
+                        </div>
+                        <div style="text-align: left;">
+                            <strong style="color: #2d3748;">Total Paid:</strong>
+                            <div style="font-size: 24px; font-weight: bold; color: #059669; margin-top: 5px;">
+                                ₵ ${totalPaid.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <strong style="color: #2d3748;">Payment Progress:</strong>
+                        <div style="background: #e2e8f0; height: 12px; border-radius: 6px; margin: 10px 0; overflow: hidden;">
+                            <div style="background: linear-gradient(90deg, #10b981, #059669); height: 100%; width: ${Math.min(paymentProgress, 100)}%; transition: width 1s ease;"></div>
+                        </div>
+                        <div style="font-size: 14px; color: #64748b;">${paymentProgress.toFixed(1)}% Completed</div>
+                    </div>
+                    <div style="border: 3px solid ${remainingBalance > 0 ? '#f59e0b' : '#10b981'}; 
+                                background: ${remainingBalance > 0 ? '#fef3c7' : '#d1fae5'}; 
+                                padding: 20px; border-radius: 12px; margin-top: 20px;">
+                        <h4 style="margin: 0 0 10px 0; color: ${remainingBalance > 0 ? '#92400e' : '#065f46'};">
+                            ${remainingBalance > 0 ? '⚠️ Outstanding Balance' : '✅ Property Status'}
+                        </h4>
+                        <div style="font-size: 36px; font-weight: bold; color: ${remainingBalance > 0 ? '#92400e' : '#065f46'}; margin: 15px 0;">
+                            ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: ${remainingBalance > 0 ? '#92400e' : '#065f46'};">
+                            ${remainingBalance > 0 ? 'This amount needs to be paid to clear the property' : 'All bills have been fully settled'}
+                        </p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
+                    ${remainingBalance > 0 ? `
+                        <a href="../payments/record.php?property_number=${encodeURIComponent(<?php echo json_encode($property['property_number']); ?>)}" style="
+                            background: #10b981; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                            text-decoration: none; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                            align-items: center; gap: 8px; font-size: 14px;">
+                            <i class="fas fa-credit-card"></i> 💳 Record Payment
+                        </a>
+                        <a href="../billing/generate.php?property_id=<?php echo $property['property_id']; ?>" style="
+                            background: #38a169; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                            text-decoration: none; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                            align-items: center; gap: 8px; font-size: 14px;">
+                            <i class="fas fa-file-invoice"></i> 📄 Generate New Bill
+                        </a>
+                    ` : `
+                        <a href="../billing/generate.php?property_id=<?php echo $property['property_id']; ?>" style="
+                            background: #38a169; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                            text-decoration: none; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                            align-items: center; gap: 8px; font-size: 14px;">
+                            <i class="fas fa-file-invoice"></i> 📄 Generate New Bill
+                        </a>
+                    `}
+                    <button onclick="printPropertyDetails()" style="
+                        background: #64748b; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                        cursor: pointer; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                        align-items: center; gap: 8px; font-size: 14px;">
+                        <i class="fas fa-print"></i> 🖨️ Print Details
+                    </button>
+                    <button onclick="this.closest('.balance-modal').remove()" style="
+                        background: #94a3b8; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                        cursor: pointer; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                        align-items: center; gap: 8px; font-size: 14px;">
+                        <i class="fas fa-times"></i> ❌ Close
+                    </button>
+                </div>
+            `;
+            
+            balanceModal.className = 'balance-modal';
+            balanceModal.appendChild(balanceContent);
+            document.body.appendChild(balanceModal);
+            
+            // Close modal when clicking backdrop
+            balanceModal.addEventListener('click', function(e) {
+                if (e.target === balanceModal) {
+                    balanceModal.remove();
+                }
+            });
+        }
+
+        // Add tooltips for action buttons
+        function addTooltips() {
+            const tooltips = {
+                'Edit Property': 'Modify property details and information',
+                'Generate Bill': 'Create a new bill for this property',
+                'Record Payment': 'Add a payment record for this property',
+                'View on Map': 'Show property location on interactive map',
+                'Back to List': 'Return to properties listing page'
+            };
+            
+            document.querySelectorAll('.btn').forEach(btn => {
+                const text = btn.textContent.trim();
+                if (tooltips[text]) {
+                    btn.title = tooltips[text];
+                }
+            });
+        }
+
+        // Initialize tooltips when DOM is ready
+        document.addEventListener('DOMContentLoaded', addTooltips);
+
+        // Add right-click context menu for additional actions
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.closest('.property-header')) {
+                e.preventDefault();
+                showContextMenu(e.pageX, e.pageY);
+            }
+        });
+
+        function showContextMenu(x, y) {
+            // Remove existing context menu
+            const existingMenu = document.getElementById('contextMenu');
+            if (existingMenu) {
+                existingMenu.remove();
+            }
+            
+            const contextMenu = document.createElement('div');
+            contextMenu.id = 'contextMenu';
+            contextMenu.style.cssText = `
+                position: absolute; top: ${y}px; left: ${x}px; z-index: 10002;
+                background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                border: 1px solid #e2e8f0; min-width: 180px; overflow: hidden;
+                animation: fadeIn 0.2s ease;
+            `;
+            
+            const menuItems = [
+                { text: '🖨️ Print Details', action: printPropertyDetails },
+                { text: '📥 Export Data', action: exportPropertyData },
+                { text: '⚖️ Balance Details', action: showBalanceDetails },
+                { text: '🔍 Search', action: searchInPage },
+                { text: '🗂️ Copy Property Number', action: () => {
+                    navigator.clipboard.writeText(<?php echo json_encode($property['property_number']); ?>);
+                    showNotification('📋 Property number copied!', 'success');
+                }},
+                { text: '📧 Share Location', action: () => {
+                    if (propertyLat && propertyLng) {
+                        const shareText = `📍 ${propertyName} Property Location: https://www.google.com/maps?q=${propertyLat},${propertyLng}\n💰 Remaining Balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                        if (navigator.share) {
+                            navigator.share({ title: 'Property Location & Balance', text: shareText });
+                        } else {
+                            navigator.clipboard.writeText(shareText);
+                            showNotification('📋 Location & balance info copied!', 'success');
+                        }
+                    } else {
+                        showNotification('❌ No location coordinates available', 'error');
+                    }
+                }}
+            ];
+            
+            menuItems.forEach((item, index) => {
+                const menuItem = document.createElement('div');
+                menuItem.style.cssText = `
+                    padding: 12px 16px; cursor: pointer; font-size: 14px;
+                    border-bottom: ${index < menuItems.length - 1 ? '1px solid #f1f5f9' : 'none'};
+                    transition: background 0.2s; color: #2d3748;
+                `;
+                menuItem.textContent = item.text;
+                
+                menuItem.addEventListener('mouseenter', function() {
+                    this.style.background = '#f8fafc';
+                });
+                
+                menuItem.addEventListener('mouseleave', function() {
+                    this.style.background = 'white';
+                });
+                
+                menuItem.addEventListener('click', function() {
+                    item.action();
+                    contextMenu.remove();
+                });
+                
+                contextMenu.appendChild(menuItem);
+            });
+            
+            document.body.appendChild(contextMenu);
+            
+            // Close context menu when clicking elsewhere
+            setTimeout(() => {
+                document.addEventListener('click', function closeContextMenu() {
+                    contextMenu.remove();
+                    document.removeEventListener('click', closeContextMenu);
+                });
+            }, 100);
+        }
+
+        // Session timeout check
+        let lastActivity = <?php echo $_SESSION['LAST_ACTIVITY']; ?>;
+        const SESSION_TIMEOUT = 1800; // 30 minutes in seconds
+
+        function checkSessionTimeout() {
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (currentTime - lastActivity > SESSION_TIMEOUT) {
+                showNotification('🔒 Session expired. Redirecting to login...', 'error');
+                setTimeout(() => {
+                    window.location.href = '../../index.php';
+                }, 2000);
+            }
+        }
+
+        // Check session every minute
+        setInterval(checkSessionTimeout, 60000);
+
+        // Update last activity on user interaction
+        document.addEventListener('click', () => {
+            lastActivity = Math.floor(Date.now() / 1000);
+        });
+
+        // Performance monitoring for Google Maps loading
+        if (propertyLat && propertyLng) {
+            console.log('🗺️ Google Maps initialization started for coordinates:', propertyLat, propertyLng);
+            
+            // Monitor map load time
+            const mapStartTime = performance.now();
+            window.addEventListener('load', function() {
+                const mapLoadTime = performance.now() - mapStartTime;
+                console.log(`⏱️ Total page load time: ${Math.round(mapLoadTime)}ms`);
+                
+                if (mapLoadTime > 3000) {
+                    console.warn('⚠️ Google Maps loading took longer than expected. Consider optimizing.');
+                }
+            });
+        }
+
+        // Balance monitoring and alerts
+        function checkBalanceAlerts() {
+            const alerts = [];
+            
+            if (remainingBalance > 0) {
+                if (remainingBalance > 1000) {
+                    alerts.push({
+                        type: 'danger',
+                        message: `High outstanding balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`
+                    });
+                } else if (remainingBalance > 500) {
+                    alerts.push({
+                        type: 'warning', 
+                        message: `Moderate outstanding balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`
+                    });
+                } else {
+                    alerts.push({
+                        type: 'info',
+                        message: `Low outstanding balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`
+                    });
+                }
+            }
+            
+            return alerts;
+        }
+
+        // Display balance alerts on page load
+        setTimeout(() => {
+            const alerts = checkBalanceAlerts();
+            alerts.forEach((alert, index) => {
+                setTimeout(() => {
+                    showNotification(alert.message, alert.type);
+                }, index * 1000);
+            });
+        }, 3000);
+
+        console.log('✅ Property profile page initialized successfully');
+        console.log(`💰 Remaining Balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`);
+    </script>
+</body>
+</html> gap: 8px; font-size: 14px;">
+                        <i class="fas fa-external-link-alt"></i> 🔗 Open in Google Maps
+                    </a>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" style="
+                        background: #38a169; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                        text-decoration: none; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                        align-items: center;
+>>>>>>> c9ccaba (Initial commit)

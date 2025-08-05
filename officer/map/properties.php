@@ -1,7 +1,11 @@
 <?php
 /**
  * Data Collector - Property Locations Map
+<<<<<<< HEAD
  * map/properties.php
+=======
+ * map/properties.php - FIXED VERSION
+>>>>>>> c9ccaba (Initial commit)
  */
 
 // Define application constant
@@ -36,10 +40,26 @@ if (!isOfficer() && !isAdmin()) {
     header('Location: ../../auth/login.php');
     exit();
 }
+<<<<<<< HEAD
 
 $userDisplayName = getUserDisplayName($currentUser);
 $errors = [];
 $success = false;;
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+$userDisplayName = getUserDisplayName($currentUser);
+$errors = [];
+$success = false;
+>>>>>>> c9ccaba (Initial commit)
 
 // Handle filtering
 $zone_filter = $_GET['zone'] ?? '';
@@ -71,7 +91,11 @@ try {
     
     if ($my_properties_only) {
         $where_conditions[] = "p.created_by = ?";
+<<<<<<< HEAD
         $params[] = $currentUser['id'];
+=======
+        $params[] = $currentUser['user_id']; // FIXED: Changed from 'id' to 'user_id'
+>>>>>>> c9ccaba (Initial commit)
     }
     
     $where_clause = 'WHERE ' . implode(' AND ', $where_conditions);
@@ -117,13 +141,23 @@ try {
             SUM(CASE WHEN created_by = ? THEN 1 ELSE 0 END) as my_count
         FROM properties 
         WHERE latitude IS NOT NULL AND longitude IS NOT NULL AND latitude != 0 AND longitude != 0
+<<<<<<< HEAD
     ", [$currentUser['id']]);
+=======
+    ", [$currentUser['user_id']]); // FIXED: Changed from 'id' to 'user_id'
+>>>>>>> c9ccaba (Initial commit)
     
 } catch (Exception $e) {
     $properties = [];
     $zones = [];
     $structures = [];
     $stats = ['total_with_coordinates' => 0, 'residential_count' => 0, 'commercial_count' => 0, 'defaulters_count' => 0, 'my_count' => 0];
+<<<<<<< HEAD
+=======
+    
+    // Log the error for debugging
+    error_log("Property map error: " . $e->getMessage());
+>>>>>>> c9ccaba (Initial commit)
 }
 
 // Get current directory and page for active link highlighting
@@ -759,6 +793,23 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             margin-bottom: 20px;
         }
         
+<<<<<<< HEAD
+=======
+        /* Debug Info */
+        .debug-info {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 1000;
+            display: none;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -824,6 +875,20 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     </style>
 </head>
 <body>
+<<<<<<< HEAD
+=======
+    <!-- Debug Info (only shown in development) -->
+    <?php if (isset($_GET['debug'])): ?>
+    <div class="debug-info" style="display: block;">
+        <strong>Debug Info:</strong><br>
+        User ID: <?php echo $currentUser['user_id'] ?? 'Not set'; ?><br>
+        Current User Keys: <?php echo implode(', ', array_keys($currentUser)); ?><br>
+        Properties Count: <?php echo count($properties); ?><br>
+        My Properties Count: <?php echo $stats['my_count'] ?? 0; ?>
+    </div>
+    <?php endif; ?>
+
+>>>>>>> c9ccaba (Initial commit)
     <!-- Top Navigation -->
     <div class="top-nav">
         <div class="nav-left">
@@ -966,6 +1031,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             Search Accounts
                         </a>
                     </div>
+<<<<<<< HEAD
                     <div class="nav-item">
                         <a href="../billing/generate.php" class="nav-link <?php echo ($currentDir === 'billing' && $currentPage === 'generate.php') ? 'active' : ''; ?>">
                             <span class="nav-icon">
@@ -984,6 +1050,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             Print Bills
                         </a>
                     </div>
+=======
+
+
+>>>>>>> c9ccaba (Initial commit)
                 </div>
                 
                 <!-- Maps & Locations -->
@@ -1192,6 +1262,16 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     </div>
     
     <script>
+<<<<<<< HEAD
+=======
+        // Debug logging function
+        function debugLog(message) {
+            if (<?php echo isset($_GET['debug']) ? 'true' : 'false'; ?>) {
+                console.log('Debug:', message);
+            }
+        }
+
+>>>>>>> c9ccaba (Initial commit)
         // Check if Font Awesome loaded, if not show emoji icons
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
@@ -1229,6 +1309,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             
             const isHidden = sidebar.classList.contains('hidden');
             localStorage.setItem('sidebarHidden', isHidden);
+<<<<<<< HEAD
+=======
+            debugLog('Sidebar toggled. Hidden: ' + isHidden);
+>>>>>>> c9ccaba (Initial commit)
         }
 
         // Restore sidebar state
@@ -1251,6 +1335,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     propertySidebar.classList.add('hidden');
                 }
             }
+<<<<<<< HEAD
+=======
+            debugLog('Sidebar state restored. Hidden: ' + sidebarHidden);
+>>>>>>> c9ccaba (Initial commit)
         });
 
         // User dropdown toggle
@@ -1299,6 +1387,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         
         // Property data
         const properties = <?php echo json_encode($properties); ?>;
+<<<<<<< HEAD
+=======
+        debugLog('Loaded properties count: ' + properties.length);
+>>>>>>> c9ccaba (Initial commit)
         
         // Initialize map
         function initMap() {
@@ -1328,16 +1420,33 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     google.maps.event.removeListener(listener);
                 });
             }
+<<<<<<< HEAD
+=======
+            debugLog('Map initialized with ' + markers.length + ' markers');
+>>>>>>> c9ccaba (Initial commit)
         }
         
         // Add markers to map
         function addMarkers() {
+<<<<<<< HEAD
             properties.forEach(property => {
+=======
+            properties.forEach((property, index) => {
+>>>>>>> c9ccaba (Initial commit)
                 const position = {
                     lat: parseFloat(property.latitude),
                     lng: parseFloat(property.longitude)
                 };
                 
+<<<<<<< HEAD
+=======
+                // Validate coordinates
+                if (isNaN(position.lat) || isNaN(position.lng)) {
+                    debugLog('Invalid coordinates for property ' + property.property_id + ': ' + property.latitude + ', ' + property.longitude);
+                    return;
+                }
+                
+>>>>>>> c9ccaba (Initial commit)
                 // Determine marker color based on property use and payment status
                 let markerColor = 'blue'; // Default for residential
                 if (property.property_use === 'Commercial') {
@@ -1405,6 +1514,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 });
                 
                 markers.push(marker);
+<<<<<<< HEAD
+=======
+                debugLog('Added marker for property ' + property.property_id + ' at ' + position.lat + ', ' + position.lng);
+>>>>>>> c9ccaba (Initial commit)
             });
         }
         
@@ -1417,6 +1530,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     map.setCenter(marker.getPosition());
                     map.setZoom(16);
                     google.maps.event.trigger(marker, 'click');
+<<<<<<< HEAD
+=======
+                    debugLog('Focused on property ' + propertyId);
+>>>>>>> c9ccaba (Initial commit)
                 }
             }
             
@@ -1435,6 +1552,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             if (propertyItem) {
                 propertyItem.classList.add('active');
                 propertyItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+<<<<<<< HEAD
+=======
+                debugLog('Highlighted property ' + propertyId);
+>>>>>>> c9ccaba (Initial commit)
             }
         }
         
@@ -1442,6 +1563,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         function toggleMapType() {
             currentMapType = currentMapType === 'roadmap' ? 'satellite' : 'roadmap';
             map.setMapTypeId(currentMapType);
+<<<<<<< HEAD
+=======
+            debugLog('Map type changed to: ' + currentMapType);
+>>>>>>> c9ccaba (Initial commit)
         }
         
         // Center map on all markers
@@ -1455,13 +1580,26 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     if (map.getZoom() > 16) map.setZoom(16);
                     google.maps.event.removeListener(listener);
                 });
+<<<<<<< HEAD
+=======
+                debugLog('Map centered on all markers');
+>>>>>>> c9ccaba (Initial commit)
             }
         }
         
         // Initialize map when page loads
         window.onload = function() {
             <?php if (!empty($properties)): ?>
+<<<<<<< HEAD
             initMap();
+=======
+            try {
+                initMap();
+            } catch (error) {
+                console.error('Map initialization error:', error);
+                debugLog('Map initialization failed: ' + error.message);
+            }
+>>>>>>> c9ccaba (Initial commit)
             <?php endif; ?>
         };
         
@@ -1508,6 +1646,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 }
             }
         });
+<<<<<<< HEAD
+=======
+
+        // Error handling for map loading
+        window.gm_authFailure = function() {
+            console.error('Google Maps authentication failed');
+            alert('Google Maps failed to load. Please check your API key.');
+        };
+>>>>>>> c9ccaba (Initial commit)
     </script>
 </body>
 </html>

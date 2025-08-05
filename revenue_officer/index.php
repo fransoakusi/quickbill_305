@@ -11,6 +11,10 @@ define('QUICKBILL_305', true);
 require_once '../config/config.php';
 require_once '../config/database.php';
 require_once '../includes/functions.php';
+<<<<<<< HEAD
+=======
+require_once '../includes/restriction_warning.php';
+>>>>>>> c9ccaba (Initial commit)
 
 // Start session
 session_start();
@@ -37,6 +41,19 @@ if (!isRevenueOfficer() && !isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $userDisplayName = getUserDisplayName($currentUser);
 
 // Get statistics for revenue officer

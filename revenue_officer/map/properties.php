@@ -1,4 +1,8 @@
+<<<<<<< HEAD
  <?php
+=======
+<?php
+>>>>>>> c9ccaba (Initial commit)
 /**
  * Property Map Page for QUICKBILL 305
  * Revenue Officer interface for viewing property locations
@@ -37,6 +41,19 @@ if (!isRevenueOfficer() && !isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $userDisplayName = getUserDisplayName($currentUser);
 
 // Get filter parameters
@@ -173,7 +190,15 @@ foreach ($properties as $property) {
             overflow: hidden;
         }
         
+<<<<<<< HEAD
         /* Custom Icons */
+=======
+        /* Custom Icons (fallback if Font Awesome fails) */
+        [class*="icon-"] {
+            display: none; /* Hidden by default */
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .icon-map::before { content: "🗺️"; }
         .icon-home::before { content: "🏠"; }
         .icon-filter::before { content: "🔧"; }
@@ -186,6 +211,13 @@ foreach ($properties as $property) {
         .icon-navigation::before { content: "🧭"; }
         .icon-residential::before { content: "🏘️"; }
         .icon-commercial::before { content: "🏬"; }
+<<<<<<< HEAD
+=======
+        .icon-menu::before { content: "☰"; }
+        .icon-list::before { content: "📋"; }
+        .icon-crosshairs::before { content: "🎯"; }
+        .icon-layer-group::before { content: "🗺️"; }
+>>>>>>> c9ccaba (Initial commit)
         
         /* Header */
         .header {
@@ -692,6 +724,7 @@ foreach ($properties as $property) {
             opacity: 0.5;
         }
         
+<<<<<<< HEAD
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -705,6 +738,48 @@ foreach ($properties as $property) {
             
             .sidebar.show {
                 left: 0;
+=======
+        /* Mobile Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+        }
+        
+        .mobile-overlay.show {
+            display: block;
+        }
+        
+        /* Property Sidebar for Mobile */
+        .property-sidebar-mobile {
+            display: none;
+            position: fixed;
+            top: 70px;
+            right: 0;
+            width: 350px;
+            height: calc(100vh - 70px);
+            background: white;
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .property-sidebar-mobile.show {
+            transform: translateX(0);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .map-container {
@@ -715,6 +790,7 @@ foreach ($properties as $property) {
                 display: none;
             }
             
+<<<<<<< HEAD
             .filters {
                 grid-template-columns: 1fr;
             }
@@ -722,6 +798,23 @@ foreach ($properties as $property) {
             .map-controls {
                 top: 10px;
                 right: 10px;
+=======
+            .map-controls {
+                top: 10px;
+                right: 10px;
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .map-control-btn {
+                font-size: 14px;
+                padding: 10px;
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .map-legend {
@@ -729,6 +822,7 @@ foreach ($properties as $property) {
                 left: 10px;
                 font-size: 12px;
             }
+<<<<<<< HEAD
         }
         
         /* Mobile Toggle */
@@ -751,18 +845,49 @@ foreach ($properties as $property) {
         @media (max-width: 768px) {
             .sidebar-toggle {
                 display: block;
+=======
+            
+            .property-sidebar-mobile {
+                display: block;
+            }
+            
+            .filters {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+        
+        /* Hide certain elements on different screen sizes */
+        .d-md-none {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .d-md-none {
+                display: flex;
+>>>>>>> c9ccaba (Initial commit)
             }
         }
     </style>
 </head>
 <body>
+<<<<<<< HEAD
+=======
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeAllSidebars()"></div>
+
+>>>>>>> c9ccaba (Initial commit)
     <!-- Header -->
     <div class="header">
         <div class="header-content">
             <div class="header-title">
                 <div class="header-icon">
                     <i class="fas fa-home"></i>
+<<<<<<< HEAD
                     <span class="icon-home" style="display: none;"></span>
+=======
+                    <span class="icon-home"></span>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
                 <h1>Property Locations Map</h1>
             </div>
@@ -792,7 +917,11 @@ foreach ($properties as $property) {
             
             <a href="../index.php" class="back-btn">
                 <i class="fas fa-arrow-left"></i>
+<<<<<<< HEAD
                 <span class="icon-back" style="display: none;"></span>
+=======
+                <span class="icon-back"></span>
+>>>>>>> c9ccaba (Initial commit)
                 Dashboard
             </a>
         </div>
@@ -800,6 +929,7 @@ foreach ($properties as $property) {
 
     <!-- Main Layout -->
     <div class="main-layout">
+<<<<<<< HEAD
         <!-- Sidebar Toggle (Mobile) -->
         <button class="sidebar-toggle" onclick="toggleSidebar()">
             <i class="fas fa-bars"></i>
@@ -807,11 +937,18 @@ foreach ($properties as $property) {
         </button>
 
         <!-- Sidebar -->
+=======
+        <!-- Desktop Sidebar -->
+>>>>>>> c9ccaba (Initial commit)
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3 class="sidebar-title">
                     <i class="fas fa-filter"></i>
+<<<<<<< HEAD
                     <span class="icon-filter" style="display: none;"></span>
+=======
+                    <span class="icon-filter"></span>
+>>>>>>> c9ccaba (Initial commit)
                     Filters & Property List
                 </h3>
                 
@@ -883,12 +1020,20 @@ foreach ($properties as $property) {
                             <div class="property-details">
                                 <div class="property-detail">
                                     <i class="fas fa-phone" style="font-size: 10px;"></i>
+<<<<<<< HEAD
                                     <span class="icon-phone" style="display: none;"></span>
+=======
+                                    <span class="icon-phone"></span>
+>>>>>>> c9ccaba (Initial commit)
                                     <?php echo htmlspecialchars($property['telephone'] ?: 'N/A'); ?>
                                 </div>
                                 <div class="property-detail">
                                     <i class="fas fa-map-marker-alt" style="font-size: 10px;"></i>
+<<<<<<< HEAD
                                     <span class="icon-location" style="display: none;"></span>
+=======
+                                    <span class="icon-location"></span>
+>>>>>>> c9ccaba (Initial commit)
                                     <?php echo htmlspecialchars($property['zone_name'] ?: 'Unknown'); ?>
                                 </div>
                                 <div class="property-detail">
@@ -911,7 +1056,125 @@ foreach ($properties as $property) {
                     <div class="no-results">
                         <div class="no-results-icon">
                             <i class="fas fa-search"></i>
+<<<<<<< HEAD
                             <span class="icon-search" style="display: none;"></span>
+=======
+                            <span class="icon-search"></span>
+                        </div>
+                        <h4>No properties found</h4>
+                        <p>No properties match your current filter criteria.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Mobile Property Sidebar -->
+        <div class="property-sidebar-mobile" id="propertySidebarMobile">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title">
+                    <i class="fas fa-filter"></i>
+                    <span class="icon-filter"></span>
+                    Filters & Property List
+                </h3>
+                
+                <form method="GET" class="filters">
+                    <div class="filter-group">
+                        <label class="filter-label">Zone</label>
+                        <select name="zone" class="filter-select" onchange="this.form.submit()">
+                            <option value="0">All Zones</option>
+                            <?php foreach ($zones as $zone): ?>
+                                <option value="<?php echo $zone['zone_id']; ?>" 
+                                        <?php echo $zoneFilter == $zone['zone_id'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($zone['zone_name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">Structure</label>
+                        <select name="structure" class="filter-select" onchange="this.form.submit()">
+                            <option value="all" <?php echo $structureFilter === 'all' ? 'selected' : ''; ?>>All Structures</option>
+                            <?php foreach ($structures as $structure): ?>
+                                <option value="<?php echo htmlspecialchars($structure['structure']); ?>" 
+                                        <?php echo $structureFilter === $structure['structure'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($structure['structure']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">Property Use</label>
+                        <select name="use" class="filter-select" onchange="this.form.submit()">
+                            <option value="all" <?php echo $useFilter === 'all' ? 'selected' : ''; ?>>All Uses</option>
+                            <option value="Residential" <?php echo $useFilter === 'Residential' ? 'selected' : ''; ?>>Residential</option>
+                            <option value="Commercial" <?php echo $useFilter === 'Commercial' ? 'selected' : ''; ?>>Commercial</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">Payment Status</label>
+                        <select name="payment_status" class="filter-select" onchange="this.form.submit()">
+                            <option value="all" <?php echo $paymentStatusFilter === 'all' ? 'selected' : ''; ?>>All Payments</option>
+                            <option value="outstanding" <?php echo $paymentStatusFilter === 'outstanding' ? 'selected' : ''; ?>>Outstanding</option>
+                            <option value="paid" <?php echo $paymentStatusFilter === 'paid' ? 'selected' : ''; ?>>Paid Up</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="property-list">
+                <?php if (!empty($properties)): ?>
+                    <?php foreach ($properties as $property): ?>
+                        <div class="property-item" 
+                             onclick="selectProperty(<?php echo $property['property_id']; ?>, <?php echo $property['latitude']; ?>, <?php echo $property['longitude']; ?>); closeAllSidebars();"
+                             data-id="mobile-<?php echo $property['property_id']; ?>">
+                            <div class="status-badge <?php echo $property['amount_payable'] > 0 ? 'status-outstanding' : 'status-paid'; ?>"></div>
+                            
+                            <div class="property-header">
+                                <div>
+                                    <div class="property-owner"><?php echo htmlspecialchars($property['owner_name']); ?></div>
+                                    <div class="property-number"><?php echo htmlspecialchars($property['property_number']); ?></div>
+                                </div>
+                                <div class="property-amount <?php echo $property['amount_payable'] <= 0 ? 'paid' : ''; ?>">
+                                    <?php echo $property['amount_payable'] > 0 ? formatCurrency($property['amount_payable']) : 'Paid'; ?>
+                                </div>
+                            </div>
+                            
+                            <div class="property-details">
+                                <div class="property-detail">
+                                    <i class="fas fa-phone" style="font-size: 10px;"></i>
+                                    <span class="icon-phone"></span>
+                                    <?php echo htmlspecialchars($property['telephone'] ?: 'N/A'); ?>
+                                </div>
+                                <div class="property-detail">
+                                    <i class="fas fa-map-marker-alt" style="font-size: 10px;"></i>
+                                    <span class="icon-location"></span>
+                                    <?php echo htmlspecialchars($property['zone_name'] ?: 'Unknown'); ?>
+                                </div>
+                                <div class="property-detail">
+                                    <i class="fas fa-door-open" style="font-size: 10px;"></i>
+                                    <?php echo $property['number_of_rooms']; ?> rooms
+                                </div>
+                            </div>
+                            
+                            <div class="property-type-badges">
+                                <span class="type-badge badge-<?php echo strtolower($property['property_use']); ?>">
+                                    <?php echo $property['property_use']; ?>
+                                </span>
+                                <span class="type-badge badge-<?php echo strtolower($property['property_type']); ?>">
+                                    <?php echo $property['property_type']; ?>
+                                </span>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="no-results">
+                        <div class="no-results-icon">
+                            <i class="fas fa-search"></i>
+                            <span class="icon-search"></span>
+>>>>>>> c9ccaba (Initial commit)
                         </div>
                         <h4>No properties found</h4>
                         <p>No properties match your current filter criteria.</p>
@@ -925,7 +1188,11 @@ foreach ($properties as $property) {
             <div class="map-loading" id="mapLoading">
                 <div class="loading-spinner">
                     <i class="fas fa-spinner"></i>
+<<<<<<< HEAD
                     <span class="icon-loading" style="display: none;">⏳</span>
+=======
+                    <span class="icon-loading">⏳</span>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
                 <div>Loading map...</div>
             </div>
@@ -936,6 +1203,7 @@ foreach ($properties as $property) {
             <div class="map-controls">
                 <button class="map-control-btn" onclick="centerMap()" title="Center Map">
                     <i class="fas fa-crosshairs"></i>
+<<<<<<< HEAD
                     <span class="icon-navigation" style="display: none;"></span>
                 </button>
                 <button class="map-control-btn" onclick="toggleSatellite()" title="Toggle Satellite" id="satelliteBtn">
@@ -949,6 +1217,25 @@ foreach ($properties as $property) {
                 <button class="map-control-btn" onclick="toggleHeatmap()" title="Toggle Density" id="heatmapBtn">
                     <i class="fas fa-fire"></i>
                     <span class="icon-chart" style="display: none;"></span>
+=======
+                    <span class="icon-navigation"></span>
+                </button>
+                <button class="map-control-btn" onclick="toggleMapType()" title="Toggle Map Type">
+                    <i class="fas fa-layer-group"></i>
+                    <span class="icon-layer-group"></span>
+                </button>
+                <button class="map-control-btn" onclick="toggleTraffic()" title="Toggle Traffic" id="trafficBtn">
+                    <i class="fas fa-road"></i>
+                    <span class="icon-map"></span>
+                </button>
+                <button class="map-control-btn d-md-none" onclick="togglePropertySidebar()" title="Properties & Filters">
+                    <i class="fas fa-list"></i>
+                    <span class="icon-list"></span>
+                </button>
+                <button class="map-control-btn" onclick="toggleHeatmap()" title="Toggle Density" id="heatmapBtn">
+                    <i class="fas fa-fire"></i>
+                    <span class="icon-chart">🔥</span>
+>>>>>>> c9ccaba (Initial commit)
                 </button>
             </div>
             
@@ -985,15 +1272,56 @@ foreach ($properties as $property) {
         let infoWindow;
         let selectedPropertyId = null;
         let mapCenter = { lat: 5.593020, lng: -0.077100 }; // Default to Ghana coordinates
+<<<<<<< HEAD
+=======
+        let currentMapType = 'roadmap';
+>>>>>>> c9ccaba (Initial commit)
         
         // Property data from PHP
         const properties = <?php echo json_encode($properties); ?>;
         
         // Check if Font Awesome loaded, if not show emoji icons
         document.addEventListener('DOMContentLoaded', function() {
+<<<<<<< HEAD
             setTimeout(function() {
                 const testIcon = document.querySelector('.fas.fa-home');
                 if (!testIcon || getComputedStyle(testIcon, ':before').content === 'none') {
+=======
+            // First, hide all emoji icons by default
+            document.querySelectorAll('[class*="icon-"]').forEach(function(emoji) {
+                emoji.style.display = 'none';
+            });
+            
+            // Then check if Font Awesome loaded
+            setTimeout(function() {
+                let fontAwesomeLoaded = false;
+                
+                // Check if Font Awesome CSS is loaded
+                const stylesheets = document.styleSheets;
+                for (let i = 0; i < stylesheets.length; i++) {
+                    try {
+                        const href = stylesheets[i].href;
+                        if (href && (href.includes('font-awesome') || href.includes('fontawesome'))) {
+                            fontAwesomeLoaded = true;
+                            break;
+                        }
+                    } catch (e) {
+                        // Cross-origin stylesheet, skip
+                    }
+                }
+                
+                // Also check if icons render properly
+                const testIcon = document.querySelector('.fas.fa-home');
+                if (testIcon) {
+                    const iconStyle = getComputedStyle(testIcon, ':before');
+                    if (iconStyle.content === 'none' || iconStyle.content === '""') {
+                        fontAwesomeLoaded = false;
+                    }
+                }
+                
+                if (!fontAwesomeLoaded) {
+                    // Hide Font Awesome icons and show emoji fallbacks
+>>>>>>> c9ccaba (Initial commit)
                     document.querySelectorAll('.fas, .far').forEach(function(icon) {
                         icon.style.display = 'none';
                     });
@@ -1001,9 +1329,42 @@ foreach ($properties as $property) {
                         emoji.style.display = 'inline';
                     });
                 }
+<<<<<<< HEAD
             }, 100);
         });
 
+=======
+            }, 200);
+        });
+
+        // Simple toggle functions
+        function togglePropertySidebar() {
+            const propertySidebar = document.getElementById('propertySidebarMobile');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            // Toggle property sidebar
+            propertySidebar.classList.toggle('show');
+            
+            // Show/hide overlay
+            if (propertySidebar.classList.contains('show')) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        function closeAllSidebars() {
+            const propertySidebar = document.getElementById('propertySidebarMobile');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            if (propertySidebar) {
+                propertySidebar.classList.remove('show');
+            }
+            
+            overlay.classList.remove('show');
+        }
+
+>>>>>>> c9ccaba (Initial commit)
         // Initialize Google Map
         function initMap() {
             // Hide loading spinner
@@ -1033,7 +1394,11 @@ foreach ($properties as $property) {
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 13,
                 center: mapCenter,
+<<<<<<< HEAD
                 mapTypeId: 'roadmap',
+=======
+                mapTypeId: currentMapType,
+>>>>>>> c9ccaba (Initial commit)
                 styles: [
                     {
                         featureType: 'poi',
@@ -1204,9 +1569,20 @@ foreach ($properties as $property) {
             
             // Highlight selected property
             const selectedItem = document.querySelector(`[data-id="${id}"]`);
+<<<<<<< HEAD
             if (selectedItem) {
                 selectedItem.classList.add('active');
             }
+=======
+            const selectedMobileItem = document.querySelector(`[data-id="mobile-${id}"]`);
+            
+            if (selectedItem) {
+                selectedItem.classList.add('active');
+            }
+            if (selectedMobileItem) {
+                selectedMobileItem.classList.add('active');
+            }
+>>>>>>> c9ccaba (Initial commit)
             
             // Center map on property
             const position = { lat: parseFloat(lat), lng: parseFloat(lng) };
@@ -1229,11 +1605,23 @@ foreach ($properties as $property) {
             });
             
             const item = document.querySelector(`[data-id="${id}"]`);
+<<<<<<< HEAD
+=======
+            const mobileItem = document.querySelector(`[data-id="mobile-${id}"]`);
+            
+>>>>>>> c9ccaba (Initial commit)
             if (item) {
                 item.classList.add('active');
                 item.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             
+<<<<<<< HEAD
+=======
+            if (mobileItem) {
+                mobileItem.classList.add('active');
+            }
+            
+>>>>>>> c9ccaba (Initial commit)
             selectedPropertyId = id;
         }
         
@@ -1243,6 +1631,7 @@ foreach ($properties as $property) {
             map.setZoom(13);
         }
         
+<<<<<<< HEAD
         function toggleSatellite() {
             const btn = document.getElementById('satelliteBtn');
             if (map.getMapTypeId() === 'satellite') {
@@ -1252,6 +1641,12 @@ foreach ($properties as $property) {
                 map.setMapTypeId('satellite');
                 btn.classList.add('active');
             }
+=======
+        // Toggle map type
+        function toggleMapType() {
+            currentMapType = currentMapType === 'roadmap' ? 'satellite' : 'roadmap';
+            map.setMapTypeId(currentMapType);
+>>>>>>> c9ccaba (Initial commit)
         }
         
         function toggleTraffic() {
@@ -1279,6 +1674,7 @@ foreach ($properties as $property) {
             }
         }
         
+<<<<<<< HEAD
         // Mobile sidebar toggle
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -1293,6 +1689,8 @@ foreach ($properties as $property) {
             }
         });
         
+=======
+>>>>>>> c9ccaba (Initial commit)
         // Handle map load error
         window.gm_authFailure = function() {
             document.getElementById('mapLoading').innerHTML = `
@@ -1303,12 +1701,24 @@ foreach ($properties as $property) {
             `;
         };
         
+<<<<<<< HEAD
+=======
+        // Handle responsive behavior
+        window.addEventListener('resize', function() {
+            closeAllSidebars();
+        });
+        
+>>>>>>> c9ccaba (Initial commit)
         // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             // M to toggle sidebar on mobile
             if (e.key === 'm' || e.key === 'M') {
                 if (window.innerWidth <= 768) {
+<<<<<<< HEAD
                     toggleSidebar();
+=======
+                    togglePropertySidebar();
+>>>>>>> c9ccaba (Initial commit)
                 }
             }
             
@@ -1342,4 +1752,8 @@ foreach ($properties as $property) {
         });
     </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> c9ccaba (Initial commit)

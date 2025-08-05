@@ -1,4 +1,8 @@
+<<<<<<< HEAD
  <?php
+=======
+<?php
+>>>>>>> c9ccaba (Initial commit)
 /**
  * Daily Summary Page for QUICKBILL 305
  * Revenue Officer interface for daily collection reporting
@@ -37,6 +41,19 @@ if (!isRevenueOfficer() && !isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $userDisplayName = getUserDisplayName($currentUser);
 
 // Get selected date (default to today)
@@ -55,6 +72,7 @@ try {
     $error = 'Database connection failed. Please try again.';
 }
 
+<<<<<<< HEAD
 // Initialize summary data
 $dailySummary = [
     'total_payments' => 0,
@@ -73,12 +91,53 @@ $dailySummary = [
     'property_amount' => 0,
     'my_payments' => 0,
     'my_amount' => 0
+=======
+// Initialize summary data with proper defaults
+$dailySummary = [
+    'total_payments' => 0,
+    'total_amount' => 0.00,
+    'cash_payments' => 0,
+    'cash_amount' => 0.00,
+    'mobile_money_payments' => 0,
+    'mobile_money_amount' => 0.00,
+    'bank_transfer_payments' => 0,
+    'bank_transfer_amount' => 0.00,
+    'online_payments' => 0,
+    'online_amount' => 0.00,
+    'business_payments' => 0,
+    'business_amount' => 0.00,
+    'property_payments' => 0,
+    'property_amount' => 0.00,
+    'my_payments' => 0,
+    'my_amount' => 0.00
+>>>>>>> c9ccaba (Initial commit)
 ];
 
 $monthlyComparison = [];
 $paymentDetails = [];
 $hourlyBreakdown = [];
 
+<<<<<<< HEAD
+=======
+// Helper function to safely cast numeric values
+function safeNumeric($value, $default = 0) {
+    if ($value === null || $value === '') {
+        return $default;
+    }
+    return is_numeric($value) ? $value : $default;
+}
+
+// Helper function to safely format currency
+function safeCurrency($value) {
+    return formatCurrency(safeNumeric($value, 0));
+}
+
+// Helper function to safely format numbers
+function safeNumberFormat($value) {
+    return number_format((int)safeNumeric($value, 0));
+}
+
+>>>>>>> c9ccaba (Initial commit)
 try {
     // Daily summary query
     $dailyQuery = "
@@ -99,7 +158,14 @@ try {
     
     $result = $db->fetchRow($dailyQuery, [$selectedDate]);
     if ($result) {
+<<<<<<< HEAD
         $dailySummary = array_merge($dailySummary, $result);
+=======
+        // Safely merge results with proper type casting
+        foreach ($result as $key => $value) {
+            $dailySummary[$key] = safeNumeric($value, 0);
+        }
+>>>>>>> c9ccaba (Initial commit)
     }
     
     // Business vs Property breakdown
@@ -118,11 +184,19 @@ try {
     if ($typeResults) {
         foreach ($typeResults as $type) {
             if ($type['bill_type'] === 'Business') {
+<<<<<<< HEAD
                 $dailySummary['business_payments'] = $type['payment_count'];
                 $dailySummary['business_amount'] = $type['total_amount'];
             } else {
                 $dailySummary['property_payments'] = $type['payment_count'];
                 $dailySummary['property_amount'] = $type['total_amount'];
+=======
+                $dailySummary['business_payments'] = safeNumeric($type['payment_count'], 0);
+                $dailySummary['business_amount'] = safeNumeric($type['total_amount'], 0);
+            } else {
+                $dailySummary['property_payments'] = safeNumeric($type['payment_count'], 0);
+                $dailySummary['property_amount'] = safeNumeric($type['total_amount'], 0);
+>>>>>>> c9ccaba (Initial commit)
             }
         }
     }
@@ -138,8 +212,13 @@ try {
     
     $myResult = $db->fetchRow($myQuery, [$selectedDate, $currentUser['user_id']]);
     if ($myResult) {
+<<<<<<< HEAD
         $dailySummary['my_payments'] = $myResult['my_payments'];
         $dailySummary['my_amount'] = $myResult['my_amount'];
+=======
+        $dailySummary['my_payments'] = safeNumeric($myResult['my_payments'], 0);
+        $dailySummary['my_amount'] = safeNumeric($myResult['my_amount'], 0);
+>>>>>>> c9ccaba (Initial commit)
     }
     
     // Monthly comparison (last 30 days)
@@ -216,7 +295,11 @@ try {
     $error = 'Failed to load summary data. Please try again.';
 }
 
+<<<<<<< HEAD
 // Calculate percentages
+=======
+// Calculate percentages with safe division
+>>>>>>> c9ccaba (Initial commit)
 $my_percentage = $dailySummary['total_payments'] > 0 ? 
     round(($dailySummary['my_payments'] / $dailySummary['total_payments']) * 100, 1) : 0;
 
@@ -710,8 +793,13 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
                         <span class="icon-money" style="display: none;"></span>
                     </div>
                 </div>
+<<<<<<< HEAD
                 <div class="card-value"><?php echo formatCurrency($dailySummary['total_amount']); ?></div>
                 <div class="card-subtitle"><?php echo number_format($dailySummary['total_payments']); ?> total payments</div>
+=======
+                <div class="card-value"><?php echo safeCurrency($dailySummary['total_amount']); ?></div>
+                <div class="card-subtitle"><?php echo safeNumberFormat($dailySummary['total_payments']); ?> total payments</div>
+>>>>>>> c9ccaba (Initial commit)
             </div>
 
             <div class="summary-card success">
@@ -722,8 +810,13 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
                         <span class="icon-user" style="display: none;"></span>
                     </div>
                 </div>
+<<<<<<< HEAD
                 <div class="card-value"><?php echo formatCurrency($dailySummary['my_amount']); ?></div>
                 <div class="card-subtitle"><?php echo number_format($dailySummary['my_payments']); ?> payments (<?php echo $my_percentage; ?>%)</div>
+=======
+                <div class="card-value"><?php echo safeCurrency($dailySummary['my_amount']); ?></div>
+                <div class="card-subtitle"><?php echo safeNumberFormat($dailySummary['my_payments']); ?> payments (<?php echo $my_percentage; ?>%)</div>
+>>>>>>> c9ccaba (Initial commit)
             </div>
 
             <div class="summary-card info">
@@ -734,8 +827,13 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
                         <span class="icon-building" style="display: none;"></span>
                     </div>
                 </div>
+<<<<<<< HEAD
                 <div class="card-value"><?php echo formatCurrency($dailySummary['business_amount']); ?></div>
                 <div class="card-subtitle"><?php echo number_format($dailySummary['business_payments']); ?> payments (<?php echo $business_percentage; ?>%)</div>
+=======
+                <div class="card-value"><?php echo safeCurrency($dailySummary['business_amount']); ?></div>
+                <div class="card-subtitle"><?php echo safeNumberFormat($dailySummary['business_payments']); ?> payments (<?php echo $business_percentage; ?>%)</div>
+>>>>>>> c9ccaba (Initial commit)
             </div>
 
             <div class="summary-card warning">
@@ -746,8 +844,13 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
                         <span class="icon-home" style="display: none;"></span>
                     </div>
                 </div>
+<<<<<<< HEAD
                 <div class="card-value"><?php echo formatCurrency($dailySummary['property_amount']); ?></div>
                 <div class="card-subtitle"><?php echo number_format($dailySummary['property_payments']); ?> payments (<?php echo $property_percentage; ?>%)</div>
+=======
+                <div class="card-value"><?php echo safeCurrency($dailySummary['property_amount']); ?></div>
+                <div class="card-subtitle"><?php echo safeNumberFormat($dailySummary['property_payments']); ?> payments (<?php echo $property_percentage; ?>%)</div>
+>>>>>>> c9ccaba (Initial commit)
             </div>
         </div>
 
@@ -765,8 +868,13 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
                         <span class="icon-money" style="display: none;"></span>
                     </div>
                     <div class="method-name">Cash</div>
+<<<<<<< HEAD
                     <div class="method-amount"><?php echo formatCurrency($dailySummary['cash_amount']); ?></div>
                     <div class="method-count"><?php echo number_format($dailySummary['cash_payments']); ?> payments</div>
+=======
+                    <div class="method-amount"><?php echo safeCurrency($dailySummary['cash_amount']); ?></div>
+                    <div class="method-count"><?php echo safeNumberFormat($dailySummary['cash_payments']); ?> payments</div>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
 
                 <div class="method-card mobile">
@@ -775,8 +883,13 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
                         <span class="icon-phone" style="display: none;"></span>
                     </div>
                     <div class="method-name">Mobile Money</div>
+<<<<<<< HEAD
                     <div class="method-amount"><?php echo formatCurrency($dailySummary['mobile_money_amount']); ?></div>
                     <div class="method-count"><?php echo number_format($dailySummary['mobile_money_payments']); ?> payments</div>
+=======
+                    <div class="method-amount"><?php echo safeCurrency($dailySummary['mobile_money_amount']); ?></div>
+                    <div class="method-count"><?php echo safeNumberFormat($dailySummary['mobile_money_payments']); ?> payments</div>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
 
                 <div class="method-card bank">
@@ -785,8 +898,13 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
                         <span class="icon-building" style="display: none;"></span>
                     </div>
                     <div class="method-name">Bank Transfer</div>
+<<<<<<< HEAD
                     <div class="method-amount"><?php echo formatCurrency($dailySummary['bank_transfer_amount']); ?></div>
                     <div class="method-count"><?php echo number_format($dailySummary['bank_transfer_payments']); ?> payments</div>
+=======
+                    <div class="method-amount"><?php echo safeCurrency($dailySummary['bank_transfer_amount']); ?></div>
+                    <div class="method-count"><?php echo safeNumberFormat($dailySummary['bank_transfer_payments']); ?> payments</div>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
 
                 <div class="method-card online">
@@ -795,8 +913,13 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
                         <span class="icon-chart" style="display: none;"></span>
                     </div>
                     <div class="method-name">Online</div>
+<<<<<<< HEAD
                     <div class="method-amount"><?php echo formatCurrency($dailySummary['online_amount']); ?></div>
                     <div class="method-count"><?php echo number_format($dailySummary['online_payments']); ?> payments</div>
+=======
+                    <div class="method-amount"><?php echo safeCurrency($dailySummary['online_amount']); ?></div>
+                    <div class="method-count"><?php echo safeNumberFormat($dailySummary['online_payments']); ?> payments</div>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
             </div>
         </div>
@@ -813,11 +936,19 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
                 <?php 
                 $maxAmount = max(array_column($hourlyBreakdown, 'hourly_amount'));
                 foreach ($hourlyBreakdown as $hour): 
+<<<<<<< HEAD
                     $height = $maxAmount > 0 ? ($hour['hourly_amount'] / $maxAmount) * 250 : 0;
                 ?>
                     <div class="chart-bar" style="height: <?php echo $height; ?>px;">
                         <div class="chart-value"><?php echo formatCurrency($hour['hourly_amount']); ?></div>
                         <div class="chart-label"><?php echo str_pad($hour['payment_hour'], 2, '0', STR_PAD_LEFT); ?>:00</div>
+=======
+                    $height = $maxAmount > 0 ? (safeNumeric($hour['hourly_amount']) / $maxAmount) * 250 : 0;
+                ?>
+                    <div class="chart-bar" style="height: <?php echo $height; ?>px;">
+                        <div class="chart-value"><?php echo safeCurrency($hour['hourly_amount']); ?></div>
+                        <div class="chart-label"><?php echo str_pad(safeNumeric($hour['payment_hour']), 2, '0', STR_PAD_LEFT); ?>:00</div>
+>>>>>>> c9ccaba (Initial commit)
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -859,7 +990,11 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
                                             <?php echo $payment['bill_type']; ?>
                                         </span>
                                     </td>
+<<<<<<< HEAD
                                     <td><strong><?php echo formatCurrency($payment['amount_paid']); ?></strong></td>
+=======
+                                    <td><strong><?php echo safeCurrency($payment['amount_paid']); ?></strong></td>
+>>>>>>> c9ccaba (Initial commit)
                                     <td>
                                         <span class="method-badge method-<?php echo strtolower(str_replace(' ', '', $payment['payment_method'])); ?>">
                                             <?php echo htmlspecialchars($payment['payment_method']); ?>
@@ -964,4 +1099,8 @@ $property_percentage = $dailySummary['total_payments'] > 0 ?
         }
     </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> c9ccaba (Initial commit)

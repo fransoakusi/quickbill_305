@@ -37,6 +37,19 @@ if (!isRevenueOfficer() && !isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $userDisplayName = getUserDisplayName($currentUser);
 
 // Initialize variables
@@ -44,6 +57,12 @@ $searchTerm = '';
 $searchResults = [];
 $selectedAccount = null;
 $currentBill = null;
+<<<<<<< HEAD
+=======
+$remainingBalance = 0;
+$totalPaid = 0;
+$paymentSummary = null;
+>>>>>>> c9ccaba (Initial commit)
 $error = '';
 $success = '';
 $paymentProcessed = false;
@@ -137,6 +156,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 }
                 
                 if ($selectedAccount) {
+<<<<<<< HEAD
+=======
+                    // Calculate remaining balance (outstanding amount after all payments)
+                    $totalPaymentsQuery = "SELECT COALESCE(SUM(p.amount_paid), 0) as total_paid
+                                          FROM payments p 
+                                          INNER JOIN bills b ON p.bill_id = b.bill_id 
+                                          WHERE b.bill_type = ? AND b.reference_id = ? 
+                                          AND p.payment_status = 'Successful'";
+                    $totalPaymentsResult = $db->fetchRow($totalPaymentsQuery, [ucfirst($accountType), $accountId]);
+                    $totalPaid = $totalPaymentsResult['total_paid'] ?? 0;
+                    
+                    // Calculate remaining balance: amount payable minus total successful payments
+                    $remainingBalance = max(0, $selectedAccount['amount_payable'] - $totalPaid);
+                    
+                    // Get payment summary
+                    $paymentSummary = $db->fetchRow("
+                        SELECT 
+                            COALESCE(SUM(CASE WHEN p.payment_status = 'Successful' THEN p.amount_paid ELSE 0 END), 0) as total_paid,
+                            COUNT(CASE WHEN p.payment_status = 'Successful' THEN 1 END) as successful_payments,
+                            COUNT(*) as total_transactions
+                        FROM payments p
+                        JOIN bills b ON p.bill_id = b.bill_id
+                        WHERE b.bill_type = ? AND b.reference_id = ?
+                    ", [ucfirst($accountType), $accountId]);
+                    
+>>>>>>> c9ccaba (Initial commit)
                     // Get current year bill
                     $currentYear = date('Y');
                     $currentBill = $db->fetchRow("
@@ -177,6 +222,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $error = 'Invalid bill selected.';
         } elseif ($amountPaid <= 0) {
             $error = 'Please enter a valid payment amount.';
+<<<<<<< HEAD
+=======
+        } elseif ($amountPaid > $remainingBalance && $remainingBalance > 0) {
+            $error = 'Payment amount cannot exceed the remaining balance of ₵ ' . number_format($remainingBalance, 2);
+>>>>>>> c9ccaba (Initial commit)
         } elseif (empty($paymentMethod)) {
             $error = 'Please select a payment method.';
         } else {
@@ -186,11 +236,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 
                 if (!$bill) {
                     $error = 'Bill not found.';
+<<<<<<< HEAD
                 } elseif ($amountPaid > $bill['amount_payable']) {
                     $error = 'Payment amount cannot exceed the amount payable.';
                 } else {
                     // Generate payment reference
                     $paymentReference = 'PAY' . date('Y') . str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
+=======
+                } else {
+                    // Generate payment reference
+                    $paymentReference = 'PAY' . date('Ymd') . strtoupper(substr(uniqid(), -6));
+>>>>>>> c9ccaba (Initial commit)
                     
                     try {
                         // Begin transaction for data consistency
@@ -259,12 +315,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                 ]);
                             }
                             
+<<<<<<< HEAD
                             $success = "Payment recorded successfully! Reference: {$paymentReference}";
+=======
+                            $newRemainingBalance = $remainingBalance - $amountPaid;
+                            $success = "Payment recorded successfully! Reference: {$paymentReference}. " . 
+                                     ($newRemainingBalance <= 0 ? "Account fully paid!" : "Remaining balance: ₵ " . number_format($newRemainingBalance, 2));
+>>>>>>> c9ccaba (Initial commit)
                             $paymentProcessed = true;
                             
                             // Clear selected account to prevent duplicate submissions
                             $selectedAccount = null;
                             $currentBill = null;
+<<<<<<< HEAD
+=======
+                            $remainingBalance = 0;
+>>>>>>> c9ccaba (Initial commit)
                             
                         } else {
                             $db->rollback();
@@ -324,6 +390,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         .icon-check::before { content: "✅"; }
         .icon-warning::before { content: "⚠️"; }
         .icon-back::before { content: "←"; }
+<<<<<<< HEAD
+=======
+        .icon-balance::before { content: "⚖️"; }
+        .icon-cash::before { content: "💵"; }
+        .icon-info::before { content: "ℹ️"; }
+>>>>>>> c9ccaba (Initial commit)
         
         /* Header */
         .header {
@@ -578,6 +650,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             font-weight: 700;
         }
         
+<<<<<<< HEAD
+=======
+        /* Balance Highlight */
+        .balance-highlight {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .balance-highlight.paid {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-color: #10b981;
+        }
+        
+        .balance-highlight::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: rotate(0deg) translate(-50%, -50%); }
+            50% { transform: rotate(180deg) translate(-50%, -50%); }
+        }
+        
+        .balance-highlight h4 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .balance-highlight.paid h4 {
+            color: #065f46;
+        }
+        
+        .balance-amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: #92400e;
+            margin: 15px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .balance-highlight.paid .balance-amount {
+            color: #065f46;
+        }
+        
+        .balance-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+            color: #92400e;
+        }
+        
+        .balance-highlight.paid .balance-subtitle {
+            color: #065f46;
+        }
+        
+        /* Balance Details Button */
+        .balance-details-btn {
+            background: rgba(255,255,255,0.3);
+            border: 2px solid rgba(146, 64, 14, 0.3);
+            color: #92400e;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .balance-highlight.paid .balance-details-btn {
+            border-color: rgba(6, 95, 70, 0.3);
+            color: #065f46;
+        }
+        
+        .balance-details-btn:hover {
+            background: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+        
+        /* Quick Amount Buttons */
+        .quick-amounts {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .quick-amount-btn {
+            background: rgba(229, 62, 62, 0.1);
+            border: 1px solid #e53e3e;
+            color: #e53e3e;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .quick-amount-btn:hover {
+            background: #e53e3e;
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Bill Summary */
         .bill-summary {
             background: #f7fafc;
@@ -651,6 +849,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             transform: none;
         }
         
+<<<<<<< HEAD
+=======
+        /* Payment Summary Card */
+        .payment-summary-card {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .payment-summary-card h4 {
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .payment-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .payment-stat {
+            text-align: center;
+        }
+        
+        .payment-stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .payment-stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Alerts */
         .alert {
             padding: 15px 20px;
@@ -673,6 +911,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             color: #c53030;
         }
         
+<<<<<<< HEAD
+=======
+        .alert-info {
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+            color: #285e61;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Responsive */
         @media (max-width: 768px) {
             .search-form {
@@ -700,6 +947,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             .results-table td {
                 padding: 10px 8px;
             }
+<<<<<<< HEAD
+=======
+            
+            .quick-amounts {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .payment-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .balance-amount {
+                font-size: 28px;
+            }
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Animation */
@@ -711,6 +973,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         .fade-in {
             animation: fadeIn 0.6s ease-out;
         }
+<<<<<<< HEAD
+=======
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+>>>>>>> c9ccaba (Initial commit)
     </style>
 </head>
 <body>
@@ -835,6 +1109,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
         <!-- Account Details & Payment Form -->
         <?php if ($selectedAccount && $currentBill): ?>
+<<<<<<< HEAD
+=======
+            <!-- Payment Summary Card -->
+            <?php if ($paymentSummary): ?>
+                <div class="payment-summary-card fade-in">
+                    <h4>
+                        <i class="fas fa-chart-line"></i>
+                        <span class="icon-info" style="display: none;"></span>
+                        Payment Summary
+                    </h4>
+                    <div class="payment-stats">
+                        <div class="payment-stat">
+                            <div class="payment-stat-value">₵ <?php echo number_format($paymentSummary['total_paid'] ?? 0, 2); ?></div>
+                            <div class="payment-stat-label">Total Paid</div>
+                        </div>
+                        <div class="payment-stat">
+                            <div class="payment-stat-value">₵ <?php echo number_format($remainingBalance, 2); ?></div>
+                            <div class="payment-stat-label">Remaining</div>
+                        </div>
+                        <div class="payment-stat">
+                            <div class="payment-stat-value"><?php echo $paymentSummary['successful_payments'] ?? 0; ?></div>
+                            <div class="payment-stat-label">Payments</div>
+                        </div>
+                        <div class="payment-stat">
+                            <div class="payment-stat-value"><?php echo number_format(($paymentSummary['total_paid'] / max($selectedAccount['amount_payable'], 1)) * 100, 1); ?>%</div>
+                            <div class="payment-stat-label">Progress</div>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+>>>>>>> c9ccaba (Initial commit)
             <div class="account-details fade-in">
                 <div class="account-header">
                     <i class="fas <?php echo $selectedAccount['type'] === 'business' ? 'fa-building' : 'fa-home'; ?>" style="color: #e53e3e; font-size: 24px;"></i>
@@ -891,6 +1197,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     <?php endif; ?>
                 </div>
 
+<<<<<<< HEAD
+=======
+                <!-- Remaining Balance Highlight -->
+                <div class="balance-highlight <?php echo $remainingBalance <= 0 ? 'paid' : ''; ?> <?php echo $remainingBalance > 0 ? 'pulse' : ''; ?>">
+                    <h4>
+                        <i class="fas fa-balance-scale"></i>
+                        <span class="icon-balance" style="display: none;"></span>
+                        <?php echo $remainingBalance <= 0 ? 'Account Fully Paid' : 'Outstanding Balance'; ?>
+                    </h4>
+                    <div class="balance-amount">
+                        ₵ <?php echo number_format($remainingBalance, 2); ?>
+                    </div>
+                    <div class="balance-subtitle">
+                        <?php if ($remainingBalance > 0): ?>
+                            This amount needs to be paid to clear the account
+                        <?php else: ?>
+                            ✅ All bills have been settled
+                        <?php endif; ?>
+                    </div>
+                    
+                    <button onclick="showBalanceDetails()" class="balance-details-btn">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="icon-info" style="display: none;"></span>
+                        View Details
+                    </button>
+                    
+                    <?php if ($remainingBalance > 0): ?>
+                        <div class="quick-amounts">
+                            <?php
+                            $quickAmounts = [];
+                            if ($remainingBalance >= 100) $quickAmounts[] = 100;
+                            if ($remainingBalance >= 200) $quickAmounts[] = 200;
+                            if ($remainingBalance >= 500) $quickAmounts[] = 500;
+                            $quickAmounts[] = round($remainingBalance / 2, 2);
+                            $quickAmounts[] = $remainingBalance;
+                            $quickAmounts = array_unique($quickAmounts);
+                            sort($quickAmounts);
+                            
+                            foreach ($quickAmounts as $amount):
+                            ?>
+                                <button type="button" class="quick-amount-btn" onclick="setAmount(<?php echo $amount; ?>)">
+                                    ₵ <?php echo number_format($amount, 2); ?>
+                                </button>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+>>>>>>> c9ccaba (Initial commit)
                 <!-- Bill Summary -->
                 <div class="bill-summary">
                     <h3>
@@ -924,6 +1279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             </div>
 
             <!-- Payment Form -->
+<<<<<<< HEAD
             <div class="payment-form fade-in">
                 <h3 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
                     <i class="fas fa-credit-card" style="color: #38a169;"></i>
@@ -998,10 +1354,108 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     </button>
                 </form>
             </div>
+=======
+            <?php if ($remainingBalance > 0): ?>
+                <div class="payment-form fade-in">
+                    <h3 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-credit-card" style="color: #38a169;"></i>
+                        <span class="icon-money" style="display: none;"></span>
+                        Record Payment
+                    </h3>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="icon-info" style="display: none;"></span>
+                        Maximum payment amount: ₵ <?php echo number_format($remainingBalance, 2); ?>
+                    </div>
+
+                    <form method="POST" id="paymentForm">
+                        <?php echo csrfField(); ?>
+                        <input type="hidden" name="action" value="record_payment">
+                        <input type="hidden" name="bill_id" value="<?php echo $currentBill['bill_id']; ?>">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="amount_paid" class="form-label">Payment Amount *</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="amount_paid" 
+                                       name="amount_paid"
+                                       step="0.01"
+                                       min="0.01"
+                                       max="<?php echo $remainingBalance; ?>"
+                                       placeholder="Enter payment amount"
+                                       required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="payment_method" class="form-label">Payment Method *</label>
+                                <select class="form-control" id="payment_method" name="payment_method" required>
+                                    <option value="">Select payment method</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Mobile Money">Mobile Money</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                    <option value="Online">Online Payment</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="payment_channel" class="form-label">Payment Channel</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="payment_channel" 
+                                       name="payment_channel"
+                                       placeholder="e.g., MTN Mobile Money, AirtelTigo, Vodafone">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="transaction_id" class="form-label">Transaction ID/Reference</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="transaction_id" 
+                                       name="transaction_id"
+                                       placeholder="Enter transaction reference number">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes" class="form-label">Notes (Optional)</label>
+                            <textarea class="form-control" 
+                                      id="notes" 
+                                      name="notes" 
+                                      rows="3"
+                                      placeholder="Add any additional notes about this payment"></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            <i class="fas fa-check-circle"></i>
+                            <span class="icon-check" style="display: none;"></span>
+                            Record Payment
+                        </button>
+                    </form>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-success fade-in">
+                    <i class="fas fa-check-circle"></i>
+                    <span class="icon-check" style="display: none;"></span>
+                    This account is fully paid. No outstanding balance.
+                </div>
+            <?php endif; ?>
+>>>>>>> c9ccaba (Initial commit)
         <?php endif; ?>
     </div>
 
     <script>
+<<<<<<< HEAD
+=======
+        // Global variables
+        const remainingBalance = <?php echo $remainingBalance; ?>;
+        const accountName = <?php echo json_encode($selectedAccount['name'] ?? ''); ?>;
+        const accountNumber = <?php echo json_encode($selectedAccount['account_number'] ?? ''); ?>;
+        
+>>>>>>> c9ccaba (Initial commit)
         // Check if Font Awesome loaded, if not show emoji icons
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
@@ -1018,7 +1472,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
             // Auto-focus search field
             const searchField = document.getElementById('search_term');
+<<<<<<< HEAD
             if (searchField) {
+=======
+            if (searchField && !<?php echo $selectedAccount ? 'true' : 'false'; ?>) {
+>>>>>>> c9ccaba (Initial commit)
                 searchField.focus();
             }
 
@@ -1031,6 +1489,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 // Format amount as user types
                 amountField.addEventListener('input', function() {
                     const value = parseFloat(this.value);
+<<<<<<< HEAD
                     const maxAmount = <?php echo $selectedAccount['amount_payable'] ?? 0; ?>;
                     
                     if (value > maxAmount) {
@@ -1038,12 +1497,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     } else {
                         this.setCustomValidity('');
                     }
+=======
+                    
+                    if (value > remainingBalance) {
+                        this.setCustomValidity(`Payment amount cannot exceed the remaining balance of ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`);
+                    } else {
+                        this.setCustomValidity('');
+                    }
+                    
+                    // Update submit button text
+                    if (value > 0) {
+                        const newBalance = remainingBalance - value;
+                        if (newBalance <= 0) {
+                            submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Complete Payment (Full Settlement)';
+                        } else {
+                            submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> Record Payment (₵ ${newBalance.toLocaleString('en-US', {minimumFractionDigits: 2})} remaining)`;
+                        }
+                    } else {
+                        submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Record Payment';
+                    }
+>>>>>>> c9ccaba (Initial commit)
                 });
 
                 // Prevent form resubmission
                 paymentForm.addEventListener('submit', function(e) {
                     submitBtn.disabled = true;
+<<<<<<< HEAD
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+=======
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Payment...';
+>>>>>>> c9ccaba (Initial commit)
                 });
             }
 
@@ -1070,12 +1553,119 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
         });
 
+<<<<<<< HEAD
+=======
+        // Show detailed balance information
+        function showBalanceDetails() {
+            const balanceModal = document.createElement('div');
+            balanceModal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 10000;
+                display: flex; align-items: center; justify-content: center;
+                animation: fadeIn 0.3s ease; cursor: pointer;
+            `;
+            
+            const balanceContent = document.createElement('div');
+            balanceContent.style.cssText = `
+                background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 90%;
+                box-shadow: 0 25px 80px rgba(0,0,0,0.4); text-align: center;
+                animation: modalSlideIn 0.4s ease; cursor: default;
+            `;
+            
+            const amountPayable = <?php echo $selectedAccount['amount_payable'] ?? 0; ?>;
+            const totalPaid = <?php echo $totalPaid; ?>;
+            const paymentProgress = amountPayable > 0 ? (totalPaid / amountPayable) * 100 : 100;
+            
+            balanceContent.innerHTML = `
+                <h3 style="margin: 0 0 20px 0; color: #2d3748; display: flex; align-items: center; gap: 10px; justify-content: center;">
+                    <i class="fas fa-balance-scale" style="color: #e53e3e;"></i>
+                    ⚖️ Balance Analysis
+                </h3>
+                <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h4 style="margin: 0 0 15px 0; color: #e53e3e; font-size: 18px;">${accountName}</h4>
+                    <p style="margin: 0 0 20px 0; color: #64748b;">Account: ${accountNumber}</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div style="text-align: left;">
+                            <strong style="color: #2d3748;">Total Amount Payable:</strong>
+                            <div style="font-size: 24px; font-weight: bold; color: #e53e3e; margin-top: 5px;">
+                                ₵ ${amountPayable.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                            </div>
+                        </div>
+                        <div style="text-align: left;">
+                            <strong style="color: #2d3748;">Total Paid:</strong>
+                            <div style="font-size: 24px; font-weight: bold; color: #059669; margin-top: 5px;">
+                                ₵ ${totalPaid.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <strong style="color: #2d3748;">Payment Progress:</strong>
+                        <div style="background: #e2e8f0; height: 12px; border-radius: 6px; margin: 10px 0; overflow: hidden;">
+                            <div style="background: linear-gradient(90deg, #10b981, #059669); height: 100%; width: ${Math.min(paymentProgress, 100)}%; transition: width 1s ease;"></div>
+                        </div>
+                        <div style="font-size: 14px; color: #64748b;">${paymentProgress.toFixed(1)}% Completed</div>
+                    </div>
+                    <div style="border: 3px solid ${remainingBalance > 0 ? '#f59e0b' : '#10b981'}; 
+                                background: ${remainingBalance > 0 ? '#fef3c7' : '#d1fae5'}; 
+                                padding: 20px; border-radius: 12px; margin-top: 20px;">
+                        <h4 style="margin: 0 0 10px 0; color: ${remainingBalance > 0 ? '#92400e' : '#065f46'};">
+                            ${remainingBalance > 0 ? '⚠️ Outstanding Balance' : '✅ Account Status'}
+                        </h4>
+                        <div style="font-size: 36px; font-weight: bold; color: ${remainingBalance > 0 ? '#92400e' : '#065f46'}; margin: 15px 0;">
+                            ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: ${remainingBalance > 0 ? '#92400e' : '#065f46'};">
+                            ${remainingBalance > 0 ? 'This amount needs to be paid to clear the account' : 'All bills have been fully settled'}
+                        </p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
+                    <button onclick="this.closest('.balance-modal').remove()" style="
+                        background: #94a3b8; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                        cursor: pointer; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                        align-items: center; gap: 8px; font-size: 14px;">
+                        <i class="fas fa-times"></i> ❌ Close
+                    </button>
+                </div>
+            `;
+            
+            balanceModal.className = 'balance-modal';
+            balanceModal.appendChild(balanceContent);
+            document.body.appendChild(balanceModal);
+            
+            // Close modal when clicking backdrop
+            balanceModal.addEventListener('click', function(e) {
+                if (e.target === balanceModal) {
+                    balanceModal.remove();
+                }
+            });
+            
+            // Add animations if not already present
+            if (!document.getElementById('modalAnimations')) {
+                const style = document.createElement('style');
+                style.id = 'modalAnimations';
+                style.textContent = `
+                    @keyframes modalSlideIn {
+                        from { transform: scale(0.8) translateY(-20px); opacity: 0; }
+                        to { transform: scale(1) translateY(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+>>>>>>> c9ccaba (Initial commit)
         // Quick amount buttons
         function setAmount(amount) {
             const amountField = document.getElementById('amount_paid');
             if (amountField) {
                 amountField.value = amount.toFixed(2);
                 amountField.dispatchEvent(new Event('input'));
+<<<<<<< HEAD
+=======
+                amountField.focus();
+>>>>>>> c9ccaba (Initial commit)
             }
         }
 
@@ -1084,12 +1674,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             // Ctrl + Enter to submit payment form
             if (e.ctrlKey && e.key === 'Enter') {
                 const paymentForm = document.getElementById('paymentForm');
+<<<<<<< HEAD
                 if (paymentForm) {
+=======
+                if (paymentForm && remainingBalance > 0) {
+>>>>>>> c9ccaba (Initial commit)
                     e.preventDefault();
                     paymentForm.submit();
                 }
             }
+<<<<<<< HEAD
         });
+=======
+            
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                const modals = document.querySelectorAll('.balance-modal');
+                modals.forEach(modal => modal.remove());
+            }
+            
+            // Ctrl + B for balance details
+            if ((e.ctrlKey || e.metaKey) && e.key === 'b' && remainingBalance >= 0) {
+                e.preventDefault();
+                showBalanceDetails();
+            }
+        });
+
+        console.log('✅ Payment recording page initialized successfully');
+        if (remainingBalance >= 0) {
+            console.log(`💰 Remaining Balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`);
+        }
+>>>>>>> c9ccaba (Initial commit)
     </script>
 </body>
 </html>

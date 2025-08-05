@@ -1,7 +1,11 @@
 <?php
 /**
  * Data Collector - Business Locations Map
+<<<<<<< HEAD
  * map/businesses.php
+=======
+ * map/businesses.php - FIXED VERSION
+>>>>>>> c9ccaba (Initial commit)
  */
 
 // Define application constant
@@ -30,11 +34,28 @@ if (!isLoggedIn() || !isset($_SESSION['user_id'])) {
     header('Location: ../../auth/login.php');
     exit();
 }
+<<<<<<< HEAD
 
 // Check if user is officer or admin
 $currentUser = getCurrentUser();
 if (empty($currentUser) || !isset($currentUser['id'])) {
     error_log("getCurrentUser() failed or returned no ID: " . json_encode($currentUser));
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+// Check if user is officer or admin
+$currentUser = getCurrentUser();
+if (empty($currentUser) || !isset($currentUser['user_id'])) { // FIXED: Changed from 'id' to 'user_id'
+    error_log("getCurrentUser() failed or returned no user_id: " . json_encode($currentUser));
+>>>>>>> c9ccaba (Initial commit)
     setFlashMessage('error', 'User data not found. Please log in again.');
     header('Location: ../../auth/login.php');
     exit();
@@ -77,9 +98,15 @@ try {
         $params[] = $status_filter;
     }
     
+<<<<<<< HEAD
     if ($my_businesses_only && isset($currentUser['id'])) {
         $where_conditions[] = "b.created_by = ?";
         $params[] = $currentUser['id'];
+=======
+    if ($my_businesses_only && isset($currentUser['user_id'])) { // FIXED: Changed from 'id' to 'user_id'
+        $where_conditions[] = "b.created_by = ?";
+        $params[] = $currentUser['user_id']; // FIXED: Changed from 'id' to 'user_id'
+>>>>>>> c9ccaba (Initial commit)
     }
     
     $where_clause = 'WHERE ' . implode(' AND ', $where_conditions);
@@ -117,7 +144,11 @@ try {
     $business_types = $db->fetchAll("SELECT DISTINCT business_type FROM businesses ORDER BY business_type");
     
     // Get summary stats
+<<<<<<< HEAD
     $stats_params = isset($currentUser['id']) ? [$currentUser['id']] : [0];
+=======
+    $stats_params = isset($currentUser['user_id']) ? [$currentUser['user_id']] : [0]; // FIXED: Changed from 'id' to 'user_id'
+>>>>>>> c9ccaba (Initial commit)
     $stats = $db->fetchRow("
         SELECT 
             COUNT(*) as total_with_coordinates,
@@ -764,6 +795,23 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             margin-bottom: 20px;
         }
         
+<<<<<<< HEAD
+=======
+        /* Debug Info */
+        .debug-info {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 1000;
+            display: none;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -829,6 +877,20 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     </style>
 </head>
 <body>
+<<<<<<< HEAD
+=======
+    <!-- Debug Info (only shown in development) -->
+    <?php if (isset($_GET['debug'])): ?>
+    <div class="debug-info" style="display: block;">
+        <strong>Debug Info:</strong><br>
+        User ID: <?php echo $currentUser['user_id'] ?? 'Not set'; ?><br>
+        Current User Keys: <?php echo implode(', ', array_keys($currentUser)); ?><br>
+        Businesses Count: <?php echo count($businesses); ?><br>
+        My Businesses Count: <?php echo $stats['my_count'] ?? 0; ?>
+    </div>
+    <?php endif; ?>
+
+>>>>>>> c9ccaba (Initial commit)
     <!-- Top Navigation -->
     <div class="top-nav">
         <div class="nav-left">
@@ -971,6 +1033,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             Search Accounts
                         </a>
                     </div>
+<<<<<<< HEAD
                     <div class="nav-item">
                         <a href="../billing/generate.php" class="nav-link <?php echo ($currentDir === 'billing' && $currentPage === 'generate.php') ? 'active' : ''; ?>">
                             <span class="nav-icon">
@@ -989,13 +1052,21 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             Print Bills
                         </a>
                     </div>
+=======
+
+                  
+>>>>>>> c9ccaba (Initial commit)
                 </div>
                 
                 <!-- Maps & Locations -->
                 <div class="nav-section">
                     <div class="nav-title">Maps & Locations</div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="businesses.php" class="nav-link <?php echo ($currentDir === 'map' && $currentPage === 'businesses.php') ? 'active' : ''; ?>">
+=======
+                        <a href="businesses.php" class="nav-link active">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-map-marked-alt"></i>
                                 <span class="icon-map" style="display: none;"></span>
@@ -1198,6 +1269,16 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     </div>
     
     <script>
+<<<<<<< HEAD
+=======
+        // Debug logging function
+        function debugLog(message) {
+            if (<?php echo isset($_GET['debug']) ? 'true' : 'false'; ?>) {
+                console.log('Debug:', message);
+            }
+        }
+
+>>>>>>> c9ccaba (Initial commit)
         // Check if Font Awesome loaded, if not show emoji icons
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
@@ -1235,6 +1316,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             
             const isHidden = sidebar.classList.contains('hidden');
             localStorage.setItem('sidebarHidden', isHidden);
+<<<<<<< HEAD
+=======
+            debugLog('Sidebar toggled. Hidden: ' + isHidden);
+>>>>>>> c9ccaba (Initial commit)
         }
 
         // Restore sidebar state
@@ -1257,6 +1342,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     businessSidebar.classList.add('hidden');
                 }
             }
+<<<<<<< HEAD
+=======
+            debugLog('Sidebar state restored. Hidden: ' + sidebarHidden);
+>>>>>>> c9ccaba (Initial commit)
         });
 
         // User dropdown toggle
@@ -1305,6 +1394,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         
         // Business data
         const businesses = <?php echo json_encode($businesses); ?>;
+<<<<<<< HEAD
+=======
+        debugLog('Loaded businesses count: ' + businesses.length);
+>>>>>>> c9ccaba (Initial commit)
         
         // Initialize map
         function initMap() {
@@ -1334,16 +1427,33 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     google.maps.event.removeListener(listener);
                 });
             }
+<<<<<<< HEAD
+=======
+            debugLog('Map initialized with ' + markers.length + ' markers');
+>>>>>>> c9ccaba (Initial commit)
         }
         
         // Add markers to map
         function addMarkers() {
+<<<<<<< HEAD
             businesses.forEach(business => {
+=======
+            businesses.forEach((business, index) => {
+>>>>>>> c9ccaba (Initial commit)
                 const position = {
                     lat: parseFloat(business.latitude),
                     lng: parseFloat(business.longitude)
                 };
                 
+<<<<<<< HEAD
+=======
+                // Validate coordinates
+                if (isNaN(position.lat) || isNaN(position.lng)) {
+                    debugLog('Invalid coordinates for business ' + business.business_id + ': ' + business.latitude + ', ' + business.longitude);
+                    return;
+                }
+                
+>>>>>>> c9ccaba (Initial commit)
                 // Determine marker color based on status and payment
                 let markerColor = 'red'; // Default for defaulters
                 if (business.payment_status === 'Up to Date' && business.status === 'Active') {
@@ -1410,6 +1520,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 });
                 
                 markers.push(marker);
+<<<<<<< HEAD
+=======
+                debugLog('Added marker for business ' + business.business_id + ' at ' + position.lat + ', ' + position.lng);
+>>>>>>> c9ccaba (Initial commit)
             });
         }
         
@@ -1422,6 +1536,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     map.setCenter(marker.getPosition());
                     map.setZoom(16);
                     google.maps.event.trigger(marker, 'click');
+<<<<<<< HEAD
+=======
+                    debugLog('Focused on business ' + businessId);
+>>>>>>> c9ccaba (Initial commit)
                 }
             }
             
@@ -1440,6 +1558,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             if (businessItem) {
                 businessItem.classList.add('active');
                 businessItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+<<<<<<< HEAD
+=======
+                debugLog('Highlighted business ' + businessId);
+>>>>>>> c9ccaba (Initial commit)
             }
         }
         
@@ -1447,6 +1569,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         function toggleMapType() {
             currentMapType = currentMapType === 'roadmap' ? 'satellite' : 'roadmap';
             map.setMapTypeId(currentMapType);
+<<<<<<< HEAD
+=======
+            debugLog('Map type changed to: ' + currentMapType);
+>>>>>>> c9ccaba (Initial commit)
         }
         
         // Center map on all markers
@@ -1460,13 +1586,26 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     if (map.getZoom() > 16) map.setZoom(16);
                     google.maps.event.removeListener(listener);
                 });
+<<<<<<< HEAD
+=======
+                debugLog('Map centered on all markers');
+>>>>>>> c9ccaba (Initial commit)
             }
         }
         
         // Initialize map when page loads
         window.onload = function() {
             <?php if (!empty($businesses)): ?>
+<<<<<<< HEAD
             initMap();
+=======
+            try {
+                initMap();
+            } catch (error) {
+                console.error('Map initialization error:', error);
+                debugLog('Map initialization failed: ' + error.message);
+            }
+>>>>>>> c9ccaba (Initial commit)
             <?php endif; ?>
         };
         
@@ -1513,6 +1652,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 }
             }
         });
+<<<<<<< HEAD
+=======
+
+        // Error handling for map loading
+        window.gm_authFailure = function() {
+            console.error('Google Maps authentication failed');
+            alert('Google Maps failed to load. Please check your API key.');
+        };
+>>>>>>> c9ccaba (Initial commit)
     </script>
 </body>
 </html>

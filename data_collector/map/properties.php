@@ -37,6 +37,28 @@ if (!isDataCollector() && !isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+// Get the user ID safely - handle both possible key names
+$userId = $currentUser['user_id'] ?? $currentUser['id'] ?? null;
+
+if (!$userId) {
+    setFlashMessage('error', 'User session invalid.');
+    header('Location: ../../auth/login.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $userDisplayName = getUserDisplayName($currentUser);
 
 // Handle filtering
@@ -69,7 +91,11 @@ try {
     
     if ($my_properties_only) {
         $where_conditions[] = "p.created_by = ?";
+<<<<<<< HEAD
         $params[] = $currentUser['id'];
+=======
+        $params[] = $userId; // FIXED: Using $userId instead of $currentUser['id']
+>>>>>>> c9ccaba (Initial commit)
     }
     
     $where_clause = 'WHERE ' . implode(' AND ', $where_conditions);
@@ -115,7 +141,11 @@ try {
             SUM(CASE WHEN created_by = ? THEN 1 ELSE 0 END) as my_count
         FROM properties 
         WHERE latitude IS NOT NULL AND longitude IS NOT NULL AND latitude != 0 AND longitude != 0
+<<<<<<< HEAD
     ", [$currentUser['id']]);
+=======
+    ", [$userId]); // FIXED: Using $userId instead of $currentUser['id']
+>>>>>>> c9ccaba (Initial commit)
     
 } catch (Exception $e) {
     $properties = [];
@@ -155,6 +185,13 @@ try {
         }
         
         /* Custom Icons (fallback if Font Awesome fails) */
+<<<<<<< HEAD
+=======
+        [class*="icon-"] {
+            display: none; /* Hidden by default */
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .icon-dashboard::before { content: "📊"; }
         .icon-building::before { content: "🏢"; }
         .icon-home::before { content: "🏠"; }
@@ -173,6 +210,10 @@ try {
         .icon-layer-group::before { content: "🗺️"; }
         .icon-crosshairs::before { content: "🎯"; }
         .icon-map-marker-alt::before { content: "📍"; }
+<<<<<<< HEAD
+=======
+        .icon-list::before { content: "📋"; }
+>>>>>>> c9ccaba (Initial commit)
         
         /* Top Navigation */
         .top-nav {
@@ -747,6 +788,45 @@ try {
             margin-bottom: 20px;
         }
         
+<<<<<<< HEAD
+=======
+        /* Mobile Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+        }
+        
+        .mobile-overlay.show {
+            display: block;
+        }
+        
+        /* Property Sidebar for Mobile */
+        .property-sidebar-mobile {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 0;
+            width: 300px;
+            height: calc(100vh - 80px);
+            background: white;
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .property-sidebar-mobile.show {
+            transform: translateX(0);
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -773,12 +853,48 @@ try {
             .map-controls {
                 top: 10px;
                 right: 10px;
+<<<<<<< HEAD
+=======
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .map-control {
+                font-size: 14px;
+                padding: 12px;
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .map-legend {
                 bottom: 10px;
                 left: 10px;
                 right: 10px;
+<<<<<<< HEAD
+=======
+                font-size: 12px;
+            }
+            
+            .legend-item {
+                margin-bottom: 4px;
+            }
+            
+            .legend-text {
+                font-size: 11px;
+            }
+            
+            .property-sidebar-mobile {
+                display: block;
+            }
+            
+            /* Hide desktop property sidebar on mobile */
+            #propertySidebar {
+                display: none;
+>>>>>>> c9ccaba (Initial commit)
             }
         }
         
@@ -794,17 +910,33 @@ try {
     </style>
 </head>
 <body>
+<<<<<<< HEAD
     <!-- Top Navigation -->
     <div class="top-nav">
         <div class="nav-left">
             <button class="toggle-btn" onclick="toggleSidebar()" id="toggleBtn">
                 <i class="fas fa-bars"></i>
                 <span class="icon-menu" style="display: none;"></span>
+=======
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeAllSidebars()"></div>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-left">
+            <button class="toggle-btn" onclick="toggleMainSidebar()" id="toggleBtn">
+                <i class="fas fa-bars"></i>
+                <span class="icon-menu"></span>
+>>>>>>> c9ccaba (Initial commit)
             </button>
             
             <a href="../index.php" class="brand">
                 <i class="fas fa-clipboard-list"></i>
+<<<<<<< HEAD
                 <span class="icon-dashboard" style="display: none;"></span>
+=======
+                <span class="icon-dashboard"></span>
+>>>>>>> c9ccaba (Initial commit)
                 Data Collector
             </a>
         </div>
@@ -832,18 +964,30 @@ try {
                     <div class="dropdown-menu">
                         <a href="#" class="dropdown-item" onclick="alert('Profile management coming soon!')">
                             <i class="fas fa-user"></i>
+<<<<<<< HEAD
                             <span class="icon-user" style="display: none;"></span>
+=======
+                            <span class="icon-user"></span>
+>>>>>>> c9ccaba (Initial commit)
                             My Profile
                         </a>
                         <a href="#" class="dropdown-item" onclick="alert('Help documentation coming soon!')">
                             <i class="fas fa-question-circle"></i>
+<<<<<<< HEAD
                             <span class="icon-question" style="display: none;"></span>
+=======
+                            <span class="icon-question"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Help & Support
                         </a>
                         <div style="height: 1px; background: #e2e8f0; margin: 10px 0;"></div>
                         <a href="../../auth/logout.php" class="dropdown-item logout">
                             <i class="fas fa-sign-out-alt"></i>
+<<<<<<< HEAD
                             <span class="icon-logout" style="display: none;"></span>
+=======
+                            <span class="icon-logout"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Logout
                         </a>
                     </div>
@@ -853,7 +997,11 @@ try {
     </div>
 
     <div class="container">
+<<<<<<< HEAD
         <!-- Sidebar -->
+=======
+        <!-- Main Navigation Sidebar -->
+>>>>>>> c9ccaba (Initial commit)
         <div class="sidebar hidden" id="sidebar">
             <div class="sidebar-content">
                 <!-- Dashboard -->
@@ -862,7 +1010,11 @@ try {
                         <a href="../index.php" class="nav-link">
                             <span class="nav-icon">
                                 <i class="fas fa-tachometer-alt"></i>
+<<<<<<< HEAD
                                 <span class="icon-dashboard" style="display: none;"></span>
+=======
+                                <span class="icon-dashboard"></span>
+>>>>>>> c9ccaba (Initial commit)
                             </span>
                             Dashboard
                         </a>
@@ -876,7 +1028,11 @@ try {
                         <a href="../businesses/index.php" class="nav-link">
                             <span class="nav-icon">
                                 <i class="fas fa-building"></i>
+<<<<<<< HEAD
                                 <span class="icon-building" style="display: none;"></span>
+=======
+                                <span class="icon-building"></span>
+>>>>>>> c9ccaba (Initial commit)
                             </span>
                             Businesses
                         </a>
@@ -885,7 +1041,11 @@ try {
                         <a href="../properties/index.php" class="nav-link">
                             <span class="nav-icon">
                                 <i class="fas fa-home"></i>
+<<<<<<< HEAD
                                 <span class="icon-home" style="display: none;"></span>
+=======
+                                <span class="icon-home"></span>
+>>>>>>> c9ccaba (Initial commit)
                             </span>
                             Properties
                         </a>
@@ -899,7 +1059,11 @@ try {
                         <a href="businesses.php" class="nav-link">
                             <span class="nav-icon">
                                 <i class="fas fa-map-marked-alt"></i>
+<<<<<<< HEAD
                                 <span class="icon-map" style="display: none;"></span>
+=======
+                                <span class="icon-map"></span>
+>>>>>>> c9ccaba (Initial commit)
                             </span>
                             Business Locations
                         </a>
@@ -908,7 +1072,11 @@ try {
                         <a href="properties.php" class="nav-link active">
                             <span class="nav-icon">
                                 <i class="fas fa-map-marker-alt"></i>
+<<<<<<< HEAD
                                 <span class="icon-location" style="display: none;"></span>
+=======
+                                <span class="icon-location"></span>
+>>>>>>> c9ccaba (Initial commit)
                             </span>
                             Property Locations
                         </a>
@@ -922,12 +1090,20 @@ try {
             <?php if (empty($properties)): ?>
                 <div class="empty-state">
                     <i class="fas fa-map"></i>
+<<<<<<< HEAD
                     <span class="icon-map" style="display: none;"></span>
+=======
+                    <span class="icon-map"></span>
+>>>>>>> c9ccaba (Initial commit)
                     <h3>No Property Locations</h3>
                     <p>No properties with GPS coordinates found. Register properties with location data to see them on the map.</p>
                     <a href="../properties/add.php" class="btn btn-primary">
                         <i class="fas fa-plus"></i>
+<<<<<<< HEAD
                         <span class="icon-plus" style="display: none;"></span>
+=======
+                        <span class="icon-plus"></span>
+>>>>>>> c9ccaba (Initial commit)
                         Register Property
                     </a>
                 </div>
@@ -938,6 +1114,7 @@ try {
                 <div class="map-controls">
                     <button class="map-control" onclick="toggleMapType()" title="Toggle Map Type">
                         <i class="fas fa-layer-group"></i>
+<<<<<<< HEAD
                         <span class="icon-layer-group" style="display: none;"></span>
                     </button>
                     <button class="map-control" onclick="centerMap()" title="Center Map">
@@ -947,6 +1124,17 @@ try {
                     <button class="map-control d-md-none" onclick="toggleSidebar()" title="Toggle Sidebar">
                         <i class="fas fa-bars"></i>
                         <span class="icon-menu" style="display: none;"></span>
+=======
+                        <span class="icon-layer-group"></span>
+                    </button>
+                    <button class="map-control" onclick="centerMap()" title="Center Map">
+                        <i class="fas fa-crosshairs"></i>
+                        <span class="icon-crosshairs"></span>
+                    </button>
+                    <button class="map-control d-md-none" onclick="togglePropertySidebar()" title="Properties & Filters">
+                        <i class="fas fa-list"></i>
+                        <span class="icon-list"></span>
+>>>>>>> c9ccaba (Initial commit)
                     </button>
                 </div>
                 
@@ -967,7 +1155,11 @@ try {
                     </div>
                 </div>
                 
+<<<<<<< HEAD
                 <!-- Property List -->
+=======
+                <!-- Desktop Property Sidebar -->
+>>>>>>> c9ccaba (Initial commit)
                 <div class="sidebar show d-none d-md-block" id="propertySidebar">
                     <div class="sidebar-content">
                         <!-- Statistics -->
@@ -1042,7 +1234,11 @@ try {
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-filter"></i>
+<<<<<<< HEAD
                                         <span class="icon-filter" style="display: none;"></span>
+=======
+                                        <span class="icon-filter"></span>
+>>>>>>> c9ccaba (Initial commit)
                                         Apply Filters
                                     </button>
                                 </div>
@@ -1050,7 +1246,11 @@ try {
                                 <div class="form-group">
                                     <a href="?" class="btn btn-secondary">
                                         <i class="fas fa-times"></i>
+<<<<<<< HEAD
                                         <span class="icon-times" style="display: none;"></span>
+=======
+                                        <span class="icon-times"></span>
+>>>>>>> c9ccaba (Initial commit)
                                         Clear Filters
                                     </a>
                                 </div>
@@ -1062,7 +1262,11 @@ try {
                             <?php if (empty($properties)): ?>
                                 <div class="empty-state">
                                     <i class="fas fa-map-marker-alt"></i>
+<<<<<<< HEAD
                                     <span class="icon-map-marker-alt" style="display: none;"></span>
+=======
+                                    <span class="icon-map-marker-alt"></span>
+>>>>>>> c9ccaba (Initial commit)
                                     <h4>No Properties Found</h4>
                                     <p>No properties with GPS coordinates match your filters.</p>
                                 </div>
@@ -1093,6 +1297,136 @@ try {
                         </div>
                     </div>
                 </div>
+<<<<<<< HEAD
+=======
+                
+                <!-- Mobile Property Sidebar -->
+                <div class="property-sidebar-mobile" id="propertySidebarMobile">
+                    <div class="sidebar-content">
+                        <!-- Statistics -->
+                        <div class="stats-section">
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-value"><?php echo number_format($stats['total_with_coordinates']); ?></div>
+                                    <div class="stat-label">Total</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value"><?php echo number_format($stats['residential_count']); ?></div>
+                                    <div class="stat-label">Residential</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value"><?php echo number_format($stats['commercial_count']); ?></div>
+                                    <div class="stat-label">Commercial</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value"><?php echo number_format($stats['my_count']); ?></div>
+                                    <div class="stat-label">My Properties</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Filters -->
+                        <div class="filters-section">
+                            <h4 class="section-title">Filters</h4>
+                            <form method="GET" action="">
+                                <div class="form-group">
+                                    <label class="form-label">Zone</label>
+                                    <select name="zone" class="form-control">
+                                        <option value="">All Zones</option>
+                                        <?php foreach ($zones as $zone): ?>
+                                            <option value="<?php echo $zone['zone_id']; ?>" 
+                                                    <?php echo $zone_filter == $zone['zone_id'] ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($zone['zone_name']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Property Use</label>
+                                    <select name="property_use" class="form-control">
+                                        <option value="">All Uses</option>
+                                        <option value="Residential" <?php echo $property_use_filter == 'Residential' ? 'selected' : ''; ?>>Residential</option>
+                                        <option value="Commercial" <?php echo $property_use_filter == 'Commercial' ? 'selected' : ''; ?>>Commercial</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Structure</label>
+                                    <select name="structure" class="form-control">
+                                        <option value="">All Structures</option>
+                                        <?php foreach ($structures as $structure): ?>
+                                            <option value="<?php echo htmlspecialchars($structure['structure']); ?>" 
+                                                    <?php echo $structure_filter == $structure['structure'] ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($structure['structure']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" name="my_properties" id="myPropertiesMobile" 
+                                               <?php echo $my_properties_only ? 'checked' : ''; ?>>
+                                        <label for="myPropertiesMobile" class="form-label" style="margin: 0;">Show only my registrations</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-filter"></i>
+                                        <span class="icon-filter"></span>
+                                        Apply Filters
+                                    </button>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <a href="?" class="btn btn-secondary">
+                                        <i class="fas fa-times"></i>
+                                        <span class="icon-times"></span>
+                                        Clear Filters
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Property List -->
+                        <div class="property-list">
+                            <?php if (empty($properties)): ?>
+                                <div class="empty-state">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span class="icon-map-marker-alt"></span>
+                                    <h4>No Properties Found</h4>
+                                    <p>No properties with GPS coordinates match your filters.</p>
+                                </div>
+                            <?php else: ?>
+                                <?php foreach ($properties as $property): ?>
+                                    <div class="property-item" onclick="focusOnProperty(<?php echo $property['property_id']; ?>); closeAllSidebars();" 
+                                         id="property-mobile-<?php echo $property['property_id']; ?>">
+                                        <div class="property-name"><?php echo htmlspecialchars($property['owner_name']); ?>'s Property</div>
+                                        <div class="property-details">
+                                            <?php echo htmlspecialchars($property['property_number']); ?> • 
+                                            <?php echo $property['number_of_rooms']; ?> rooms
+                                        </div>
+                                        <div class="property-details">
+                                            <?php echo htmlspecialchars($property['structure']); ?> • 
+                                            <?php echo htmlspecialchars($property['zone_name'] ?? 'No Zone'); ?>
+                                        </div>
+                                        <div class="property-status">
+                                            <span class="badge <?php echo $property['property_use'] == 'Residential' ? 'badge-info' : 'badge-teal'; ?>">
+                                                <?php echo $property['property_use']; ?>
+                                            </span>
+                                            <span class="badge <?php echo $property['payment_status'] == 'Up to Date' ? 'badge-success' : 'badge-danger'; ?>">
+                                                <?php echo $property['payment_status']; ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+>>>>>>> c9ccaba (Initial commit)
             <?php endif; ?>
         </div>
     </div>
@@ -1100,9 +1434,46 @@ try {
     <script>
         // Check if Font Awesome loaded, if not show emoji icons
         document.addEventListener('DOMContentLoaded', function() {
+<<<<<<< HEAD
             setTimeout(function() {
                 const testIcon = document.querySelector('.fas.fa-bars');
                 if (!testIcon || getComputedStyle(testIcon, ':before').content === 'none') {
+=======
+            // First, hide all emoji icons by default
+            document.querySelectorAll('[class*="icon-"]').forEach(function(emoji) {
+                emoji.style.display = 'none';
+            });
+            
+            // Then check if Font Awesome loaded
+            setTimeout(function() {
+                let fontAwesomeLoaded = false;
+                
+                // Check if Font Awesome CSS is loaded
+                const stylesheets = document.styleSheets;
+                for (let i = 0; i < stylesheets.length; i++) {
+                    try {
+                        const href = stylesheets[i].href;
+                        if (href && (href.includes('font-awesome') || href.includes('fontawesome'))) {
+                            fontAwesomeLoaded = true;
+                            break;
+                        }
+                    } catch (e) {
+                        // Cross-origin stylesheet, skip
+                    }
+                }
+                
+                // Also check if icons render properly
+                const testIcon = document.querySelector('.fas.fa-bars');
+                if (testIcon) {
+                    const iconStyle = getComputedStyle(testIcon, ':before');
+                    if (iconStyle.content === 'none' || iconStyle.content === '""') {
+                        fontAwesomeLoaded = false;
+                    }
+                }
+                
+                if (!fontAwesomeLoaded) {
+                    // Hide Font Awesome icons and show emoji fallbacks
+>>>>>>> c9ccaba (Initial commit)
                     document.querySelectorAll('.fas, .far').forEach(function(icon) {
                         icon.style.display = 'none';
                     });
@@ -1110,6 +1481,7 @@ try {
                         emoji.style.display = 'inline';
                     });
                 }
+<<<<<<< HEAD
             }, 100);
         });
 
@@ -1158,6 +1530,72 @@ try {
                 }
             }
         });
+=======
+            }, 200);
+        });
+
+        // Simple toggle functions
+        function toggleMainSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const propertySidebar = document.getElementById('propertySidebarMobile');
+            
+            // Close property sidebar if open
+            if (propertySidebar && propertySidebar.classList.contains('show')) {
+                propertySidebar.classList.remove('show');
+            }
+            
+            // Toggle main sidebar
+            sidebar.classList.toggle('show');
+            sidebar.classList.toggle('hidden');
+            
+            // Show/hide overlay
+            if (sidebar.classList.contains('show')) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        function togglePropertySidebar() {
+            const propertySidebar = document.getElementById('propertySidebarMobile');
+            const overlay = document.getElementById('mobileOverlay');
+            const mainSidebar = document.getElementById('sidebar');
+            
+            // Close main sidebar if open
+            if (mainSidebar && mainSidebar.classList.contains('show')) {
+                mainSidebar.classList.remove('show');
+                mainSidebar.classList.add('hidden');
+            }
+            
+            // Toggle property sidebar
+            propertySidebar.classList.toggle('show');
+            
+            // Show/hide overlay
+            if (propertySidebar.classList.contains('show')) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        function closeAllSidebars() {
+            const sidebar = document.getElementById('sidebar');
+            const propertySidebar = document.getElementById('propertySidebarMobile');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            if (sidebar) {
+                sidebar.classList.remove('show');
+                sidebar.classList.add('hidden');
+            }
+            
+            if (propertySidebar) {
+                propertySidebar.classList.remove('show');
+            }
+            
+            overlay.classList.remove('show');
+        }
+>>>>>>> c9ccaba (Initial commit)
 
         // User dropdown toggle
         function toggleUserDropdown() {
@@ -1179,6 +1617,7 @@ try {
             }
         });
 
+<<<<<<< HEAD
         // Close sidebar when clicking outside in mobile view
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
@@ -1197,6 +1636,8 @@ try {
             }
         });
 
+=======
+>>>>>>> c9ccaba (Initial commit)
         // Map initialization and functions
         let map;
         let markers = [];
@@ -1336,11 +1777,25 @@ try {
                 item.classList.remove('active');
             });
             
+<<<<<<< HEAD
             // Add highlight to selected property
             const propertyItem = document.getElementById(`property-${propertyId}`);
             if (propertyItem) {
                 propertyItem.classList.add('active');
                 propertyItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+=======
+            // Add highlight to selected property (both desktop and mobile)
+            const desktopItem = document.getElementById(`property-${propertyId}`);
+            const mobileItem = document.getElementById(`property-mobile-${propertyId}`);
+            
+            if (desktopItem) {
+                desktopItem.classList.add('active');
+                desktopItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            if (mobileItem) {
+                mobileItem.classList.add('active');
+>>>>>>> c9ccaba (Initial commit)
             }
         }
         
@@ -1371,6 +1826,7 @@ try {
             <?php endif; ?>
         };
         
+<<<<<<< HEAD
         // Handle responsive sidebar
         window.addEventListener('resize', function() {
             const sidebar = document.getElementById('sidebar');
@@ -1381,6 +1837,11 @@ try {
                     propertySidebar.classList.remove('show');
                 }
             }
+=======
+        // Handle responsive behavior
+        window.addEventListener('resize', function() {
+            closeAllSidebars();
+>>>>>>> c9ccaba (Initial commit)
         });
     </script>
 </body>

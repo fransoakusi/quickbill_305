@@ -30,6 +30,19 @@ if (!isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $pageTitle = 'Fee Structure Management';
 $currentUser = getCurrentUser();
 $userDisplayName = getUserDisplayName($currentUser);
@@ -130,6 +143,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         .icon-user::before { content: "👤"; }
         .icon-money::before { content: "💰"; }
         .icon-arrow::before { content: "➡️"; }
+<<<<<<< HEAD
+=======
+        .icon-upload::before { content: "📁"; }
+        .icon-download::before { content: "⬇️"; }
+>>>>>>> c9ccaba (Initial commit)
         
         /* Top Navigation */
         .top-nav {
@@ -505,6 +523,80 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             margin: 0;
         }
         
+<<<<<<< HEAD
+=======
+        /* Import Section */
+        .import-section {
+            margin-bottom: 40px;
+        }
+        
+        .import-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .import-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
+        }
+        
+        .import-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .import-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .import-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .import-info h3 {
+            margin: 0 0 8px 0;
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .import-info p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .import-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Fee Structure Cards */
         .fee-structure-grid {
             display: grid;
@@ -615,6 +707,7 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         
         .card-actions {
             display: flex;
+<<<<<<< HEAD
             gap: 15px;
         }
         
@@ -622,16 +715,34 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             padding: 12px 24px;
             border: none;
             border-radius: 10px;
+=======
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+>>>>>>> c9ccaba (Initial commit)
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
+<<<<<<< HEAD
             gap: 8px;
             justify-content: center;
             font-size: 14px;
             flex: 1;
+=======
+            gap: 6px;
+            justify-content: center;
+            font-size: 13px;
+            flex: 1;
+            min-width: 120px;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .btn-primary {
@@ -731,6 +842,25 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             .card-actions {
                 flex-direction: column;
             }
+<<<<<<< HEAD
+=======
+            
+            .import-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 25px;
+            }
+            
+            .import-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .import-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Animations */
@@ -750,7 +880,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             }
         }
         
+<<<<<<< HEAD
         .fee-structure-card {
+=======
+        .fee-structure-card, .import-card {
+>>>>>>> c9ccaba (Initial commit)
             animation: slideIn 0.5s ease forwards;
         }
         
@@ -987,6 +1121,39 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                 </div>
             </div>
 
+<<<<<<< HEAD
+=======
+            <!-- Bulk Import Section -->
+            <?php if (hasPermission('fees.create')): ?>
+                <div class="import-section">
+                    <div class="import-card">
+                        <div class="import-header">
+                            <div class="import-icon">
+                                <i class="fas fa-upload"></i>
+                                <span class="icon-upload" style="display: none;"></span>
+                            </div>
+                            <div class="import-info">
+                                <h3>Bulk Import Fee Structures</h3>
+                                <p>Import multiple fee structures at once using CSV files</p>
+                            </div>
+                        </div>
+                        <div class="import-actions">
+                            <a href="import_fees.php" class="btn btn-primary">
+                                <i class="fas fa-upload"></i>
+                                <span class="icon-upload" style="display: none;"></span>
+                                Import Fees
+                            </a>
+                            <a href="#" onclick="downloadTemplate('business')" class="btn btn-outline">
+                                <i class="fas fa-download"></i>
+                                <span class="icon-download" style="display: none;"></span>
+                                Download Templates
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+>>>>>>> c9ccaba (Initial commit)
             <!-- Fee Structure Cards -->
             <div class="fee-structure-grid">
                 <!-- Business Fee Structure Card -->
@@ -1022,11 +1189,22 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             <i class="fas fa-cog"></i>
                             Manage Fees
                         </a>
+<<<<<<< HEAD
                         <?php if (hasPermission('fee_structure.create')): ?>
+=======
+                        <?php if (hasPermission('fees.create')): ?>
+>>>>>>> c9ccaba (Initial commit)
                             <a href="add_business_fee.php" class="btn btn-outline">
                                 <i class="fas fa-plus"></i>
                                 Add Fee
                             </a>
+<<<<<<< HEAD
+=======
+                            <a href="import_fees.php?type=business" class="btn btn-outline">
+                                <i class="fas fa-upload"></i>
+                                Import
+                            </a>
+>>>>>>> c9ccaba (Initial commit)
                         <?php endif; ?>
                     </div>
                 </div>
@@ -1064,11 +1242,22 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             <i class="fas fa-cog"></i>
                             Manage Fees
                         </a>
+<<<<<<< HEAD
                         <?php if (hasPermission('fee_structure.create')): ?>
+=======
+                        <?php if (hasPermission('fees.create')): ?>
+>>>>>>> c9ccaba (Initial commit)
                             <a href="add_property_fee.php" class="btn btn-outline">
                                 <i class="fas fa-plus"></i>
                                 Add Fee
                             </a>
+<<<<<<< HEAD
+=======
+                            <a href="import_fees.php?type=property" class="btn btn-outline">
+                                <i class="fas fa-upload"></i>
+                                Import
+                            </a>
+>>>>>>> c9ccaba (Initial commit)
                         <?php endif; ?>
                     </div>
                 </div>
@@ -1129,6 +1318,39 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             }
         });
 
+<<<<<<< HEAD
+=======
+        // Download template function
+        function downloadTemplate(type) {
+            let csvContent = '';
+            let filename = '';
+            
+            if (type === 'business') {
+                csvContent = 'business_type,category,fee_amount,is_active\n';
+                csvContent += 'Restaurant,Small Scale,500.00,1\n';
+                csvContent += 'Restaurant,Medium Scale,1000.00,1\n';
+                csvContent += 'Shop,Small Scale,300.00,1\n';
+                filename = 'business_fee_template.csv';
+            } else {
+                csvContent = 'structure,property_use,fee_per_room,is_active\n';
+                csvContent += 'Concrete Block,Residential,50.00,1\n';
+                csvContent += 'Concrete Block,Commercial,100.00,1\n';
+                csvContent += 'Modern Building,Residential,75.00,1\n';
+                filename = 'property_fee_template.csv';
+            }
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+>>>>>>> c9ccaba (Initial commit)
         // Mobile responsiveness
         window.addEventListener('resize', function() {
             const sidebar = document.getElementById('sidebar');

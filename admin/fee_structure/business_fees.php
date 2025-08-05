@@ -1,7 +1,15 @@
+<<<<<<< HEAD
  <?php
 /**
  * Fee Structure Management - Business Fees
  * QUICKBILL 305 - Admin Panel
+=======
+<?php
+/**
+ * Fee Structure Management - Business Fees
+ * QUICKBILL 305 - Admin Panel
+ * Updated with 50 items per page default pagination
+>>>>>>> c9ccaba (Initial commit)
  */
 
 // Define application constant
@@ -31,6 +39,19 @@ if (!hasPermission('fee_structure.view')) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $pageTitle = 'Business Fee Structure';
 $currentUser = getCurrentUser();
 $userDisplayName = getUserDisplayName($currentUser);
@@ -43,9 +64,34 @@ $stats = [
     'active_fees' => 0,
     'inactive_fees' => 0
 ];
+<<<<<<< HEAD
 $searchTerm = sanitizeInput($_GET['search'] ?? '');
 $filterStatus = sanitizeInput($_GET['status'] ?? '');
 
+=======
+
+// Pagination settings - UPDATED: Default to 50 items per page
+$defaultItemsPerPage = 50;
+$allowedItemsPerPage = [10, 25, 50, 100, 200];
+$itemsPerPage = isset($_GET['items_per_page']) && in_array((int)$_GET['items_per_page'], $allowedItemsPerPage) 
+    ? (int)$_GET['items_per_page'] 
+    : $defaultItemsPerPage;
+
+$currentPage = max(1, intval($_GET['page'] ?? 1));
+$offset = ($currentPage - 1) * $itemsPerPage;
+
+// Search and filter parameters
+$searchTerm = sanitizeInput($_GET['search'] ?? '');
+$filterStatus = sanitizeInput($_GET['status'] ?? '');
+
+// Build pagination URL parameters
+$urlParams = [];
+if (!empty($searchTerm)) $urlParams['search'] = $searchTerm;
+if ($filterStatus !== '') $urlParams['status'] = $filterStatus;
+if ($itemsPerPage !== $defaultItemsPerPage) $urlParams['items_per_page'] = $itemsPerPage;
+$baseUrl = 'business_fees.php' . (!empty($urlParams) ? '?' . http_build_query($urlParams) : '');
+
+>>>>>>> c9ccaba (Initial commit)
 try {
     $db = new Database();
     
@@ -66,7 +112,24 @@ try {
     
     $whereClause = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
     
+<<<<<<< HEAD
     // Get business fees with creator information
+=======
+    // Get total count for pagination
+    $countQuery = "SELECT COUNT(*) as total FROM business_fee_structure {$whereClause}";
+    $totalResult = $db->fetchRow($countQuery, $params);
+    $totalRecords = $totalResult['total'] ?? 0;
+    $totalPages = ceil($totalRecords / $itemsPerPage);
+    
+    // Ensure current page is valid
+    if ($currentPage > $totalPages && $totalPages > 0) {
+        $currentPage = $totalPages;
+        $offset = ($currentPage - 1) * $itemsPerPage;
+    }
+    
+    // Get business fees with creator information (paginated)
+    $paginationParams = array_merge($params, [$offset, $itemsPerPage]);
+>>>>>>> c9ccaba (Initial commit)
     $businessFees = $db->fetchAll("
         SELECT 
             bf.*,
@@ -76,7 +139,12 @@ try {
         LEFT JOIN users u ON bf.created_by = u.user_id
         {$whereClause}
         ORDER BY bf.business_type ASC, bf.category ASC
+<<<<<<< HEAD
     ", $params);
+=======
+        LIMIT ?, ?
+    ", $paginationParams);
+>>>>>>> c9ccaba (Initial commit)
     
     // Calculate statistics
     $allStats = $db->fetchRow("
@@ -145,7 +213,13 @@ try {
             setFlashMessage('error', 'Access denied. You do not have permission to delete fee structures.');
         }
         
+<<<<<<< HEAD
         header('Location: business_fees.php');
+=======
+        // Preserve pagination and filters in redirect
+        $redirectUrl = $baseUrl . (strpos($baseUrl, '?') !== false ? '&' : '?') . 'page=' . $currentPage;
+        header('Location: ' . $redirectUrl);
+>>>>>>> c9ccaba (Initial commit)
         exit();
     }
     
@@ -191,7 +265,13 @@ try {
             setFlashMessage('error', 'Access denied. You do not have permission to edit fee structures.');
         }
         
+<<<<<<< HEAD
         header('Location: business_fees.php');
+=======
+        // Preserve pagination and filters in redirect
+        $redirectUrl = $baseUrl . (strpos($baseUrl, '?') !== false ? '&' : '?') . 'page=' . $currentPage;
+        header('Location: ' . $redirectUrl);
+>>>>>>> c9ccaba (Initial commit)
         exit();
     }
     
@@ -200,6 +280,13 @@ try {
     setFlashMessage('error', 'An error occurred while loading fee structures.');
 }
 
+<<<<<<< HEAD
+=======
+// Calculate pagination info
+$startRecord = $totalRecords > 0 ? $offset + 1 : 0;
+$endRecord = min($offset + $itemsPerPage, $totalRecords);
+
+>>>>>>> c9ccaba (Initial commit)
 // Get flash messages
 $flashMessages = getFlashMessages();
 $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
@@ -840,6 +927,153 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             gap: 10px;
         }
         
+<<<<<<< HEAD
+=======
+        /* Pagination Controls - ENHANCED */
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .pagination-info {
+            color: #64748b;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .pagination-summary {
+            font-weight: 600;
+            color: #2d3748;
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+        
+        .items-per-page {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .items-per-page select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .items-per-page select:focus {
+            outline: none;
+            border-color: #4299e1;
+        }
+        
+        .pagination-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pagination-btn {
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .pagination-btn:hover:not(.disabled) {
+            background: #4299e1;
+            color: white;
+            border-color: #4299e1;
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+        
+        .pagination-btn.active {
+            background: #4299e1;
+            color: white;
+            border-color: #4299e1;
+        }
+        
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .pagination-numbers {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .pagination-ellipsis {
+            padding: 10px 8px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        
+        /* Quick Jump - ENHANCED */
+        .quick-jump {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 15px;
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+        
+        .quick-jump input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .quick-jump input:focus {
+            outline: none;
+            border-color: #4299e1;
+        }
+        
+        .quick-jump button {
+            padding: 8px 12px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .quick-jump button:hover {
+            background: #3182ce;
+            transform: translateY(-1px);
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .fees-table {
             width: 100%;
             border-collapse: collapse;
@@ -1003,6 +1237,48 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             line-height: 1.6;
         }
         
+<<<<<<< HEAD
+=======
+        /* ENHANCED: Table Performance Indicator */
+        .table-performance {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            border-radius: 10px;
+            border-left: 4px solid #00acc1;
+        }
+        
+        .performance-icon {
+            width: 40px;
+            height: 40px;
+            background: #00acc1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .performance-text {
+            flex: 1;
+            color: #00695c;
+        }
+        
+        .performance-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .performance-description {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
@@ -1063,6 +1339,26 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             .action-btn {
                 margin-bottom: 5px;
             }
+<<<<<<< HEAD
+=======
+            
+            .pagination-controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .pagination-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .pagination-info {
+                text-align: center;
+                flex-direction: column;
+                gap: 10px;
+            }
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Animations */
@@ -1400,6 +1696,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                 <!-- Search Bar -->
                 <div class="search-bar">
                     <form method="GET" action="" style="display: flex; gap: 15px; align-items: center; flex: 1;">
+<<<<<<< HEAD
+=======
+                        <!-- Hidden page field to reset to page 1 on new search -->
+                        <input type="hidden" name="page" value="1">
+>>>>>>> c9ccaba (Initial commit)
                         <div class="search-group">
                             <i class="fas fa-search" style="color: #64748b;"></i>
                             <span class="icon-search" style="display: none;"></span>
@@ -1442,10 +1743,33 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                         <?php endif; ?>
                     </div>
                     <div style="color: #64748b; font-size: 14px;">
+<<<<<<< HEAD
                         <?php echo count($businessFees); ?> fee structure<?php echo count($businessFees) !== 1 ? 's' : ''; ?> found
                     </div>
                 </div>
 
+=======
+                        <?php echo $totalRecords; ?> fee structure<?php echo $totalRecords !== 1 ? 's' : ''; ?> total
+                    </div>
+                </div>
+
+                <!-- ENHANCED: Table Performance Indicator -->
+                <?php if ($totalRecords > 0): ?>
+                <div class="table-performance">
+                    <div class="performance-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="performance-text">
+                        <div class="performance-title">Showing <?php echo $itemsPerPage; ?> items per page</div>
+                        <div class="performance-description">
+                            Enhanced pagination with <?php echo $itemsPerPage; ?> records per page for better performance.
+                            Use the dropdown below to adjust page size.
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+>>>>>>> c9ccaba (Initial commit)
                 <?php if (empty($businessFees)): ?>
                     <!-- Empty State -->
                     <div class="empty-state">
@@ -1551,6 +1875,119 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+<<<<<<< HEAD
+=======
+
+                    <!-- ENHANCED Pagination Controls -->
+                    <?php if ($totalPages > 1): ?>
+                        <div class="pagination-controls">
+                            <div class="pagination-info">
+                                <div class="pagination-summary">
+                                    Showing <?php echo $startRecord; ?>-<?php echo $endRecord; ?> of <?php echo $totalRecords; ?> records
+                                </div>
+                                <div class="items-per-page">
+                                    <label for="itemsPerPage">Items per page:</label>
+                                    <select id="itemsPerPage" onchange="changeItemsPerPage(this.value)">
+                                        <option value="10" <?php echo $itemsPerPage == 10 ? 'selected' : ''; ?>>10</option>
+                                        <option value="25" <?php echo $itemsPerPage == 25 ? 'selected' : ''; ?>>25</option>
+                                        <option value="50" <?php echo $itemsPerPage == 50 ? 'selected' : ''; ?>>50</option>
+                                        <option value="100" <?php echo $itemsPerPage == 100 ? 'selected' : ''; ?>>100</option>
+                                        <option value="200" <?php echo $itemsPerPage == 200 ? 'selected' : ''; ?>>200</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="pagination-nav">
+                                <!-- First Page -->
+                                <?php if ($currentPage > 1): ?>
+                                    <a href="<?php echo $baseUrl . (strpos($baseUrl, '?') !== false ? '&' : '?') . 'page=1'; ?>" 
+                                       class="pagination-btn">
+                                        <i class="fas fa-angle-double-left"></i>
+                                        First
+                                    </a>
+                                    <a href="<?php echo $baseUrl . (strpos($baseUrl, '?') !== false ? '&' : '?') . 'page=' . ($currentPage - 1); ?>" 
+                                       class="pagination-btn">
+                                        <i class="fas fa-angle-left"></i>
+                                        Previous
+                                    </a>
+                                <?php else: ?>
+                                    <span class="pagination-btn disabled">
+                                        <i class="fas fa-angle-double-left"></i>
+                                        First
+                                    </span>
+                                    <span class="pagination-btn disabled">
+                                        <i class="fas fa-angle-left"></i>
+                                        Previous
+                                    </span>
+                                <?php endif; ?>
+                                
+                                <!-- Page Numbers -->
+                                <div class="pagination-numbers">
+                                    <?php
+                                    $startPage = max(1, $currentPage - 2);
+                                    $endPage = min($totalPages, $currentPage + 2);
+                                    
+                                    // Show first page if not in range
+                                    if ($startPage > 1): ?>
+                                        <a href="<?php echo $baseUrl . (strpos($baseUrl, '?') !== false ? '&' : '?') . 'page=1'; ?>" 
+                                           class="pagination-btn">1</a>
+                                        <?php if ($startPage > 2): ?>
+                                            <span class="pagination-ellipsis">...</span>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                    
+                                    <!-- Page range -->
+                                    <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
+                                        <a href="<?php echo $baseUrl . (strpos($baseUrl, '?') !== false ? '&' : '?') . 'page=' . $i; ?>" 
+                                           class="pagination-btn <?php echo $i === $currentPage ? 'active' : ''; ?>">
+                                            <?php echo $i; ?>
+                                        </a>
+                                    <?php endfor; ?>
+                                    
+                                    <!-- Show last page if not in range -->
+                                    <?php if ($endPage < $totalPages): ?>
+                                        <?php if ($endPage < $totalPages - 1): ?>
+                                            <span class="pagination-ellipsis">...</span>
+                                        <?php endif; ?>
+                                        <a href="<?php echo $baseUrl . (strpos($baseUrl, '?') !== false ? '&' : '?') . 'page=' . $totalPages; ?>" 
+                                           class="pagination-btn"><?php echo $totalPages; ?></a>
+                                    <?php endif; ?>
+                                </div>
+                                
+                                <!-- Next/Last Page -->
+                                <?php if ($currentPage < $totalPages): ?>
+                                    <a href="<?php echo $baseUrl . (strpos($baseUrl, '?') !== false ? '&' : '?') . 'page=' . ($currentPage + 1); ?>" 
+                                       class="pagination-btn">
+                                        Next
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                    <a href="<?php echo $baseUrl . (strpos($baseUrl, '?') !== false ? '&' : '?') . 'page=' . $totalPages; ?>" 
+                                       class="pagination-btn">
+                                        Last
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="pagination-btn disabled">
+                                        Next
+                                        <i class="fas fa-angle-right"></i>
+                                    </span>
+                                    <span class="pagination-btn disabled">
+                                        Last
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </span>
+                                <?php endif; ?>
+                                
+                                <!-- ENHANCED Quick Jump -->
+                                <div class="quick-jump">
+                                    <span>Go to page:</span>
+                                    <input type="number" id="quickJumpPage" min="1" max="<?php echo $totalPages; ?>" 
+                                           placeholder="<?php echo $currentPage; ?>">
+                                    <button onclick="quickJumpToPage()">Go</button>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+>>>>>>> c9ccaba (Initial commit)
                 <?php endif; ?>
             </div>
         </div>
@@ -1572,6 +2009,56 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             }, 100);
         });
 
+<<<<<<< HEAD
+=======
+        // ENHANCED: Pagination functions with proper URL handling
+        function changeItemsPerPage(value) {
+            const url = new URL(window.location);
+            url.searchParams.set('items_per_page', value);
+            url.searchParams.set('page', '1'); // Reset to first page
+            window.location.href = url.toString();
+        }
+        
+        function quickJumpToPage() {
+            const pageInput = document.getElementById('quickJumpPage');
+            const pageNumber = parseInt(pageInput.value);
+            const maxPages = parseInt(pageInput.getAttribute('max'));
+            
+            if (pageNumber && pageNumber >= 1 && pageNumber <= maxPages) {
+                const url = new URL(window.location);
+                url.searchParams.set('page', pageNumber);
+                window.location.href = url.toString();
+            } else {
+                alert(`Please enter a page number between 1 and ${maxPages}`);
+                pageInput.focus();
+            }
+        }
+        
+        // Allow Enter key for quick jump
+        document.addEventListener('DOMContentLoaded', function() {
+            const quickJumpInput = document.getElementById('quickJumpPage');
+            if (quickJumpInput) {
+                quickJumpInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        quickJumpToPage();
+                    }
+                });
+                
+                // Auto-focus quick jump input when typing numbers
+                document.addEventListener('keydown', function(e) {
+                    if (e.key >= '0' && e.key <= '9' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                        if (document.activeElement.tagName !== 'INPUT' && 
+                            document.activeElement.tagName !== 'TEXTAREA') {
+                            quickJumpInput.focus();
+                            quickJumpInput.value = e.key;
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+        });
+
+>>>>>>> c9ccaba (Initial commit)
         // Sidebar toggle
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -1609,7 +2096,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             }
         });
 
+<<<<<<< HEAD
         // Toggle status confirmation
+=======
+        // Toggle status confirmation with pagination preservation
+>>>>>>> c9ccaba (Initial commit)
         function toggleStatus(feeId, feeName, isActive) {
             const action = isActive ? 'deactivate' : 'activate';
             const actionTitle = isActive ? 'Deactivate' : 'Activate';
@@ -1688,7 +2179,15 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             };
             
             window.executeToggle = function(id) {
+<<<<<<< HEAD
                 window.location.href = `business_fees.php?action=toggle&id=${id}`;
+=======
+                // Preserve current page and filters
+                const url = new URL(window.location);
+                url.searchParams.set('action', 'toggle');
+                url.searchParams.set('id', id);
+                window.location.href = url.toString();
+>>>>>>> c9ccaba (Initial commit)
             };
             
             backdrop.addEventListener('click', function(e) {
@@ -1696,7 +2195,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             });
         }
 
+<<<<<<< HEAD
         // Delete confirmation
+=======
+        // Delete confirmation with pagination preservation
+>>>>>>> c9ccaba (Initial commit)
         function confirmDelete(feeId, feeName) {
             const backdrop = document.createElement('div');
             backdrop.style.cssText = `
@@ -1757,7 +2260,15 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             };
             
             window.deleteFee = function(id) {
+<<<<<<< HEAD
                 window.location.href = `business_fees.php?action=delete&id=${id}`;
+=======
+                // Preserve current page and filters
+                const url = new URL(window.location);
+                url.searchParams.set('action', 'delete');
+                url.searchParams.set('id', id);
+                window.location.href = url.toString();
+>>>>>>> c9ccaba (Initial commit)
             };
             
             backdrop.addEventListener('click', function(e) {
@@ -1854,4 +2365,8 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         });
     </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> c9ccaba (Initial commit)

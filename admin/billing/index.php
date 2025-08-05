@@ -31,6 +31,19 @@ if (!hasPermission('billing.view')) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $pageTitle = 'Billing Management';
 $currentUser = getCurrentUser();
 $userDisplayName = getUserDisplayName($currentUser);
@@ -167,6 +180,10 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         .icon-user-plus::before { content: "👤➕"; }
         .icon-history::before { content: "📜"; }
         .icon-question::before { content: "❓"; }
+<<<<<<< HEAD
+=======
+        .icon-print::before { content: "🖨️"; }
+>>>>>>> c9ccaba (Initial commit)
         
         /* Top Navigation */
         .top-nav {
@@ -572,7 +589,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             color: #059669;
         }
         
+<<<<<<< HEAD
         /* Action Cards Grid */
+=======
+        /* Action Cards Grid - Updated to accommodate 5 cards */
+>>>>>>> c9ccaba (Initial commit)
         .action-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -580,6 +601,21 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             margin-bottom: 30px;
         }
         
+<<<<<<< HEAD
+=======
+        @media (min-width: 1200px) {
+            .action-cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (min-width: 1600px) {
+            .action-cards {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .action-card {
             background: white;
             border-radius: 15px;
@@ -616,6 +652,14 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             border-color: #8b5cf6;
         }
         
+<<<<<<< HEAD
+=======
+        .action-card.print {
+            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+            border-color: #a855f7;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .card-icon {
             width: 60px;
             height: 60px;
@@ -644,6 +688,13 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             background: #8b5cf6;
         }
         
+<<<<<<< HEAD
+=======
+        .print .card-icon {
+            background: #a855f7;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .card-title {
             font-size: 20px;
             font-weight: bold;
@@ -1055,7 +1106,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                         <div class="dropdown-role"><?php echo htmlspecialchars(getCurrentUserRole()); ?></div>
                     </div>
                     <div class="dropdown-menu">
+<<<<<<< HEAD
                         <a href="../users/view.php?id=<?php echo $currentUser['id']; ?>" class="dropdown-item">
+=======
+                        <a href="../users/view.php?id=<?php echo $currentUser['user_id']; ?>" class="dropdown-item">
+>>>>>>> c9ccaba (Initial commit)
                             <i class="fas fa-user"></i>
                             <span class="icon-users" style="display: none;"></span>
                             My Profile
@@ -1290,6 +1345,23 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                     </a>
                 </div>
 
+<<<<<<< HEAD
+=======
+                <div class="action-card print" onclick="location.href='bulk_print.php'">
+                    <div class="card-icon">
+                        <i class="fas fa-print"></i>
+                        <span class="icon-print" style="display: none;"></span>
+                    </div>
+                    <div class="card-title">Bulk Print Bills</div>
+                    <div class="card-description">Print multiple bills at once with filters and customization options</div>
+                    <a href="bulk_print.php" class="card-action">
+                        <i class="fas fa-print"></i>
+                        <span class="icon-print" style="display: none;"></span>
+                        Bulk Print
+                    </a>
+                </div>
+
+>>>>>>> c9ccaba (Initial commit)
                 <div class="action-card manage" onclick="location.href='adjustments.php'">
                     <div class="card-icon">
                         <i class="fas fa-edit"></i>
@@ -1334,7 +1406,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             <i class="fas fa-file-invoice"></i>
                             <h3>No Bills Yet</h3>
                             <p>No bills have been generated. Start by generating bills for your businesses and properties.</p>
+<<<<<<< HEAD
                             <a href="generate.php" class="btn btn-success" style="margin-top: 15px;">
+=======
+                            <a href="generate_bills.php" class="btn btn-success" style="margin-top: 15px;">
+>>>>>>> c9ccaba (Initial commit)
                                 <i class="fas fa-plus"></i>
                                 Generate First Bills
                             </a>
@@ -1450,7 +1526,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             Quick Tip
                         </div>
                         <div style="font-size: 14px; color: #1e40af;">
+<<<<<<< HEAD
                             Bills are automatically generated based on your fee structures. Make sure to update fee structures before generating bills.
+=======
+                            Bills are automatically generated based on your fee structures. Use bulk print to print multiple bills efficiently.
+>>>>>>> c9ccaba (Initial commit)
                         </div>
                     </div>
                 </div>

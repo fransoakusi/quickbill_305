@@ -30,6 +30,18 @@ if (!hasPermission('billing.edit')) {
     header('Location: index.php');
     exit();
 }
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+>>>>>>> c9ccaba (Initial commit)
 
 $pageTitle = 'Bulk Bill Adjustments';
 $currentUser = getCurrentUser();

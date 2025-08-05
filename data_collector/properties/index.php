@@ -37,6 +37,19 @@ if (!isDataCollector() && !isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $userDisplayName = getUserDisplayName($currentUser);
 
 // Handle search and filtering
@@ -113,7 +126,11 @@ try {
     
     $count_params = array_slice($params, 0, -2); // Remove LIMIT and OFFSET params
     $total_result = $db->fetchRow($count_query, $count_params);
+<<<<<<< HEAD
     $total_properties = $total_result['total'];
+=======
+    $total_properties = (int)($total_result['total'] ?? 0);
+>>>>>>> c9ccaba (Initial commit)
     $total_pages = ceil($total_properties / $per_page);
     
     // Get zones for filter
@@ -122,6 +139,7 @@ try {
     // Get structures for filter
     $structures = $db->fetchAll("SELECT DISTINCT structure FROM property_fee_structure WHERE is_active = 1 ORDER BY structure");
     
+<<<<<<< HEAD
     // Get summary stats
     $stats = $db->fetchRow("
         SELECT 
@@ -133,13 +151,46 @@ try {
         FROM properties
     ", [$currentUser['user_id']]);
     
+=======
+    // Get summary stats - Fixed with COALESCE to handle null values
+    $stats = $db->fetchRow("
+        SELECT 
+            COALESCE(COUNT(*), 0) as total,
+            COALESCE(SUM(CASE WHEN property_use = 'Residential' THEN 1 ELSE 0 END), 0) as residential,
+            COALESCE(SUM(CASE WHEN property_use = 'Commercial' THEN 1 ELSE 0 END), 0) as commercial,
+            COALESCE(SUM(CASE WHEN amount_payable > 0 THEN 1 ELSE 0 END), 0) as defaulters,
+            COALESCE(SUM(CASE WHEN created_by = ? THEN 1 ELSE 0 END), 0) as my_properties
+        FROM properties
+    ", [$currentUser['user_id']]);
+    
+    // Additional safety check - ensure all stats values are integers
+    $stats = [
+        'total' => (int)($stats['total'] ?? 0),
+        'residential' => (int)($stats['residential'] ?? 0),
+        'commercial' => (int)($stats['commercial'] ?? 0),
+        'defaulters' => (int)($stats['defaulters'] ?? 0),
+        'my_properties' => (int)($stats['my_properties'] ?? 0)
+    ];
+    
+>>>>>>> c9ccaba (Initial commit)
 } catch (Exception $e) {
     $properties = [];
     $total_properties = 0;
     $total_pages = 0;
     $zones = [];
     $structures = [];
+<<<<<<< HEAD
     $stats = ['total' => 0, 'residential' => 0, 'commercial' => 0, 'defaulters' => 0, 'my_properties' => 0];
+=======
+    // Ensure all stats values are integers, not null
+    $stats = [
+        'total' => 0, 
+        'residential' => 0, 
+        'commercial' => 0, 
+        'defaulters' => 0, 
+        'my_properties' => 0
+    ];
+>>>>>>> c9ccaba (Initial commit)
 }
 ?>
 <!DOCTYPE html>
@@ -1175,7 +1226,11 @@ try {
                                             <?php echo htmlspecialchars($property['zone_name'] ?? 'N/A'); ?>
                                         </td>
                                         <td>
+<<<<<<< HEAD
                                             <strong>₵ <?php echo number_format($property['amount_payable'], 2); ?></strong>
+=======
+                                            <strong>₵ <?php echo number_format((float)($property['amount_payable'] ?? 0), 2); ?></strong>
+>>>>>>> c9ccaba (Initial commit)
                                         </td>
                                         <td>
                                             <span class="badge <?php echo $property['payment_status'] == 'Up to Date' ? 'badge-success' : 'badge-danger'; ?>">

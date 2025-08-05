@@ -36,6 +36,19 @@ if (!hasPermission('billing.view')) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 // Get bill ID
 $billId = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -52,10 +65,23 @@ $bill = null;
 $payerInfo = null;
 $payments = [];
 $qr_url = null;
+<<<<<<< HEAD
+=======
+$assemblyName = 'Anloga District Assembly'; // Default fallback
+>>>>>>> c9ccaba (Initial commit)
 
 try {
     $db = new Database();
     
+<<<<<<< HEAD
+=======
+    // Get assembly name from settings (dynamic institution name)
+    $assemblyNameSetting = $db->fetchRow("SELECT setting_value FROM system_settings WHERE setting_key = 'assembly_name'");
+    if ($assemblyNameSetting && !empty($assemblyNameSetting['setting_value'])) {
+        $assemblyName = $assemblyNameSetting['setting_value'];
+    }
+    
+>>>>>>> c9ccaba (Initial commit)
     // Get bill details
     $bill = $db->fetchRow("
         SELECT b.*, u.first_name as generated_by_name, u.last_name as generated_by_surname
@@ -111,6 +137,7 @@ try {
         mkdir($qr_dir, 0755, true);
     }
     
+<<<<<<< HEAD
     $qr_data = json_encode([
         'bill_number' => $bill['bill_number'] ?? '',
         'owner_name' => $payerInfo['owner_name'] ?? ($payerInfo['business_name'] ?? ''),
@@ -119,14 +146,79 @@ try {
     ], JSON_UNESCAPED_SLASHES);
     
     if (strlen($qr_data) <= 1200) {
+=======
+    // Create complete bill content for QR code
+    $bill_type_full = $bill['bill_type'] === 'Business' ? 'Business License Bill' : 'Property Rate Bill';
+    $bill_date = date('d/m/Y', strtotime($bill['generated_at']));
+    
+    $qr_data = $assemblyName . "\n";
+    $qr_data .= str_repeat("=", 40) . "\n";
+    $qr_data .= $bill_type_full . "\n";
+    $qr_data .= "Bill Date: " . $bill_date . "\n";
+    $qr_data .= "Zone: " . ($payerInfo['zone_name'] ?? '') . "\n";
+    $qr_data .= str_repeat("-", 40) . "\n\n";
+    
+    // Payer Information
+    if ($bill['bill_type'] === 'Business') {
+        $qr_data .= "BUSINESS INFORMATION:\n";
+        $qr_data .= "Business Name: " . ($payerInfo['business_name'] ?? '') . "\n";
+        $qr_data .= "Owner: " . ($payerInfo['owner_name'] ?? '') . "\n";
+        $qr_data .= "Telephone: " . ($payerInfo['telephone'] ?? '') . "\n";
+        $qr_data .= "Account#: " . ($payerInfo['account_number'] ?? '') . "\n";
+        $qr_data .= "Zone: " . ($payerInfo['zone_name'] ?? '') . "\n";
+        $qr_data .= "Business Type: " . ($payerInfo['business_type'] ?? '') . "\n";
+    } else {
+        $qr_data .= "PROPERTY INFORMATION:\n";
+        $qr_data .= "Owner Name: " . ($payerInfo['owner_name'] ?? '') . "\n";
+        $qr_data .= "Telephone: " . ($payerInfo['telephone'] ?? '') . "\n";
+        $qr_data .= "Property#: " . ($payerInfo['property_number'] ?? '') . "\n";
+        $qr_data .= "Zone: " . ($payerInfo['zone_name'] ?? '') . "\n";
+        $qr_data .= "Structure: " . ($payerInfo['structure'] ?? '') . "\n";
+    }
+    
+    $qr_data .= "\nBILL DETAILS:\n";
+    $qr_data .= "Bill Number: " . ($bill['bill_number'] ?? '') . "\n";
+    $qr_data .= "Bill Year: " . ($bill['billing_year'] ?? '') . "\n";
+    $qr_data .= str_repeat("-", 40) . "\n";
+    
+    // Financial breakdown
+    $qr_data .= "FINANCIAL BREAKDOWN:\n";
+    $qr_data .= "Old Fee: GHS " . number_format($bill['old_bill'] ?? 0, 2) . "\n";
+    $qr_data .= "Previous Payments: GHS " . number_format($bill['previous_payments'] ?? 0, 2) . "\n";
+    $qr_data .= "Arrears: GHS " . number_format($bill['arrears'] ?? 0, 2) . "\n";
+    $qr_data .= "Current Rate: GHS " . number_format($bill['current_bill'] ?? 0, 2) . "\n";
+    $qr_data .= str_repeat("-", 40) . "\n";
+    $qr_data .= "TOTAL AMOUNT DUE: GHS " . number_format($bill['amount_payable'] ?? 0, 2) . "\n";
+    $qr_data .= str_repeat("=", 40) . "\n\n";
+    
+    $qr_data .= "PAYMENT INSTRUCTIONS:\n";
+    $qr_data .= "Please present this bill when making payment.\n";
+    $qr_data .= "Pay to DISTRICT FINANCE OFFICER or\n";
+    $qr_data .= "authorized Revenue Collector.\n";
+    $qr_data .= "Payment Due: 1st September 2025\n\n";
+    $qr_data .= "For inquiries: 0249579191\n";
+    $qr_data .= str_repeat("=", 40) . "\n";
+    $qr_data .= $assemblyName;
+    
+    // Increase character limit for complete bill content
+    if (strlen($qr_data) <= 2500) {
+>>>>>>> c9ccaba (Initial commit)
         $qr_file = $qr_dir . 'bill_' . $bill['bill_id'] . '.png';
         try {
             $options = new QROptions([
                 'outputType' => ChillerlanQRCode::OUTPUT_IMAGE_PNG,
+<<<<<<< HEAD
                 'eccLevel' => ChillerlanQRCode::ECC_L,
                 'imageBase64' => false,
                 'scale' => 4,
                 'imageTransparent' => false,
+=======
+                'eccLevel' => ChillerlanQRCode::ECC_M, // Medium error correction for better reliability
+                'imageBase64' => false,
+                'scale' => 3, // Slightly smaller scale to accommodate more data
+                'imageTransparent' => false,
+                'quietzoneSize' => 2, // Add quiet zone for better scanning
+>>>>>>> c9ccaba (Initial commit)
             ]);
 
             if (file_exists($qr_file)) {
@@ -495,6 +587,10 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             padding: 30px;
             background: #f8f9fa;
             transition: all 0.3s ease;
+<<<<<<< HEAD
+=======
+            overflow-x: auto;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Breadcrumb */
@@ -522,6 +618,10 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         .container {
             max-width: 1400px;
             margin: 0 auto;
+<<<<<<< HEAD
+=======
+            width: 100%;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .alert {
@@ -555,24 +655,42 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             position: relative;
             overflow: hidden;
             min-height: 600px;
+<<<<<<< HEAD
+=======
+            width: 100%;
+            max-width: 100%;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-wrapper {
             width: 100%;
+<<<<<<< HEAD
             padding: 20px;
+=======
+            padding: 30px;
+>>>>>>> c9ccaba (Initial commit)
             position: relative;
             overflow: hidden;
             z-index: 1;
             background-color: #fff;
+<<<<<<< HEAD
         }
         
         .bill-wrapper::before,
         .bill-wrapper::after {
             content: 'AnDA';
+=======
+            box-sizing: border-box;
+        }
+        
+        /* Watermark Styles - Using HTML elements for better print support */
+        .watermark {
+>>>>>>> c9ccaba (Initial commit)
             position: absolute;
             font-size: 65px;
             font-weight: bold;
             font-family: Arial, Helvetica, sans-serif;
+<<<<<<< HEAD
             color: rgba(0,0,0,0.05);
             z-index: 0;
             pointer-events: none;
@@ -603,29 +721,86 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             z-index: 0;
             pointer-events: none;
             opacity: 0.3;
+=======
+            color: rgba(0,0,0,0.08);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.8;
+            transform: rotate(-45deg);
+            user-select: none;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .watermark-top-left {
+            top: 15%;
+            left: 15%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+        
+        .watermark-center {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+        
+        .watermark-bottom-right {
+            bottom: 15%;
+            right: 15%;
+            transform: translate(50%, 50%) rotate(-45deg);
+        }
+        
+        .watermark-top-right {
+            top: 20%;
+            right: 20%;
+            transform: translate(50%, -50%) rotate(-45deg);
+        }
+        
+        .watermark-bottom-left {
+            bottom: 20%;
+            left: 20%;
+            transform: translate(-50%, 50%) rotate(-45deg);
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+<<<<<<< HEAD
             border-bottom: 2px solid #000;
+=======
+            border-bottom: 1px solid #000;
+>>>>>>> c9ccaba (Initial commit)
             padding-bottom: 15px;
             position: relative;
             z-index: 2;
             margin-bottom: 20px;
+<<<<<<< HEAD
+=======
+            flex-wrap: wrap;
+            gap: 15px;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-logo {
             width: 80px;
             height: auto;
             z-index: 2;
+<<<<<<< HEAD
+=======
+            flex-shrink: 0;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-header-text {
             text-align: center;
             flex-grow: 1;
             z-index: 2;
+<<<<<<< HEAD
+=======
+            min-width: 200px;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-header-text h1 {
@@ -651,6 +826,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         .bill-header-right {
             text-align: right;
             z-index: 2;
+<<<<<<< HEAD
+=======
+            flex-shrink: 0;
+            min-width: 150px;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-header-right h2 {
@@ -672,6 +852,7 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             margin-top: 20px;
             position: relative;
             z-index: 2;
+<<<<<<< HEAD
             gap: 30px;
         }
         
@@ -681,23 +862,56 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         
         .bill-info-box {
             border: 2px solid #000;
+=======
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        
+        .bill-left-section, .bill-right-section {
+            flex: 1;
+            min-width: 300px;
+            max-width: calc(50% - 10px);
+            box-sizing: border-box;
+        }
+        
+        .bill-info-box {
+            border: 1px solid #000;
+>>>>>>> c9ccaba (Initial commit)
             padding: 15px;
             margin-bottom: 20px;
             position: relative;
             z-index: 2;
             background: white;
+<<<<<<< HEAD
+=======
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            box-sizing: border-box;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-info-box p {
             margin: 8px 0;
             font-size: 14px;
             color: #000;
+<<<<<<< HEAD
+=======
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-info-box p strong {
             display: inline-block;
+<<<<<<< HEAD
             width: 140px;
             font-weight: bold;
+=======
+            width: 130px;
+            font-weight: bold;
+            vertical-align: top;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-table {
@@ -706,23 +920,45 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             margin-bottom: 20px;
             position: relative;
             z-index: 2;
+<<<<<<< HEAD
+=======
+            table-layout: fixed;
+            overflow-x: auto;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-table, .bill-table th, .bill-table td {
             border: 1px solid #000;
+<<<<<<< HEAD
             padding: 8px;
             text-align: center;
             font-size: 14px;
+=======
+            padding: 6px 4px;
+            text-align: center;
+            font-size: 12px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-table th {
             background-color: #f0f0f0;
             font-weight: bold;
             color: #000;
+<<<<<<< HEAD
+=======
+            font-size: 11px;
+            line-height: 1.2;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-table td {
             color: #000;
+<<<<<<< HEAD
+=======
+            line-height: 1.2;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-note {
@@ -744,13 +980,22 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         }
         
         .bill-qr-code img {
+<<<<<<< HEAD
             width: 100px;
             height: 100px;
+=======
+            width: 150px;
+            height: 150px;
+>>>>>>> c9ccaba (Initial commit)
             border: 1px solid #ddd;
         }
         
         .bill-footer {
+<<<<<<< HEAD
             border-top: 2px solid #000;
+=======
+            border-top: 1px solid #000;
+>>>>>>> c9ccaba (Initial commit)
             padding-top: 15px;
             text-align: center;
             font-size: 13px;
@@ -758,6 +1003,10 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             z-index: 2;
             color: #000;
             margin-top: 30px;
+<<<<<<< HEAD
+=======
+            clear: both;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .bill-footer p {
@@ -839,6 +1088,10 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             padding: 25px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 30px;
+<<<<<<< HEAD
+=======
+            overflow-x: auto;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .section-title {
@@ -866,6 +1119,10 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         .data-table {
             width: 100%;
             border-collapse: collapse;
+<<<<<<< HEAD
+=======
+            min-width: 600px;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .data-table th {
@@ -958,15 +1215,32 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             
             .main-content {
                 margin-left: 0;
+<<<<<<< HEAD
+=======
+                padding: 15px;
+            }
+            
+            .bill-wrapper {
+                padding: 15px;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .bill-content {
                 flex-direction: column;
+<<<<<<< HEAD
                 gap: 20px;
+=======
+                gap: 15px;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .bill-left-section, .bill-right-section {
                 width: 100%;
+<<<<<<< HEAD
+=======
+                max-width: 100%;
+                min-width: auto;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .bill-header {
@@ -975,6 +1249,13 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                 text-align: center;
             }
             
+<<<<<<< HEAD
+=======
+            .bill-header-right {
+                text-align: center;
+            }
+            
+>>>>>>> c9ccaba (Initial commit)
             .action-buttons {
                 flex-direction: column;
             }
@@ -983,6 +1264,58 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                 width: 100%;
                 justify-content: center;
             }
+<<<<<<< HEAD
+=======
+            
+            .bill-table {
+                font-size: 10px;
+            }
+            
+            .bill-table th, .bill-table td {
+                padding: 4px 2px;
+                font-size: 10px;
+            }
+            
+            .bill-info-box p strong {
+                width: 100px;
+                font-size: 13px;
+            }
+            
+            .bill-info-box p {
+                font-size: 13px;
+            }
+            
+            .watermark {
+                font-size: 45px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .bill-wrapper {
+                padding: 10px;
+            }
+            
+            .bill-header-text h1 {
+                font-size: 20px;
+            }
+            
+            .bill-header-text h2 {
+                font-size: 14px;
+            }
+            
+            .bill-table {
+                font-size: 9px;
+            }
+            
+            .bill-table th, .bill-table td {
+                padding: 3px 1px;
+                font-size: 9px;
+            }
+            
+            .watermark {
+                font-size: 35px;
+            }
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Print Styles */
@@ -1004,15 +1337,58 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                 box-shadow: none;
                 border-radius: 0;
                 margin: 0;
+<<<<<<< HEAD
             }
             
             .bill-wrapper {
                 padding: 10px;
+=======
+                page-break-inside: avoid;
+            }
+            
+            .bill-wrapper {
+                padding: 20px;
+            }
+            
+            .bill-content {
+                gap: 15px;
+            }
+            
+            .bill-left-section, .bill-right-section {
+                max-width: 48%;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             body {
                 background: white;
             }
+<<<<<<< HEAD
+=======
+            
+            .bill-table {
+                font-size: 11px;
+            }
+            
+            .bill-table th, .bill-table td {
+                padding: 5px 3px;
+                font-size: 11px;
+            }
+            
+            /* Enhanced watermark visibility for print */
+            .watermark {
+                color: rgba(0,0,0,0.12) !important;
+                opacity: 1 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                font-size: 60px !important;
+            }
+            
+            /* Ensure watermarks print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Animations */
@@ -1321,6 +1697,7 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                 <!-- Official Bill Container -->
                 <div class="bill-container">
                     <div class="bill-wrapper">
+<<<<<<< HEAD
                         <div class="watermark-center">AnDA</div>
                         
                         <!-- Bill Header -->
@@ -1328,11 +1705,29 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             <img src="../../assets/images/download.png" alt="Anloga District Assembly Logo" class="bill-logo">
                             <div class="bill-header-text">
                                 <h1>Anloga District Assembly</h1>
+=======
+                        <!-- Multiple Watermarks using HTML elements for better print support -->
+                        <div class="watermark watermark-top-left">AnDA</div>
+                        <div class="watermark watermark-center">AnDA</div>
+                        <div class="watermark watermark-bottom-right">AnDA</div>
+                        <div class="watermark watermark-top-right">AnDA</div>
+                        <div class="watermark watermark-bottom-left">AnDA</div>
+                        
+                        <!-- Bill Header -->
+                        <div class="bill-header">
+                            <img src="../../assets/images/download.png" alt="<?php echo htmlspecialchars($assemblyName); ?> Logo" class="bill-logo">
+                            <div class="bill-header-text">
+                                <h1><?php echo htmlspecialchars($assemblyName); ?></h1>
+>>>>>>> c9ccaba (Initial commit)
                                 <h2><?php echo $bill['bill_type'] === 'Business' ? 'Business License Bill' : 'Property Rate Bill'; ?></h2>
                                 <p>Bill Date: <?php echo date('d/m/Y', strtotime($bill['generated_at'])); ?> / Zone: <?php echo htmlspecialchars($payerInfo['zone_name'] ?? ''); ?></p>
                             </div>
                             <div class="bill-header-right">
+<<<<<<< HEAD
                                 <h2>Anloga District Assembly</h2>
+=======
+                                <h2><?php echo htmlspecialchars($assemblyName); ?></h2>
+>>>>>>> c9ccaba (Initial commit)
                                 <p><?php echo $bill['bill_type'] === 'Business' ? 'Business License Bill' : 'Property Rate Bill'; ?></p>
                                 <p>Bill Date: <?php echo date('d/m/Y', strtotime($bill['generated_at'])); ?></p>
                             </div>
@@ -1346,13 +1741,21 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                                         <p><strong>Business Name:</strong> <?php echo htmlspecialchars($payerInfo['business_name'] ?? ''); ?></p>
                                         <p><strong>Owner / Tel:</strong> <?php echo htmlspecialchars($payerInfo['owner_name'] ?? '') . ' / ' . htmlspecialchars($payerInfo['telephone'] ?? ''); ?></p>
                                         <p><strong>Acct#:</strong> <?php echo htmlspecialchars($payerInfo['account_number'] ?? ''); ?></p>
+<<<<<<< HEAD
                                         <p><strong>Zone:</strong> <?php echo htmlspecialchars($payerInfo['zone_name'] ?? ''); ?></p>
+=======
+                                        <p><strong>Location:</strong> <?php echo htmlspecialchars($payerInfo['exact_location'] ?? ''); ?></p>
+>>>>>>> c9ccaba (Initial commit)
                                         <p><strong>Bus.Type:</strong> <?php echo htmlspecialchars($payerInfo['business_type'] ?? ''); ?></p>
                                     <?php else: ?>
                                         <p><strong>Owner Name:</strong> <?php echo htmlspecialchars($payerInfo['owner_name'] ?? ''); ?></p>
                                         <p><strong>Owner / Tel:</strong> <?php echo htmlspecialchars($payerInfo['owner_name'] ?? '') . ' / ' . htmlspecialchars($payerInfo['telephone'] ?? ''); ?></p>
                                         <p><strong>Property#:</strong> <?php echo htmlspecialchars($payerInfo['property_number'] ?? ''); ?></p>
+<<<<<<< HEAD
                                         <p><strong>Zone:</strong> <?php echo htmlspecialchars($payerInfo['zone_name'] ?? ''); ?></p>
+=======
+                                        <p><strong>Location:</strong> <?php echo htmlspecialchars($payerInfo['location'] ?? ''); ?></p>
+>>>>>>> c9ccaba (Initial commit)
                                         <p><strong>Structure:</strong> <?php echo htmlspecialchars($payerInfo['structure'] ?? ''); ?></p>
                                     <?php endif; ?>
                                 </div>
@@ -1360,7 +1763,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                                     <?php if ($qr_url && file_exists(__DIR__ . '/../../assets/qr_codes/bill_' . $bill['bill_id'] . '.png')): ?>
                                         <img src="<?php echo htmlspecialchars($qr_url); ?>" alt="QR Code for Bill <?php echo htmlspecialchars($bill['bill_number']); ?>">
                                     <?php else: ?>
+<<<<<<< HEAD
                                         <div style="width: 100px; height: 100px; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; margin: 0 auto; background: #f8f9fa; color: #666; font-size: 12px; text-align: center;">QR Code<br>Not Available</div>
+=======
+                                        <div style="width: 150px; height: 150px; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; margin: 0 auto; background: #f8f9fa; color: #666; font-size: 12px; text-align: center;">QR Code<br>Not Available</div>
+>>>>>>> c9ccaba (Initial commit)
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -1372,6 +1779,7 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                                     <p><strong>Bill Year:</strong> <?php echo htmlspecialchars($bill['billing_year']); ?></p>
                                     <p><strong>Total Amount Due:</strong> GHS <?php echo number_format($bill['amount_payable'], 2); ?></p>
                                 </div>
+<<<<<<< HEAD
                                 <table class="bill-table">
                                     <thead>
                                         <tr>
@@ -1392,6 +1800,30 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                                         </tr>
                                     </tbody>
                                 </table>
+=======
+                                <div style="overflow-x: auto;">
+                                    <table class="bill-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Old Fee</th>
+                                                <th>Previous Payments</th>
+                                                <th>Arrears</th>
+                                                <th>Current Rate</th>
+                                                <th>Total Amount Due</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>GHS <?php echo number_format($bill['old_bill'], 2); ?></td>
+                                                <td>GHS <?php echo number_format($bill['previous_payments'], 2); ?></td>
+                                                <td>GHS <?php echo number_format($bill['arrears'], 2); ?></td>
+                                                <td>GHS <?php echo number_format($bill['current_bill'], 2); ?></td>
+                                                <td>GHS <?php echo number_format($bill['amount_payable'], 2); ?></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+>>>>>>> c9ccaba (Initial commit)
                                 <p class="bill-note">Please present this bill when making a payment</p>
                             </div>
                         </div>
@@ -1414,6 +1846,7 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                         Payment History
                     </div>
 
+<<<<<<< HEAD
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -1442,6 +1875,38 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+=======
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Reference</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Status</th>
+                                    <th>Processed By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($payments as $payment): ?>
+                                    <tr>
+                                        <td><?php echo date('M d, Y', strtotime($payment['payment_date'])); ?></td>
+                                        <td style="font-family: monospace; font-weight: 600;"><?php echo htmlspecialchars($payment['payment_reference']); ?></td>
+                                        <td class="amount">GHS <?php echo number_format($payment['amount_paid'], 2); ?></td>
+                                        <td><?php echo htmlspecialchars($payment['payment_method']); ?></td>
+                                        <td>
+                                            <span class="status-badge status-<?php echo strtolower($payment['payment_status']); ?>">
+                                                <?php echo htmlspecialchars($payment['payment_status']); ?>
+                                            </span>
+                                        </td>
+                                        <td><?php echo htmlspecialchars(trim(($payment['processed_by_name'] ?? '') . ' ' . ($payment['processed_by_surname'] ?? '')) ?: 'System'); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
                 <?php elseif ($bill['status'] !== 'Paid'): ?>
                 <div class="payment-history">
@@ -1537,7 +2002,14 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             // Get the bill content
             const billContent = document.querySelector('.bill-container').innerHTML;
             
+<<<<<<< HEAD
             // Create print content
+=======
+            // Get assembly name from PHP
+            const assemblyName = <?php echo json_encode($assemblyName); ?>;
+            
+            // Create print content with enhanced watermark support
+>>>>>>> c9ccaba (Initial commit)
             const printContent = `
                 <!DOCTYPE html>
                 <html>
@@ -1549,6 +2021,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             margin: 0; 
                             padding: 20px; 
                             background: white;
+<<<<<<< HEAD
+=======
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+>>>>>>> c9ccaba (Initial commit)
                         }
                         .bill-wrapper {
                             width: 100%;
@@ -1557,6 +2034,7 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             overflow: hidden;
                             z-index: 1;
                             background-color: #fff;
+<<<<<<< HEAD
                         }
                         .bill-wrapper::before,
                         .bill-wrapper::after {
@@ -1593,15 +2071,71 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             pointer-events: none;
                             opacity: 0.3;
                         }
+=======
+                            box-sizing: border-box;
+                        }
+                        
+                        /* Enhanced watermark styles for printing */
+                        .watermark {
+                            position: absolute;
+                            font-size: 60px;
+                            font-weight: bold;
+                            font-family: Arial, Helvetica, sans-serif;
+                            color: rgba(0,0,0,0.12) !important;
+                            z-index: 0;
+                            pointer-events: none;
+                            opacity: 1 !important;
+                            transform: rotate(-45deg);
+                            user-select: none;
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                        
+                        .watermark-top-left {
+                            top: 15%;
+                            left: 15%;
+                            transform: translate(-50%, -50%) rotate(-45deg);
+                        }
+                        
+                        .watermark-center {
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%) rotate(-45deg);
+                        }
+                        
+                        .watermark-bottom-right {
+                            bottom: 15%;
+                            right: 15%;
+                            transform: translate(50%, 50%) rotate(-45deg);
+                        }
+                        
+                        .watermark-top-right {
+                            top: 20%;
+                            right: 20%;
+                            transform: translate(50%, -50%) rotate(-45deg);
+                        }
+                        
+                        .watermark-bottom-left {
+                            bottom: 20%;
+                            left: 20%;
+                            transform: translate(-50%, 50%) rotate(-45deg);
+                        }
+                        
+>>>>>>> c9ccaba (Initial commit)
                         .bill-header {
                             display: flex;
                             justify-content: space-between;
                             align-items: center;
+<<<<<<< HEAD
                             border-bottom: 2px solid #000;
+=======
+                            border-bottom: 1px solid #000;
+>>>>>>> c9ccaba (Initial commit)
                             padding-bottom: 15px;
                             position: relative;
                             z-index: 2;
                             margin-bottom: 20px;
+<<<<<<< HEAD
                         }
                         .bill-logo { width: 80px; height: auto; z-index: 2; }
                         .bill-header-text { text-align: center; flex-grow: 1; z-index: 2; }
@@ -1628,14 +2162,66 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                         @media print { 
                             .no-print { display: none; } 
                             body { margin: 0; padding: 10px; }
+=======
+                            flex-wrap: wrap;
+                            gap: 15px;
+                        }
+                        .bill-logo { width: 80px; height: auto; z-index: 2; flex-shrink: 0; }
+                        .bill-header-text { text-align: center; flex-grow: 1; z-index: 2; min-width: 200px; }
+                        .bill-header-text h1 { margin: 0; font-size: 28px; font-weight: bold; color: #000; }
+                        .bill-header-text h2 { margin: 8px 0; font-size: 18px; font-weight: normal; color: #333; }
+                        .bill-header-text p { margin: 0; font-size: 14px; color: #666; }
+                        .bill-header-right { text-align: right; z-index: 2; flex-shrink: 0; min-width: 150px; }
+                        .bill-header-right h2 { margin: 0; font-size: 16px; font-weight: bold; color: #000; }
+                        .bill-header-right p { margin: 4px 0; font-size: 14px; color: #333; }
+                        .bill-content { display: flex; justify-content: space-between; margin-top: 20px; position: relative; z-index: 2; gap: 15px; flex-wrap: wrap; }
+                        .bill-left-section, .bill-right-section { flex: 1; min-width: 300px; max-width: calc(48% - 7px); box-sizing: border-box; }
+                        .bill-info-box { border: 1px solid #000; padding: 15px; margin-bottom: 20px; position: relative; z-index: 2; background: white; word-wrap: break-word; overflow-wrap: break-word; box-sizing: border-box; }
+                        .bill-info-box p { margin: 8px 0; font-size: 14px; color: #000; word-wrap: break-word; overflow-wrap: break-word; }
+                        .bill-info-box p strong { display: inline-block; width: 130px; font-weight: bold; vertical-align: top; }
+                        .bill-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; position: relative; z-index: 2; table-layout: fixed; }
+                        .bill-table, .bill-table th, .bill-table td { border: 1px solid #000; padding: 5px 3px; text-align: center; font-size: 11px; word-wrap: break-word; overflow-wrap: break-word; }
+                        .bill-table th { background-color: #f0f0f0; font-weight: bold; color: #000; line-height: 1.2; }
+                        .bill-table td { color: #000; line-height: 1.2; }
+                        .bill-note { font-size: 14px; text-align: right; margin-bottom: 20px; position: relative; z-index: 2; color: #000; font-weight: 500; }
+                        .bill-qr-code { text-align: center; margin-top: 15px; position: relative; z-index: 2; padding: 15px 0; }
+                        .bill-qr-code img { width: 150px; height: 150px; border: 1px solid #ddd; }
+                        .bill-footer { border-top: 1px solid #000; padding-top: 15px; text-align: center; font-size: 13px; position: relative; z-index: 2; color: #000; margin-top: 30px; clear: both; }
+                        .bill-footer p { margin: 8px 0; line-height: 1.4; }
+                        
+                        /* Force print color adjustment */
+                        * {
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                        
+                        @media print { 
+                            .no-print { display: none; } 
+                            body { margin: 0; padding: 10px; }
+                            .bill-content { gap: 10px; }
+                            .bill-left-section, .bill-right-section { max-width: 48%; }
+                            
+                            /* Ensure watermarks are visible in print */
+                            .watermark {
+                                color: rgba(0,0,0,0.15) !important;
+                                opacity: 1 !important;
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
+>>>>>>> c9ccaba (Initial commit)
                         }
                     </style>
                 </head>
                 <body>
                     ${billContent}
                     <div class="no-print" style="margin-top: 30px; text-align: center;">
+<<<<<<< HEAD
                         <button onclick="window.print()">Print Bill</button>
                         <button onclick="window.close()">Close</button>
+=======
+                        <button onclick="window.print()" style="padding: 10px 20px; margin: 5px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Print Bill</button>
+                        <button onclick="window.close()" style="padding: 10px 20px; margin: 5px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">Close</button>
+>>>>>>> c9ccaba (Initial commit)
                     </div>
                 </body>
                 </html>
@@ -1644,7 +2230,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             printWindow.document.write(printContent);
             printWindow.document.close();
             
+<<<<<<< HEAD
             // Auto-print after a short delay
+=======
+            // Auto-print after a short delay to ensure content is loaded
+>>>>>>> c9ccaba (Initial commit)
             setTimeout(() => {
                 printWindow.print();
             }, 500);

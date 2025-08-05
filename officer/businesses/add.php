@@ -1,6 +1,10 @@
 <?php
 /**
+<<<<<<< HEAD
  * Data Collector - Add Business Form
+=======
+ * Officer  - Add Business Form
+>>>>>>> c9ccaba (Initial commit)
  * businesses/add.php
  */
 
@@ -37,6 +41,19 @@ if (!isOfficer() && !isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $userDisplayName = getUserDisplayName($currentUser);
 $errors = [];
 $success = false;
@@ -813,6 +830,19 @@ $currentPage = 'record.php';
             to { opacity: 1; transform: translateY(0); }
         }
         
+<<<<<<< HEAD
+=======
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100%); }
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .fade-in {
             animation: fadeIn 0.6s ease-out;
         }
@@ -961,6 +991,7 @@ $currentPage = 'record.php';
                             Search Accounts
                         </a>
                     </div>
+<<<<<<< HEAD
                     <div class="nav-item">
                         <a href="../billing/generate.php" class="nav-link <?php echo ($currentDir === 'billing' && $currentPage === 'generate.php') ? 'active' : ''; ?>">
                             <span class="nav-icon">
@@ -979,6 +1010,10 @@ $currentPage = 'record.php';
                             Print Bills
                         </a>
                     </div>
+=======
+        
+                   
+>>>>>>> c9ccaba (Initial commit)
                 </div>
                 
                 <!-- Maps & Locations -->
@@ -1107,11 +1142,25 @@ $currentPage = 'record.php';
                         <h3 class="section-title">Location Information</h3>
                         
                         <div class="location-section">
+<<<<<<< HEAD
                             <div class="form-group">
                                 <label class="form-label required">Exact Location</label>
                                 <textarea name="exact_location" class="form-control" rows="3" 
                                           placeholder="Enter detailed location description..." required><?php echo htmlspecialchars($_POST['exact_location'] ?? ''); ?></textarea>
                                 <div class="form-help">Provide detailed directions or landmarks</div>
+=======
+                            <div class="alert alert-info" style="margin-bottom: 15px;">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="icon-info-circle" style="display: none;"></span>
+                                <strong>GPS Tips:</strong> For best accuracy, ensure GPS is enabled, allow location access when prompted, and capture location while outdoors or near windows.
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label required">Exact Location</label>
+                                <textarea name="exact_location" class="form-control" rows="3" 
+                                          placeholder="Enter detailed location description or use GPS capture button..." required><?php echo htmlspecialchars($_POST['exact_location'] ?? ''); ?></textarea>
+                                <div class="form-help">Provide detailed directions, landmarks, or use GPS to capture precise location</div>
+>>>>>>> c9ccaba (Initial commit)
                             </div>
                             
                             <div style="margin-top: 15px; text-align: center;">
@@ -1424,6 +1473,7 @@ $currentPage = 'record.php';
             }
         });
         
+<<<<<<< HEAD
         // Get current location
         function getCurrentLocation() {
             if (navigator.geolocation) {
@@ -1473,10 +1523,115 @@ $currentPage = 'record.php';
         }
         
         // Get address from coordinates
+=======
+        // Get current location with high precision
+        function getCurrentLocation() {
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by this browser.');
+                return;
+            }
+            
+            // Show loading state
+            const locationBtn = event.target;
+            const originalText = locationBtn.innerHTML;
+            locationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Capturing Location...';
+            locationBtn.disabled = true;
+            
+            // First attempt with high accuracy
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    handleLocationSuccess(position, locationBtn, originalText);
+                },
+                function(error) {
+                    console.warn('High accuracy failed, trying standard accuracy:', error.message);
+                    
+                    // Second attempt with standard accuracy
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            handleLocationSuccess(position, locationBtn, originalText);
+                        },
+                        function(error) {
+                            handleLocationError(error, locationBtn, originalText);
+                        },
+                        {
+                            enableHighAccuracy: false,
+                            timeout: 15000,
+                            maximumAge: 60000
+                        }
+                    );
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+        
+        // Handle successful location capture
+        function handleLocationSuccess(position, locationBtn, originalText) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            
+            // Update hidden inputs
+            document.getElementById('latitude').value = latitude;
+            document.getElementById('longitude').value = longitude;
+            
+            // Update display
+            document.getElementById('latitudeDisplay').textContent = latitude.toFixed(6);
+            document.getElementById('longitudeDisplay').textContent = longitude.toFixed(6);
+            
+            // Reset button
+            locationBtn.innerHTML = originalText;
+            locationBtn.disabled = false;
+            
+            // Show accuracy info
+            console.log(`Location captured with ${accuracy}m accuracy`);
+            
+            // Get detailed address
+            getAddressFromCoordinates(latitude, longitude);
+        }
+        
+        // Handle location capture error
+        function handleLocationError(error, locationBtn, originalText) {
+            let errorMessage = 'Error getting location: ';
+            let solution = '';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage += "Location access denied.";
+                    solution = "Please enable location access in your browser settings and try again.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage += "Location information is unavailable.";
+                    solution = "Please ensure GPS is enabled and you have a stable internet connection.";
+                    break;
+                case error.TIMEOUT:
+                    errorMessage += "Location request timed out.";
+                    solution = "Please try again. Make sure you're in an area with good GPS signal.";
+                    break;
+                default:
+                    errorMessage += "An unknown error occurred.";
+                    solution = "Please try again or enter the location manually.";
+                    break;
+            }
+            
+            // Reset button
+            locationBtn.innerHTML = originalText;
+            locationBtn.disabled = false;
+            
+            // Show detailed error
+            alert(errorMessage + '\n\n' + solution);
+        }
+        
+        // Get address from coordinates with precise local area detection
+>>>>>>> c9ccaba (Initial commit)
         function getAddressFromCoordinates(latitude, longitude) {
             const geocoder = new google.maps.Geocoder();
             const latLng = new google.maps.LatLng(latitude, longitude);
             
+<<<<<<< HEAD
             geocoder.geocode({ location: latLng }, function(results, status) {
                 if (status === 'OK' && results[0]) {
                     const address = results[0].formatted_address;
@@ -1490,6 +1645,128 @@ $currentPage = 'record.php';
                 }
             });
         }
+=======
+            // Use more precise geocoding settings
+            geocoder.geocode({ 
+                location: latLng,
+                region: 'GH' // Ghana region for better local results
+            }, function(results, status) {
+                if (status === 'OK' && results.length > 0) {
+                    let specificLocation = '';
+                    
+                    // Look through all results to find the most specific location
+                    for (let i = 0; i < Math.min(results.length, 3); i++) {
+                        const result = results[i];
+                        const components = result.address_components;
+                        
+                        // Extract specific area information
+                        let neighborhood = '';
+                        let sublocality = '';
+                        let locality = '';
+                        let adminArea = '';
+                        
+                        components.forEach(function(component) {
+                            const types = component.types;
+                            
+                            if (types.includes('neighborhood') || types.includes('sublocality_level_2')) {
+                                neighborhood = component.long_name;
+                            } else if (types.includes('sublocality_level_1') || types.includes('sublocality')) {
+                                sublocality = component.long_name;
+                            } else if (types.includes('locality')) {
+                                locality = component.long_name;
+                            } else if (types.includes('administrative_area_level_2')) {
+                                adminArea = component.long_name;
+                            }
+                        });
+                        
+                        // Build the most specific location string
+                        if (neighborhood) {
+                            specificLocation = neighborhood;
+                            if (sublocality && sublocality !== neighborhood) {
+                                specificLocation += ', ' + sublocality;
+                            }
+                            break;
+                        } else if (sublocality) {
+                            specificLocation = sublocality;
+                            break;
+                        } else if (locality) {
+                            specificLocation = locality;
+                            break;
+                        }
+                    }
+                    
+                    // If no specific location found, use the first result's formatted address
+                    if (!specificLocation) {
+                        specificLocation = results[0].formatted_address;
+                    }
+                    
+                    // Create location description
+                    const locationDescription = `Location: ${specificLocation}\nGPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                    
+                    const exactLocationField = document.querySelector('textarea[name="exact_location"]');
+                    
+                    if (exactLocationField.value.trim() === '') {
+                        exactLocationField.value = locationDescription;
+                    } else if (confirm(`Update location with captured GPS location?\n\n${specificLocation}`)) {
+                        exactLocationField.value = locationDescription;
+                    }
+                    
+                    // Show success message
+                    showLocationSuccess(specificLocation);
+                } else {
+                    // Fallback: just use coordinates
+                    const locationDescription = `GPS Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                    const exactLocationField = document.querySelector('textarea[name="exact_location"]');
+                    
+                    if (exactLocationField.value.trim() === '') {
+                        exactLocationField.value = locationDescription;
+                    }
+                    
+                    console.warn('Geocoding failed:', status);
+                }
+            });
+        }
+        
+        // Show location capture success
+        function showLocationSuccess(locationName) {
+            // Create temporary success message
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: #48bb78;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease-out;
+            `;
+            successDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-map-marker-alt" style="color: #68d391;"></i>
+                    <div>
+                        <div>Location Captured!</div>
+                        <div style="font-size: 12px; opacity: 0.9;">${locationName}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                successDiv.style.animation = 'slideOut 0.3s ease-in forwards';
+                setTimeout(() => {
+                    if (successDiv.parentNode) {
+                        successDiv.parentNode.removeChild(successDiv);
+                    }
+                }, 300);
+            }, 4000);
+        }
+>>>>>>> c9ccaba (Initial commit)
     </script>
 </body>
 </html>

@@ -108,11 +108,19 @@ $app_settings = [
 $user_roles = [
     'super_admin' => [
         'name' => 'Super Admin',
+<<<<<<< HEAD
         'permissions' => ['*'] // All permissions
     ],
     'admin' => [
         'name' => 'Admin',
         'permissions' => ['*'] // All permissions, including those for restriction page
+=======
+        'permissions' => ['*'] // All permissions except restrictions.view
+    ],
+    'admin' => [
+        'name' => 'Admin',
+        'permissions' => ['*'] // All permissions except restrictions.view (same as Super Admin)
+>>>>>>> c9ccaba (Initial commit)
     ],
     'officer' => [
         'name' => 'Officer',

@@ -1,6 +1,10 @@
 <?php
 /**
+<<<<<<< HEAD
  * Billing Management - Generate Bills
+=======
+ * Billing Management - Generate Bills (UPDATED WITH PROPER ARREARS CALCULATION)
+>>>>>>> c9ccaba (Initial commit)
  * QUICKBILL 305 - Admin Panel
  */
 
@@ -31,6 +35,19 @@ if (!hasPermission('billing.create')) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $pageTitle = 'Generate Bills';
 $currentUser = getCurrentUser();
 $userDisplayName = getUserDisplayName($currentUser);
@@ -47,6 +64,87 @@ $specificType = sanitizeInput($_GET['type'] ?? '');
 $specificId = intval($_GET['id'] ?? 0);
 $specificRecord = null;
 
+<<<<<<< HEAD
+=======
+/**
+ * Calculate arrears for a business from previous unpaid bills
+ */
+function calculateBusinessArrears($db, $businessId, $currentYear) {
+    // Get last year's bill data
+    $lastYearBill = $db->fetchRow("
+        SELECT 
+            current_bill as old_bill,
+            COALESCE(
+                (SELECT SUM(amount_paid) 
+                 FROM payments p 
+                 WHERE p.bill_id = b.bill_id 
+                 AND p.payment_status = 'Successful'), 0
+            ) as previous_payments
+        FROM bills b
+        WHERE bill_type = 'Business' 
+        AND reference_id = ? 
+        AND billing_year = ?
+    ", [$businessId, $currentYear - 1]);
+    
+    if (!$lastYearBill) {
+        return [
+            'old_bill' => 0,
+            'previous_payments' => 0,
+            'arrears' => 0
+        ];
+    }
+    
+    $oldBill = $lastYearBill['old_bill'] ?? 0;
+    $previousPayments = $lastYearBill['previous_payments'] ?? 0;
+    $arrears = max(0, $oldBill - $previousPayments); // Outstanding from previous year
+    
+    return [
+        'old_bill' => $oldBill,
+        'previous_payments' => $previousPayments,
+        'arrears' => $arrears
+    ];
+}
+
+/**
+ * Calculate arrears for a property from previous unpaid bills
+ */
+function calculatePropertyArrears($db, $propertyId, $currentYear) {
+    // Get last year's bill data
+    $lastYearBill = $db->fetchRow("
+        SELECT 
+            current_bill as old_bill,
+            COALESCE(
+                (SELECT SUM(amount_paid) 
+                 FROM payments p 
+                 WHERE p.bill_id = b.bill_id 
+                 AND p.payment_status = 'Successful'), 0
+            ) as previous_payments
+        FROM bills b
+        WHERE bill_type = 'Property' 
+        AND reference_id = ? 
+        AND billing_year = ?
+    ", [$propertyId, $currentYear - 1]);
+    
+    if (!$lastYearBill) {
+        return [
+            'old_bill' => 0,
+            'previous_payments' => 0,
+            'arrears' => 0
+        ];
+    }
+    
+    $oldBill = $lastYearBill['old_bill'] ?? 0;
+    $previousPayments = $lastYearBill['previous_payments'] ?? 0;
+    $arrears = max(0, $oldBill - $previousPayments); // Outstanding from previous year
+    
+    return [
+        'old_bill' => $oldBill,
+        'previous_payments' => $previousPayments,
+        'arrears' => $arrears
+    ];
+}
+
+>>>>>>> c9ccaba (Initial commit)
 try {
     $db = new Database();
     
@@ -155,6 +253,7 @@ try {
                             continue;
                         }
                         
+<<<<<<< HEAD
                         // Generate bill number
                         $billNumber = 'BILL' . $billingYear . 'B' . str_pad($business['business_id'], 6, '0', STR_PAD_LEFT);
                         
@@ -162,6 +261,23 @@ try {
                         $currentBill = $business['fee_amount'] ?? 0;
                         $amountPayable = $business['old_bill'] + $business['arrears'] + $currentBill - $business['previous_payments'];
                         
+=======
+                        // Calculate arrears from previous year
+                        $arrearsData = calculateBusinessArrears($db, $business['business_id'], $billingYear);
+                        $oldBill = $arrearsData['old_bill'];
+                        $previousPayments = $arrearsData['previous_payments'];
+                        $arrears = $arrearsData['arrears'];
+                        
+                        // Current year's bill from fee structure
+                        $currentBill = $business['fee_amount'] ?? 0;
+                        
+                        // Amount payable = arrears + current bill (CORRECTED FORMULA)
+                        $amountPayable = $arrears + $currentBill;
+                        
+                        // Generate bill number
+                        $billNumber = 'BILL' . $billingYear . 'B' . str_pad($business['business_id'], 6, '0', STR_PAD_LEFT);
+                        
+>>>>>>> c9ccaba (Initial commit)
                         // Insert bill
                         $db->execute("
                             INSERT INTO bills (bill_number, bill_type, reference_id, billing_year, 
@@ -170,6 +286,7 @@ try {
                             VALUES (?, 'Business', ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, NOW())
                         ", [
                             $billNumber, $business['business_id'], $billingYear,
+<<<<<<< HEAD
                             $business['old_bill'], $business['previous_payments'], $business['arrears'],
                             $currentBill, $amountPayable, $currentUser['user_id']
                         ]);
@@ -180,6 +297,19 @@ try {
                             SET current_bill = ?
                             WHERE business_id = ?
                         ", [$currentBill, $business['business_id']]);
+=======
+                            $oldBill, $previousPayments, $arrears,
+                            $currentBill, $amountPayable, $currentUser['user_id']
+                        ]);
+                        
+                        // Update business record with calculated values
+                        $db->execute("
+                            UPDATE businesses 
+                            SET old_bill = ?, previous_payments = ?, arrears = ?, 
+                                current_bill = ?, amount_payable = ?
+                            WHERE business_id = ?
+                        ", [$oldBill, $previousPayments, $arrears, $currentBill, $amountPayable, $business['business_id']]);
+>>>>>>> c9ccaba (Initial commit)
                         
                         $businessBillsGenerated++;
                     }
@@ -219,6 +349,7 @@ try {
                             continue;
                         }
                         
+<<<<<<< HEAD
                         // Generate bill number
                         $billNumber = 'BILL' . $billingYear . 'P' . str_pad($property['property_id'], 6, '0', STR_PAD_LEFT);
                         
@@ -226,6 +357,23 @@ try {
                         $currentBill = ($property['fee_per_room'] ?? 0) * $property['number_of_rooms'];
                         $amountPayable = $property['old_bill'] + $property['arrears'] + $currentBill - $property['previous_payments'];
                         
+=======
+                        // Calculate arrears from previous year
+                        $arrearsData = calculatePropertyArrears($db, $property['property_id'], $billingYear);
+                        $oldBill = $arrearsData['old_bill'];
+                        $previousPayments = $arrearsData['previous_payments'];
+                        $arrears = $arrearsData['arrears'];
+                        
+                        // Current year's bill calculation
+                        $currentBill = ($property['fee_per_room'] ?? 0) * $property['number_of_rooms'];
+                        
+                        // Amount payable = arrears + current bill (CORRECTED FORMULA)
+                        $amountPayable = $arrears + $currentBill;
+                        
+                        // Generate bill number
+                        $billNumber = 'BILL' . $billingYear . 'P' . str_pad($property['property_id'], 6, '0', STR_PAD_LEFT);
+                        
+>>>>>>> c9ccaba (Initial commit)
                         // Insert bill
                         $db->execute("
                             INSERT INTO bills (bill_number, bill_type, reference_id, billing_year, 
@@ -234,6 +382,7 @@ try {
                             VALUES (?, 'Property', ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, NOW())
                         ", [
                             $billNumber, $property['property_id'], $billingYear,
+<<<<<<< HEAD
                             $property['old_bill'], $property['previous_payments'], $property['arrears'],
                             $currentBill, $amountPayable, $currentUser['user_id']
                         ]);
@@ -244,6 +393,19 @@ try {
                             SET current_bill = ?
                             WHERE property_id = ?
                         ", [$currentBill, $property['property_id']]);
+=======
+                            $oldBill, $previousPayments, $arrears,
+                            $currentBill, $amountPayable, $currentUser['user_id']
+                        ]);
+                        
+                        // Update property record with calculated values
+                        $db->execute("
+                            UPDATE properties 
+                            SET old_bill = ?, previous_payments = ?, arrears = ?, 
+                                current_bill = ?, amount_payable = ?
+                            WHERE property_id = ?
+                        ", [$oldBill, $previousPayments, $arrears, $currentBill, $amountPayable, $property['property_id']]);
+>>>>>>> c9ccaba (Initial commit)
                         
                         $propertyBillsGenerated++;
                     }
@@ -1076,6 +1238,38 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
             100% { transform: rotate(360deg); }
         }
         
+<<<<<<< HEAD
+=======
+        /* Calculation Info Box */
+        .calculation-info {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .calculation-title {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .calculation-formula {
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #856404;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -1379,9 +1573,35 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                 <div class="page-header">
                     <h1 class="page-title">
                         <i class="fas fa-plus-circle"></i>
+<<<<<<< HEAD
                         Generate Bills
                     </h1>
                     <p style="color: #64748b;">Create bills for businesses and properties based on fee structures</p>
+=======
+                        Generate Bills (Updated with Proper Arrears)
+                    </h1>
+                    <p style="color: #64748b;">Create bills for businesses and properties with accurate arrears calculation</p>
+                </div>
+
+                <!-- Calculation Information -->
+                <div class="calculation-info">
+                    <div class="calculation-title">
+                        <i class="fas fa-calculator"></i>
+                        How Bills are Calculated (CORRECTED)
+                    </div>
+                    <p style="margin-bottom: 15px; color: #856404;">
+                        <strong>Example:</strong> If a business was billed GHS 500 last year (current_bill) but only paid GHS 300:
+                    </p>
+                    <div class="calculation-formula">
+                        Old Bill: GHS 500 (last year's current_bill) | Previous Payments: GHS 300 | Arrears: GHS 200
+                    </div>
+                    <div class="calculation-formula">
+                        Amount Payable = Arrears + Current Bill = GHS 200 + GHS 600 = GHS 800
+                    </div>
+                    <p style="margin-top: 10px; color: #856404; font-size: 14px;">
+                        <strong>Key Point:</strong> The old_bill is always the face value of last year's bill (current_bill), not what remained unpaid.
+                    </p>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
 
                 <!-- Flash Messages -->
@@ -1409,7 +1629,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                         <div class="results-icon">
                             <i class="fas fa-check"></i>
                         </div>
+<<<<<<< HEAD
                         <div class="results-title">Bills Generated Successfully!</div>
+=======
+                        <div class="results-title">Bills Generated Successfully with Proper Arrears!</div>
+>>>>>>> c9ccaba (Initial commit)
                         <div class="results-stats">
                             <div class="stat-item">
                                 <div class="stat-number"><?php echo $generationResults['business_bills']; ?></div>
@@ -1600,7 +1824,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                         <div class="preview-section">
                             <i class="fas fa-eye" style="font-size: 24px; margin-bottom: 10px;"></i>
                             <h3>Bill Preview</h3>
+<<<<<<< HEAD
                             <p>Bills will be generated based on current fee structures and existing account balances. 
+=======
+                            <p>Bills will be generated with proper arrears calculation from previous year's unpaid balances. 
+>>>>>>> c9ccaba (Initial commit)
                             Duplicate bills for the same year will be skipped automatically.</p>
                             <div class="preview-stats" id="previewStats">
                                 <div class="stat-item">
@@ -1632,7 +1860,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                             </a>
                             <button type="submit" class="btn btn-success">
                                 <i class="fas fa-plus-circle"></i>
+<<<<<<< HEAD
                                 Generate Bills
+=======
+                                Generate Bills with Proper Arrears
+>>>>>>> c9ccaba (Initial commit)
                             </button>
                         </div>
 

@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  quickbill-app:
+    build: .
+    container_name: quickbill_app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - uploads_data:/var/www/html/uploads
+      - storage_data:/var/www/html/storage
+    environment:
+      - DB_HOST=quickbill-db
+      - DB_PORT=3306
+      - DB_NAME=quickbill_db
+      - DB_USER=quickbill_user
+      - DB_PASS=quickbill_password
+    depends_on:
+      - quickbill-db
+    networks:
+      - quickbill-network
+
+  quickbill-db:
+    image: mysql:8.0
+    container_name: quickbill_mysql
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_123
+      MYSQL_DATABASE: quickbill_db
+      MYSQL_USER: quickbill_user
+      MYSQL_PASSWORD: quickbill_password
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - quickbill-network
+
+  quickbill-phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: quickbill_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: quickbill-db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root_password_123
+    depends_on:
+      - quickbill-db
+    networks:
+      - quickbill-network
+
+volumes:
+  mysql_data:
+    driver: local
+  uploads_data:
+    driver: local
+  storage_data:
+    driver: local
+
+networks:
+  quickbill-network:
+    driver: bridge

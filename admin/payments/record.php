@@ -31,6 +31,19 @@ if (!hasPermission('payments.create')) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $pageTitle = 'Record Payment';
 $currentUser = getCurrentUser();
 $userDisplayName = getUserDisplayName($currentUser);
@@ -376,6 +389,11 @@ try {
         .icon-info::before { content: "ℹ️"; }
         .icon-warning::before { content: "⚠️"; }
         .icon-shield::before { content: "🛡️"; }
+<<<<<<< HEAD
+=======
+        .icon-history::before { content: "🕒"; }
+        .icon-help::before { content: "❓"; }
+>>>>>>> c9ccaba (Initial commit)
         
         /* Navigation and layout styles */
         .top-nav {
@@ -1465,7 +1483,11 @@ try {
         <div class="user-section">
             <!-- Notification Bell -->
             <div style="position: relative; margin-right: 10px;">
+<<<<<<< HEAD
                 <button style="
+=======
+                <a href="../notifications/index.php" style="
+>>>>>>> c9ccaba (Initial commit)
                     background: rgba(255,255,255,0.2);
                     border: none;
                     color: white;
@@ -1474,12 +1496,22 @@ try {
                     border-radius: 50%;
                     cursor: pointer;
                     transition: all 0.3s;
+<<<<<<< HEAD
                 " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
                    onmouseout="this.style.background='rgba(255,255,255,0.2)'"
                    onclick="showComingSoon('Notifications')">
                     <i class="fas fa-bell"></i>
                     <span class="icon-bell" style="display: none;"></span>
                 </button>
+=======
+                    text-decoration: none;
+                    display: block;
+                " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+                   onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                    <i class="fas fa-bell"></i>
+                    <span class="icon-bell" style="display: none;"></span>
+                </a>
+>>>>>>> c9ccaba (Initial commit)
                 <span class="notification-badge" style="
                     position: absolute;
                     top: -2px;
@@ -1518,16 +1550,25 @@ try {
                         <div class="dropdown-role"><?php echo htmlspecialchars(getCurrentUserRole()); ?></div>
                     </div>
                     <div class="dropdown-menu">
+<<<<<<< HEAD
                         <a href="#" class="dropdown-item" onclick="showComingSoon('User Profile')">
+=======
+                        <a href="../settings/index.php" class="dropdown-item">
+>>>>>>> c9ccaba (Initial commit)
                             <i class="fas fa-user"></i>
                             <span class="icon-user" style="display: none;"></span>
                             My Profile
                         </a>
+<<<<<<< HEAD
                         <a href="#" class="dropdown-item" onclick="showComingSoon('Account Settings')">
+=======
+                        <a href="../settings/index.php" class="dropdown-item">
+>>>>>>> c9ccaba (Initial commit)
                             <i class="fas fa-cog"></i>
                             <span class="icon-cog" style="display: none;"></span>
                             Account Settings
                         </a>
+<<<<<<< HEAD
                         <a href="#" class="dropdown-item" onclick="showComingSoon('Activity Log')">
                             <i class="fas fa-history"></i>
                             <span class="icon-chart" style="display: none;"></span>
@@ -1536,6 +1577,16 @@ try {
                         <a href="#" class="dropdown-item" onclick="showComingSoon('Help & Support')">
                             <i class="fas fa-question-circle"></i>
                             <span class="icon-bell" style="display: none;"></span>
+=======
+                        <a href="../logs/user_activity.php" class="dropdown-item">
+                            <i class="fas fa-history"></i>
+                            <span class="icon-history" style="display: none;"></span>
+                            Activity Log
+                        </a>
+                        <a href="../settings/index.php" class="dropdown-item">
+                            <i class="fas fa-question-circle"></i>
+                            <span class="icon-help" style="display: none;"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Help & Support
                         </a>
                         <div style="height: 1px; background: #e2e8f0; margin: 10px 0;"></div>
@@ -1589,7 +1640,11 @@ try {
                         </a>
                     </div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Properties')">
+=======
+                        <a href="../properties/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-home"></i>
                                 <span class="icon-home" style="display: none;"></span>
@@ -1612,7 +1667,11 @@ try {
                 <div class="nav-section">
                     <div class="nav-title">Billing & Payments</div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Billing')">
+=======
+                        <a href="../billing/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-file-invoice"></i>
                                 <span class="icon-invoice" style="display: none;"></span>
@@ -1644,7 +1703,11 @@ try {
                 <div class="nav-section">
                     <div class="nav-title">Reports & System</div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Reports')">
+=======
+                        <a href="../reports/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-chart-bar"></i>
                                 <span class="icon-chart" style="display: none;"></span>
@@ -1653,7 +1716,11 @@ try {
                         </a>
                     </div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Notifications')">
+=======
+                        <a href="../notifications/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-bell"></i>
                                 <span class="icon-bell" style="display: none;"></span>
@@ -1662,7 +1729,11 @@ try {
                         </a>
                     </div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="#" class="nav-link" onclick="showComingSoon('Settings')">
+=======
+                        <a href="../settings/index.php" class="nav-link">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-cog"></i>
                                 <span class="icon-cog" style="display: none;"></span>
@@ -2249,6 +2320,7 @@ try {
             dropdown.classList.toggle('show');
         }
 
+<<<<<<< HEAD
         function showComingSoon(feature) {
             const backdrop = document.createElement('div');
             backdrop.style.cssText = `
@@ -2297,6 +2369,8 @@ try {
             });
         }
 
+=======
+>>>>>>> c9ccaba (Initial commit)
         // Restore sidebar state
         document.addEventListener('DOMContentLoaded', function() {
             const sidebarHidden = localStorage.getItem('sidebarHidden');

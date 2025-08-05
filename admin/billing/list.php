@@ -31,6 +31,19 @@ if (!hasPermission('billing.view')) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $pageTitle = 'All Bills';
 $currentUser = getCurrentUser();
 $userDisplayName = getUserDisplayName($currentUser);
@@ -1117,7 +1130,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                         <div class="dropdown-role"><?php echo htmlspecialchars(getCurrentUserRole()); ?></div>
                     </div>
                     <div class="dropdown-menu">
+<<<<<<< HEAD
                         <a href="../users/view.php?id=<?php echo $currentUser['id']; ?>" class="dropdown-item">
+=======
+                        <a href="../users/view.php?id=<?php echo $currentUser['user_id']; ?>" class="dropdown-item">
+>>>>>>> c9ccaba (Initial commit)
                             <i class="fas fa-user"></i>
                             <span class="icon-users" style="display: none;"></span>
                             My Profile
@@ -1299,7 +1316,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                         </div>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <?php if (hasPermission('billing.create')): ?>
+<<<<<<< HEAD
                                 <a href="generate_bills.php" class="btn btn-primary">
+=======
+                                <a href="generate.php" class="btn btn-primary">
+>>>>>>> c9ccaba (Initial commit)
                                     <i class="fas fa-plus"></i>
                                     Generate Bills
                                 </a>
@@ -1451,7 +1472,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
                                 <h3>No Bills Found</h3>
                                 <p>No bills match your current filters. Try adjusting your search criteria.</p>
                                 <?php if (hasPermission('billing.create')): ?>
+<<<<<<< HEAD
                                     <a href="generate_bills.php" class="btn btn-primary">
+=======
+                                    <a href="generate.php" class="btn btn-primary">
+>>>>>>> c9ccaba (Initial commit)
                                         <i class="fas fa-plus"></i>
                                         Generate Your First Bills
                                     </a>
@@ -1765,7 +1790,11 @@ $flashMessage = !empty($flashMessages) ? $flashMessages[0] : null;
         
         // Individual actions
         function printBill(billId) {
+<<<<<<< HEAD
             window.open(`bill_preview.php?id=${billId}&action=print`, '_blank');
+=======
+            window.open(`view.php?id=${billId}&action=print`, '_blank');
+>>>>>>> c9ccaba (Initial commit)
         }
         
         function exportBills() {

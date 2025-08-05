@@ -1,4 +1,8 @@
+<<<<<<< HEAD
  <?php
+=======
+<?php
+>>>>>>> c9ccaba (Initial commit)
 /**
  * Business Map Page for QUICKBILL 305
  * Revenue Officer interface for viewing business locations
@@ -37,6 +41,19 @@ if (!isRevenueOfficer() && !isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $userDisplayName = getUserDisplayName($currentUser);
 
 // Get filter parameters
@@ -148,7 +165,15 @@ foreach ($businesses as $business) {
             overflow: hidden;
         }
         
+<<<<<<< HEAD
         /* Custom Icons */
+=======
+        /* Custom Icons (fallback if Font Awesome fails) */
+        [class*="icon-"] {
+            display: none; /* Hidden by default */
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .icon-map::before { content: "🗺️"; }
         .icon-building::before { content: "🏢"; }
         .icon-filter::before { content: "🔧"; }
@@ -159,6 +184,13 @@ foreach ($businesses as $business) {
         .icon-search::before { content: "🔍"; }
         .icon-layers::before { content: "📚"; }
         .icon-navigation::before { content: "🧭"; }
+<<<<<<< HEAD
+=======
+        .icon-menu::before { content: "☰"; }
+        .icon-list::before { content: "📋"; }
+        .icon-crosshairs::before { content: "🎯"; }
+        .icon-layer-group::before { content: "🗺️"; }
+>>>>>>> c9ccaba (Initial commit)
         
         /* Header */
         .header {
@@ -610,6 +642,7 @@ foreach ($businesses as $business) {
             opacity: 0.5;
         }
         
+<<<<<<< HEAD
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -623,6 +656,48 @@ foreach ($businesses as $business) {
             
             .sidebar.show {
                 left: 0;
+=======
+        /* Mobile Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+        }
+        
+        .mobile-overlay.show {
+            display: block;
+        }
+        
+        /* Business Sidebar for Mobile */
+        .business-sidebar-mobile {
+            display: none;
+            position: fixed;
+            top: 70px;
+            right: 0;
+            width: 350px;
+            height: calc(100vh - 70px);
+            background: white;
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .business-sidebar-mobile.show {
+            transform: translateX(0);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .map-container {
@@ -636,6 +711,21 @@ foreach ($businesses as $business) {
             .map-controls {
                 top: 10px;
                 right: 10px;
+<<<<<<< HEAD
+=======
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .map-control-btn {
+                font-size: 14px;
+                padding: 10px;
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .map-legend {
@@ -643,6 +733,7 @@ foreach ($businesses as $business) {
                 left: 10px;
                 font-size: 12px;
             }
+<<<<<<< HEAD
         }
         
         /* Mobile Toggle */
@@ -665,18 +756,44 @@ foreach ($businesses as $business) {
         @media (max-width: 768px) {
             .sidebar-toggle {
                 display: block;
+=======
+            
+            .business-sidebar-mobile {
+                display: block;
+            }
+        }
+        
+        /* Hide certain elements on different screen sizes */
+        .d-md-none {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .d-md-none {
+                display: flex;
+>>>>>>> c9ccaba (Initial commit)
             }
         }
     </style>
 </head>
 <body>
+<<<<<<< HEAD
+=======
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeAllSidebars()"></div>
+
+>>>>>>> c9ccaba (Initial commit)
     <!-- Header -->
     <div class="header">
         <div class="header-content">
             <div class="header-title">
                 <div class="header-icon">
                     <i class="fas fa-map-marked-alt"></i>
+<<<<<<< HEAD
                     <span class="icon-map" style="display: none;"></span>
+=======
+                    <span class="icon-map"></span>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
                 <h1>Business Locations Map</h1>
             </div>
@@ -698,7 +815,11 @@ foreach ($businesses as $business) {
             
             <a href="../index.php" class="back-btn">
                 <i class="fas fa-arrow-left"></i>
+<<<<<<< HEAD
                 <span class="icon-back" style="display: none;"></span>
+=======
+                <span class="icon-back"></span>
+>>>>>>> c9ccaba (Initial commit)
                 Dashboard
             </a>
         </div>
@@ -706,6 +827,7 @@ foreach ($businesses as $business) {
 
     <!-- Main Layout -->
     <div class="main-layout">
+<<<<<<< HEAD
         <!-- Sidebar Toggle (Mobile) -->
         <button class="sidebar-toggle" onclick="toggleSidebar()">
             <i class="fas fa-bars"></i>
@@ -713,11 +835,18 @@ foreach ($businesses as $business) {
         </button>
 
         <!-- Sidebar -->
+=======
+        <!-- Desktop Sidebar -->
+>>>>>>> c9ccaba (Initial commit)
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3 class="sidebar-title">
                     <i class="fas fa-filter"></i>
+<<<<<<< HEAD
                     <span class="icon-filter" style="display: none;"></span>
+=======
+                    <span class="icon-filter"></span>
+>>>>>>> c9ccaba (Initial commit)
                     Filters & Business List
                 </h3>
                 
@@ -781,12 +910,20 @@ foreach ($businesses as $business) {
                                 </div>
                                 <div class="business-detail">
                                     <i class="fas fa-phone" style="font-size: 10px;"></i>
+<<<<<<< HEAD
                                     <span class="icon-phone" style="display: none;"></span>
+=======
+                                    <span class="icon-phone"></span>
+>>>>>>> c9ccaba (Initial commit)
                                     <?php echo htmlspecialchars($business['telephone'] ?: 'N/A'); ?>
                                 </div>
                                 <div class="business-detail">
                                     <i class="fas fa-map-marker-alt" style="font-size: 10px;"></i>
+<<<<<<< HEAD
                                     <span class="icon-location" style="display: none;"></span>
+=======
+                                    <span class="icon-location"></span>
+>>>>>>> c9ccaba (Initial commit)
                                     <?php echo htmlspecialchars($business['zone_name'] ?: 'Unknown'); ?>
                                 </div>
                             </div>
@@ -796,7 +933,104 @@ foreach ($businesses as $business) {
                     <div class="no-results">
                         <div class="no-results-icon">
                             <i class="fas fa-search"></i>
+<<<<<<< HEAD
                             <span class="icon-search" style="display: none;"></span>
+=======
+                            <span class="icon-search"></span>
+                        </div>
+                        <h4>No businesses found</h4>
+                        <p>No businesses match your current filter criteria.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Mobile Business Sidebar -->
+        <div class="business-sidebar-mobile" id="businessSidebarMobile">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title">
+                    <i class="fas fa-filter"></i>
+                    <span class="icon-filter"></span>
+                    Filters & Business List
+                </h3>
+                
+                <form method="GET" class="filters">
+                    <div class="filter-group">
+                        <label class="filter-label">Zone</label>
+                        <select name="zone" class="filter-select" onchange="this.form.submit()">
+                            <option value="0">All Zones</option>
+                            <?php foreach ($zones as $zone): ?>
+                                <option value="<?php echo $zone['zone_id']; ?>" 
+                                        <?php echo $zoneFilter == $zone['zone_id'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($zone['zone_name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">Status</label>
+                        <select name="status" class="filter-select" onchange="this.form.submit()">
+                            <option value="all" <?php echo $statusFilter === 'all' ? 'selected' : ''; ?>>All Status</option>
+                            <option value="Active" <?php echo $statusFilter === 'Active' ? 'selected' : ''; ?>>Active</option>
+                            <option value="Inactive" <?php echo $statusFilter === 'Inactive' ? 'selected' : ''; ?>>Inactive</option>
+                            <option value="Suspended" <?php echo $statusFilter === 'Suspended' ? 'selected' : ''; ?>>Suspended</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">Payment Status</label>
+                        <select name="payment_status" class="filter-select" onchange="this.form.submit()">
+                            <option value="all" <?php echo $paymentStatusFilter === 'all' ? 'selected' : ''; ?>>All Payments</option>
+                            <option value="outstanding" <?php echo $paymentStatusFilter === 'outstanding' ? 'selected' : ''; ?>>Outstanding</option>
+                            <option value="paid" <?php echo $paymentStatusFilter === 'paid' ? 'selected' : ''; ?>>Paid Up</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="business-list">
+                <?php if (!empty($businesses)): ?>
+                    <?php foreach ($businesses as $business): ?>
+                        <div class="business-item" 
+                             onclick="selectBusiness(<?php echo $business['business_id']; ?>, <?php echo $business['latitude']; ?>, <?php echo $business['longitude']; ?>); closeAllSidebars();"
+                             data-id="mobile-<?php echo $business['business_id']; ?>">
+                            <div class="status-badge <?php echo $business['amount_payable'] > 0 ? 'status-outstanding' : 'status-paid'; ?>"></div>
+                            
+                            <div class="business-header">
+                                <div>
+                                    <div class="business-name"><?php echo htmlspecialchars($business['business_name']); ?></div>
+                                    <div class="business-owner"><?php echo htmlspecialchars($business['owner_name']); ?></div>
+                                </div>
+                                <div class="business-amount <?php echo $business['amount_payable'] <= 0 ? 'paid' : ''; ?>">
+                                    <?php echo $business['amount_payable'] > 0 ? formatCurrency($business['amount_payable']) : 'Paid'; ?>
+                                </div>
+                            </div>
+                            
+                            <div class="business-details">
+                                <div class="business-detail">
+                                    <i class="fas fa-hashtag" style="font-size: 10px;"></i>
+                                    <?php echo htmlspecialchars($business['account_number']); ?>
+                                </div>
+                                <div class="business-detail">
+                                    <i class="fas fa-phone" style="font-size: 10px;"></i>
+                                    <span class="icon-phone"></span>
+                                    <?php echo htmlspecialchars($business['telephone'] ?: 'N/A'); ?>
+                                </div>
+                                <div class="business-detail">
+                                    <i class="fas fa-map-marker-alt" style="font-size: 10px;"></i>
+                                    <span class="icon-location"></span>
+                                    <?php echo htmlspecialchars($business['zone_name'] ?: 'Unknown'); ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="no-results">
+                        <div class="no-results-icon">
+                            <i class="fas fa-search"></i>
+                            <span class="icon-search"></span>
+>>>>>>> c9ccaba (Initial commit)
                         </div>
                         <h4>No businesses found</h4>
                         <p>No businesses match your current filter criteria.</p>
@@ -810,7 +1044,11 @@ foreach ($businesses as $business) {
             <div class="map-loading" id="mapLoading">
                 <div class="loading-spinner">
                     <i class="fas fa-spinner"></i>
+<<<<<<< HEAD
                     <span class="icon-loading" style="display: none;">⏳</span>
+=======
+                    <span class="icon-loading">⏳</span>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
                 <div>Loading map...</div>
             </div>
@@ -821,6 +1059,7 @@ foreach ($businesses as $business) {
             <div class="map-controls">
                 <button class="map-control-btn" onclick="centerMap()" title="Center Map">
                     <i class="fas fa-crosshairs"></i>
+<<<<<<< HEAD
                     <span class="icon-navigation" style="display: none;"></span>
                 </button>
                 <button class="map-control-btn" onclick="toggleSatellite()" title="Toggle Satellite" id="satelliteBtn">
@@ -830,6 +1069,21 @@ foreach ($businesses as $business) {
                 <button class="map-control-btn" onclick="toggleTraffic()" title="Toggle Traffic" id="trafficBtn">
                     <i class="fas fa-road"></i>
                     <span class="icon-map" style="display: none;"></span>
+=======
+                    <span class="icon-navigation"></span>
+                </button>
+                <button class="map-control-btn" onclick="toggleMapType()" title="Toggle Map Type">
+                    <i class="fas fa-layer-group"></i>
+                    <span class="icon-layer-group"></span>
+                </button>
+                <button class="map-control-btn" onclick="toggleTraffic()" title="Toggle Traffic" id="trafficBtn">
+                    <i class="fas fa-road"></i>
+                    <span class="icon-map"></span>
+                </button>
+                <button class="map-control-btn d-md-none" onclick="toggleBusinessSidebar()" title="Businesses & Filters">
+                    <i class="fas fa-list"></i>
+                    <span class="icon-list"></span>
+>>>>>>> c9ccaba (Initial commit)
                 </button>
             </div>
             
@@ -857,15 +1111,56 @@ foreach ($businesses as $business) {
         let infoWindow;
         let selectedBusinessId = null;
         let mapCenter = { lat: 5.593020, lng: -0.077100 }; // Default to Ghana coordinates
+<<<<<<< HEAD
+=======
+        let currentMapType = 'roadmap';
+>>>>>>> c9ccaba (Initial commit)
         
         // Business data from PHP
         const businesses = <?php echo json_encode($businesses); ?>;
         
         // Check if Font Awesome loaded, if not show emoji icons
         document.addEventListener('DOMContentLoaded', function() {
+<<<<<<< HEAD
             setTimeout(function() {
                 const testIcon = document.querySelector('.fas.fa-map-marked-alt');
                 if (!testIcon || getComputedStyle(testIcon, ':before').content === 'none') {
+=======
+            // First, hide all emoji icons by default
+            document.querySelectorAll('[class*="icon-"]').forEach(function(emoji) {
+                emoji.style.display = 'none';
+            });
+            
+            // Then check if Font Awesome loaded
+            setTimeout(function() {
+                let fontAwesomeLoaded = false;
+                
+                // Check if Font Awesome CSS is loaded
+                const stylesheets = document.styleSheets;
+                for (let i = 0; i < stylesheets.length; i++) {
+                    try {
+                        const href = stylesheets[i].href;
+                        if (href && (href.includes('font-awesome') || href.includes('fontawesome'))) {
+                            fontAwesomeLoaded = true;
+                            break;
+                        }
+                    } catch (e) {
+                        // Cross-origin stylesheet, skip
+                    }
+                }
+                
+                // Also check if icons render properly
+                const testIcon = document.querySelector('.fas.fa-map-marked-alt');
+                if (testIcon) {
+                    const iconStyle = getComputedStyle(testIcon, ':before');
+                    if (iconStyle.content === 'none' || iconStyle.content === '""') {
+                        fontAwesomeLoaded = false;
+                    }
+                }
+                
+                if (!fontAwesomeLoaded) {
+                    // Hide Font Awesome icons and show emoji fallbacks
+>>>>>>> c9ccaba (Initial commit)
                     document.querySelectorAll('.fas, .far').forEach(function(icon) {
                         icon.style.display = 'none';
                     });
@@ -873,9 +1168,42 @@ foreach ($businesses as $business) {
                         emoji.style.display = 'inline';
                     });
                 }
+<<<<<<< HEAD
             }, 100);
         });
 
+=======
+            }, 200);
+        });
+
+        // Simple toggle functions
+        function toggleBusinessSidebar() {
+            const businessSidebar = document.getElementById('businessSidebarMobile');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            // Toggle business sidebar
+            businessSidebar.classList.toggle('show');
+            
+            // Show/hide overlay
+            if (businessSidebar.classList.contains('show')) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        function closeAllSidebars() {
+            const businessSidebar = document.getElementById('businessSidebarMobile');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            if (businessSidebar) {
+                businessSidebar.classList.remove('show');
+            }
+            
+            overlay.classList.remove('show');
+        }
+
+>>>>>>> c9ccaba (Initial commit)
         // Initialize Google Map
         function initMap() {
             // Hide loading spinner
@@ -905,7 +1233,11 @@ foreach ($businesses as $business) {
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 13,
                 center: mapCenter,
+<<<<<<< HEAD
                 mapTypeId: 'roadmap',
+=======
+                mapTypeId: currentMapType,
+>>>>>>> c9ccaba (Initial commit)
                 styles: [
                     {
                         featureType: 'poi',
@@ -1020,9 +1352,20 @@ foreach ($businesses as $business) {
             
             // Highlight selected business
             const selectedItem = document.querySelector(`[data-id="${id}"]`);
+<<<<<<< HEAD
             if (selectedItem) {
                 selectedItem.classList.add('active');
             }
+=======
+            const selectedMobileItem = document.querySelector(`[data-id="mobile-${id}"]`);
+            
+            if (selectedItem) {
+                selectedItem.classList.add('active');
+            }
+            if (selectedMobileItem) {
+                selectedMobileItem.classList.add('active');
+            }
+>>>>>>> c9ccaba (Initial commit)
             
             // Center map on business
             const position = { lat: parseFloat(lat), lng: parseFloat(lng) };
@@ -1045,11 +1388,23 @@ foreach ($businesses as $business) {
             });
             
             const item = document.querySelector(`[data-id="${id}"]`);
+<<<<<<< HEAD
+=======
+            const mobileItem = document.querySelector(`[data-id="mobile-${id}"]`);
+            
+>>>>>>> c9ccaba (Initial commit)
             if (item) {
                 item.classList.add('active');
                 item.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             
+<<<<<<< HEAD
+=======
+            if (mobileItem) {
+                mobileItem.classList.add('active');
+            }
+            
+>>>>>>> c9ccaba (Initial commit)
             selectedBusinessId = id;
         }
         
@@ -1059,6 +1414,7 @@ foreach ($businesses as $business) {
             map.setZoom(13);
         }
         
+<<<<<<< HEAD
         function toggleSatellite() {
             const btn = document.getElementById('satelliteBtn');
             if (map.getMapTypeId() === 'satellite') {
@@ -1068,6 +1424,12 @@ foreach ($businesses as $business) {
                 map.setMapTypeId('satellite');
                 btn.classList.add('active');
             }
+=======
+        // Toggle map type
+        function toggleMapType() {
+            currentMapType = currentMapType === 'roadmap' ? 'satellite' : 'roadmap';
+            map.setMapTypeId(currentMapType);
+>>>>>>> c9ccaba (Initial commit)
         }
         
         function toggleTraffic() {
@@ -1083,6 +1445,7 @@ foreach ($businesses as $business) {
             }
         }
         
+<<<<<<< HEAD
         // Mobile sidebar toggle
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -1097,6 +1460,8 @@ foreach ($businesses as $business) {
             }
         });
         
+=======
+>>>>>>> c9ccaba (Initial commit)
         // Handle map load error
         window.gm_authFailure = function() {
             document.getElementById('mapLoading').innerHTML = `
@@ -1107,12 +1472,24 @@ foreach ($businesses as $business) {
             `;
         };
         
+<<<<<<< HEAD
+=======
+        // Handle responsive behavior
+        window.addEventListener('resize', function() {
+            closeAllSidebars();
+        });
+        
+>>>>>>> c9ccaba (Initial commit)
         // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             // M to toggle sidebar on mobile
             if (e.key === 'm' || e.key === 'M') {
                 if (window.innerWidth <= 768) {
+<<<<<<< HEAD
                     toggleSidebar();
+=======
+                    toggleBusinessSidebar();
+>>>>>>> c9ccaba (Initial commit)
                 }
             }
             
@@ -1141,4 +1518,8 @@ foreach ($businesses as $business) {
         });
     </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> c9ccaba (Initial commit)

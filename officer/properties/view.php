@@ -1,6 +1,12 @@
+<<<<<<< HEAD
  <?php
 /**
  * Data Collector - View Property Profile
+=======
+<?php
+/**
+ * Officer - View Property Profile
+>>>>>>> c9ccaba (Initial commit)
  * properties/view.php
  */
 
@@ -29,14 +35,34 @@ if (!isLoggedIn()) {
     exit();
 }
 
+<<<<<<< HEAD
 // Check if user is data collector
 $currentUser = getCurrentUser();
 if (!isDataCollector() && !isAdmin()) {
     setFlashMessage('error', 'Access denied. Data Collector privileges required.');
+=======
+// Check if user is officer or admin
+$currentUser = getCurrentUser();
+if (!isOfficer() && !isAdmin()) {
+    setFlashMessage('error', 'Access denied. Officer privileges required.');
+>>>>>>> c9ccaba (Initial commit)
     header('Location: ../../auth/login.php');
     exit();
 }
 
+<<<<<<< HEAD
+=======
+// Check session expiration
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Session expired (30 minutes)
+    session_unset();
+    session_destroy();
+    setFlashMessage('error', 'Your session has expired. Please log in again.');
+    header('Location: ../../index.php');
+    exit();
+}
+
+>>>>>>> c9ccaba (Initial commit)
 $userDisplayName = getUserDisplayName($currentUser);
 
 // Get property ID
@@ -56,6 +82,10 @@ try {
         SELECT 
             p.*,
             z.zone_name,
+<<<<<<< HEAD
+=======
+            sz.sub_zone_name,
+>>>>>>> c9ccaba (Initial commit)
             u.first_name as creator_first_name,
             u.last_name as creator_last_name,
             CASE 
@@ -64,6 +94,10 @@ try {
             END as payment_status
         FROM properties p
         LEFT JOIN zones z ON p.zone_id = z.zone_id
+<<<<<<< HEAD
+=======
+        LEFT JOIN sub_zones sz ON p.sub_zone_id = sz.sub_zone_id
+>>>>>>> c9ccaba (Initial commit)
         LEFT JOIN users u ON p.created_by = u.user_id
         WHERE p.property_id = ?
     ", [$property_id]);
@@ -74,12 +108,33 @@ try {
         exit();
     }
     
+<<<<<<< HEAD
+=======
+    // Calculate remaining balance (outstanding amount after all payments)
+    $totalPaymentsQuery = "SELECT COALESCE(SUM(p.amount_paid), 0) as total_paid
+                          FROM payments p 
+                          INNER JOIN bills b ON p.bill_id = b.bill_id 
+                          WHERE b.bill_type = 'Property' AND b.reference_id = ? 
+                          AND p.payment_status = 'Successful'";
+    $totalPaymentsResult = $db->fetchRow($totalPaymentsQuery, [$property_id]);
+    $totalPaid = $totalPaymentsResult['total_paid'] ?? 0;
+    
+    // Calculate remaining balance: amount payable minus total successful payments
+    $remainingBalance = max(0, $property['amount_payable'] - $totalPaid);
+    
+>>>>>>> c9ccaba (Initial commit)
     // Get property bills
     $bills = $db->fetchAll("
         SELECT 
             bill_id,
             bill_number,
             billing_year,
+<<<<<<< HEAD
+=======
+            old_bill,
+            previous_payments,
+            arrears,
+>>>>>>> c9ccaba (Initial commit)
             current_bill,
             amount_payable,
             status,
@@ -97,6 +152,7 @@ try {
             p.payment_reference,
             p.amount_paid,
             p.payment_method,
+<<<<<<< HEAD
             p.payment_status,
             p.payment_date,
             b.bill_number,
@@ -115,6 +171,35 @@ try {
         WHERE structure = ? AND property_use = ? AND is_active = 1
     ", [$property['structure'], $property['property_use']]);
     
+=======
+            p.payment_channel,
+            p.payment_status,
+            p.payment_date,
+            p.notes,
+            b.bill_number,
+            b.billing_year,
+            u.first_name as processed_by_first_name,
+            u.last_name as processed_by_last_name
+        FROM payments p
+        JOIN bills b ON p.bill_id = b.bill_id
+        LEFT JOIN users u ON p.processed_by = u.user_id
+        WHERE b.bill_type = 'Property' AND b.reference_id = ?
+        ORDER BY p.payment_date DESC
+        LIMIT 15
+    ", [$property_id]);
+    
+    // Calculate payment summary
+    $paymentSummary = $db->fetchRow("
+        SELECT 
+            COALESCE(SUM(CASE WHEN p.payment_status = 'Successful' THEN p.amount_paid ELSE 0 END), 0) as total_paid,
+            COUNT(CASE WHEN p.payment_status = 'Successful' THEN 1 END) as successful_payments,
+            COUNT(*) as total_transactions
+        FROM payments p
+        JOIN bills b ON p.bill_id = b.bill_id
+        WHERE b.bill_type = 'Property' AND b.reference_id = ?
+    ", [$property_id]);
+    
+>>>>>>> c9ccaba (Initial commit)
 } catch (Exception $e) {
     setFlashMessage('error', 'Database error: ' . $e->getMessage());
     header('Location: index.php');
@@ -152,13 +237,22 @@ try {
         }
         
         /* Custom Icons (fallback if Font Awesome fails) */
+<<<<<<< HEAD
         .icon-dashboard::before { content: "📊"; }
         .icon-building::before { content: "🏢"; }
         .icon-home::before { content: "🏠"; }
+=======
+        .icon-dashboard::before { content: "⚡"; }
+        .icon-building::before { content: "🏢"; }
+        .icon-home::before { content: "🏠"; }
+        .icon-money::before { content: "💰"; }
+        .icon-receipt::before { content: "🧾"; }
+>>>>>>> c9ccaba (Initial commit)
         .icon-map::before { content: "🗺️"; }
         .icon-menu::before { content: "☰"; }
         .icon-logout::before { content: "🚪"; }
         .icon-plus::before { content: "➕"; }
+<<<<<<< HEAD
         .icon-users::before { content: "👥"; }
         .icon-cog::before { content: "⚙️"; }
         .icon-history::before { content: "📜"; }
@@ -179,6 +273,30 @@ try {
         /* Top Navigation */
         .top-nav {
             background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+=======
+        .icon-search::before { content: "🔍"; }
+        .icon-user::before { content: "👤"; }
+        .icon-edit::before { content: "✏️"; }
+        .icon-arrow-left::before { content: "⬅️"; }
+        .icon-info-circle::before { content: "ℹ️"; }
+        .icon-map-marker::before { content: "📍"; }
+        .icon-file-invoice::before { content: "📄"; }
+        .icon-money-bill::before { content: "💵"; }
+        .icon-credit-card::before { content: "💳"; }
+        .icon-user-plus::before { content: "👤➕"; }
+        .icon-question::before { content: "❓"; }
+        .icon-print::before { content: "🖨️"; }
+        .icon-cash::before { content: "💵"; }
+        .icon-bed::before { content: "🛏️"; }
+        .icon-warehouse::before { content: "🏪"; }
+        .icon-male::before { content: "👨"; }
+        .icon-female::before { content: "👩"; }
+        .icon-balance::before { content: "⚖️"; }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+>>>>>>> c9ccaba (Initial commit)
             color: white;
             padding: 15px 20px;
             position: fixed;
@@ -304,7 +422,11 @@ try {
         }
         
         .dropdown-header {
+<<<<<<< HEAD
             background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+=======
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+>>>>>>> c9ccaba (Initial commit)
             color: white;
             padding: 20px;
             text-align: center;
@@ -354,7 +476,11 @@ try {
         
         .dropdown-item:hover {
             background: #f7fafc;
+<<<<<<< HEAD
             color: #38a169;
+=======
+            color: #4299e1;
+>>>>>>> c9ccaba (Initial commit)
             transform: translateX(5px);
         }
         
@@ -430,6 +556,7 @@ try {
         .nav-link:hover {
             background: rgba(255,255,255,0.1);
             color: white;
+<<<<<<< HEAD
             border-left-color: #38a169;
         }
         
@@ -437,6 +564,15 @@ try {
             background: rgba(56, 161, 105, 0.3);
             color: white;
             border-left-color: #38a169;
+=======
+            border-left-color: #4299e1;
+        }
+        
+        .nav-link.active {
+            background: rgba(66, 153, 225, 0.3);
+            color: white;
+            border-left-color: #4299e1;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .nav-icon {
@@ -505,13 +641,23 @@ try {
         }
         
         .btn-primary {
+<<<<<<< HEAD
             background: #38a169;
+=======
+            background: #4299e1;
+>>>>>>> c9ccaba (Initial commit)
             color: white;
         }
         
         .btn-primary:hover {
+<<<<<<< HEAD
             background: #2f855a;
             transform: translateY(-2px);
+=======
+            background: #3182ce;
+            transform: translateY(-2px);
+            color: white;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .btn-secondary {
@@ -521,6 +667,20 @@ try {
         
         .btn-secondary:hover {
             background: #4a5568;
+<<<<<<< HEAD
+=======
+            color: white;
+        }
+        
+        .btn-success {
+            background: #38a169;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #2f855a;
+            color: white;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .btn-warning {
@@ -530,6 +690,10 @@ try {
         
         .btn-warning:hover {
             background: #dd6b20;
+<<<<<<< HEAD
+=======
+            color: white;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .btn-info {
@@ -539,6 +703,20 @@ try {
         
         .btn-info:hover {
             background: #3182ce;
+<<<<<<< HEAD
+=======
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c53030;
+            color: white;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Status Badges */
@@ -575,9 +753,15 @@ try {
             color: #2a4365;
         }
         
+<<<<<<< HEAD
         .badge-teal {
             background: #b2f5ea;
             color: #234e52;
+=======
+        .badge-purple {
+            background: #e9d8fd;
+            color: #553c9a;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Content Grid */
@@ -650,6 +834,55 @@ try {
             font-weight: bold;
         }
         
+<<<<<<< HEAD
+=======
+        .info-value.balance {
+            color: #7c2d12;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .info-value.balance.zero {
+            color: #059669;
+        }
+        
+        /* Balance Highlight */
+        .balance-highlight {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .balance-highlight.paid {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-color: #10b981;
+        }
+        
+        .balance-highlight h4 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #92400e;
+        }
+        
+        .balance-highlight.paid h4 {
+            color: #065f46;
+        }
+        
+        .balance-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #92400e;
+            margin: 10px 0;
+        }
+        
+        .balance-highlight.paid .balance-amount {
+            color: #065f46;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         /* Map Container */
         .map-container {
             height: 300px;
@@ -706,6 +939,7 @@ try {
             font-size: 14px;
         }
         
+<<<<<<< HEAD
         /* Bill Calculator Display */
         .bill-breakdown {
             background: #e6fffa;
@@ -740,6 +974,94 @@ try {
             margin: 8px -10px -10px -10px;
             padding: 12px 10px;
             border-radius: 0 0 6px 6px;
+=======
+        /* Action Buttons */
+        .action-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px dashed #e2e8f0;
+        }
+        
+        .action-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .stat-card.primary {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+        }
+        
+        .stat-card.success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+        
+        .stat-card.warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            color: white;
+        }
+        
+        .stat-card.danger {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+        }
+        
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        /* Gender Icon */
+        .gender-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Responsive */
@@ -784,6 +1106,21 @@ try {
                 flex-direction: column;
                 width: 100%;
             }
+<<<<<<< HEAD
+=======
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .container {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* Animations */
@@ -807,9 +1144,15 @@ try {
             </button>
             
             <a href="../index.php" class="brand">
+<<<<<<< HEAD
                 <i class="fas fa-clipboard-list"></i>
                 <span class="icon-dashboard" style="display: none;"></span>
                 Data Collector
+=======
+                <i class="fas fa-user-tie"></i>
+                <span class="icon-user" style="display: none;"></span>
+                Officer Portal
+>>>>>>> c9ccaba (Initial commit)
             </a>
         </div>
         
@@ -820,7 +1163,11 @@ try {
                 </div>
                 <div class="user-info">
                     <div class="user-name"><?php echo htmlspecialchars($userDisplayName); ?></div>
+<<<<<<< HEAD
                     <div class="user-role">Data Collector</div>
+=======
+                    <div class="user-role">Officer</div>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
                 <i class="fas fa-chevron-down dropdown-arrow"></i>
                 
@@ -831,7 +1178,11 @@ try {
                             <?php echo strtoupper(substr($currentUser['first_name'] ?? 'U', 0, 1)); ?>
                         </div>
                         <div class="dropdown-name"><?php echo htmlspecialchars($userDisplayName); ?></div>
+<<<<<<< HEAD
                         <div class="dropdown-role">Data Collector</div>
+=======
+                        <div class="dropdown-role">Officer</div>
+>>>>>>> c9ccaba (Initial commit)
                     </div>
                     <div class="dropdown-menu">
                         <a href="#" class="dropdown-item" onclick="alert('Profile management coming soon!')">
@@ -873,9 +1224,38 @@ try {
                     </div>
                 </div>
                 
+<<<<<<< HEAD
                 <!-- Data Collection -->
                 <div class="nav-section">
                     <div class="nav-title">Data Collection</div>
+=======
+                <!-- Registration -->
+                <div class="nav-section">
+                    <div class="nav-title">Registration</div>
+                    <div class="nav-item">
+                        <a href="../businesses/add.php" class="nav-link">
+                            <span class="nav-icon">
+                                <i class="fas fa-plus-circle"></i>
+                                <span class="icon-plus" style="display: none;"></span>
+                            </span>
+                            Register Business
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="add.php" class="nav-link">
+                            <span class="nav-icon">
+                                <i class="fas fa-plus-circle"></i>
+                                <span class="icon-plus" style="display: none;"></span>
+                            </span>
+                            Register Property
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Management -->
+                <div class="nav-section">
+                    <div class="nav-title">Management</div>
+>>>>>>> c9ccaba (Initial commit)
                     <div class="nav-item">
                         <a href="../businesses/index.php" class="nav-link">
                             <span class="nav-icon">
@@ -896,6 +1276,33 @@ try {
                     </div>
                 </div>
                 
+<<<<<<< HEAD
+=======
+                <!-- Payments & Bills -->
+                <div class="nav-section">
+                    <div class="nav-title">Payments & Bills</div>
+                    <div class="nav-item">
+                        <a href="../payments/record.php" class="nav-link">
+                            <span class="nav-icon">
+                                <i class="fas fa-cash-register"></i>
+                                <span class="icon-cash" style="display: none;"></span>
+                            </span>
+                            Record Payment
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="../payments/search.php" class="nav-link">
+                            <span class="nav-icon">
+                                <i class="fas fa-search"></i>
+                                <span class="icon-search" style="display: none;"></span>
+                            </span>
+                            Search Accounts
+                        </a>
+                    </div>
+                   
+                </div>
+                
+>>>>>>> c9ccaba (Initial commit)
                 <!-- Maps & Locations -->
                 <div class="nav-section">
                     <div class="nav-title">Maps & Locations</div>
@@ -905,16 +1312,26 @@ try {
                                 <i class="fas fa-map-marked-alt"></i>
                                 <span class="icon-map" style="display: none;"></span>
                             </span>
+<<<<<<< HEAD
                             Business Locations
+=======
+                            Business Map
+>>>>>>> c9ccaba (Initial commit)
                         </a>
                     </div>
                     <div class="nav-item">
                         <a href="../map/properties.php" class="nav-link">
                             <span class="nav-icon">
                                 <i class="fas fa-map-marker-alt"></i>
+<<<<<<< HEAD
                                 <span class="icon-location" style="display: none;"></span>
                             </span>
                             Property Locations
+=======
+                                <span class="icon-map" style="display: none;"></span>
+                            </span>
+                            Property Map
+>>>>>>> c9ccaba (Initial commit)
                         </a>
                     </div>
                 </div>
@@ -929,6 +1346,7 @@ try {
                     <div class="title-left">
                         <h1 class="property-name"><?php echo htmlspecialchars($property['owner_name']); ?>'s Property</h1>
                         <p class="property-subtitle">
+<<<<<<< HEAD
                             Property: <strong><?php echo htmlspecialchars($property['property_number']); ?></strong> 
                             | Structure: <strong><?php echo htmlspecialchars($property['structure']); ?></strong>
                             | Rooms: <strong><?php echo $property['number_of_rooms']; ?></strong>
@@ -946,6 +1364,24 @@ try {
                                 <?php echo $property['property_use']; ?>
                             </span>
                             <span class="badge badge-warning">
+=======
+                            Property Number: <strong><?php echo htmlspecialchars($property['property_number']); ?></strong> 
+                            | Location: <strong><?php echo htmlspecialchars($property['location'] ?? 'Not specified'); ?></strong>
+                        </p>
+                        
+                        <div class="status-badges">
+                            <span class="badge <?php echo $remainingBalance <= 0 ? 'badge-success' : 'badge-danger'; ?>">
+                                <i class="fas fa-balance-scale"></i>
+                                <span class="icon-balance" style="display: none;"></span>
+                                <?php echo $remainingBalance <= 0 ? 'Fully Paid' : 'Outstanding Balance'; ?>
+                            </span>
+                            <span class="badge badge-info">
+                                <i class="fas fa-home"></i>
+                                <span class="icon-home" style="display: none;"></span>
+                                <?php echo htmlspecialchars($property['property_use']); ?>
+                            </span>
+                            <span class="badge badge-purple">
+>>>>>>> c9ccaba (Initial commit)
                                 <i class="fas fa-building"></i>
                                 <span class="icon-building" style="display: none;"></span>
                                 <?php echo htmlspecialchars($property['structure']); ?>
@@ -954,7 +1390,11 @@ try {
                     </div>
                     
                     <div class="profile-actions">
+<<<<<<< HEAD
                         <a href="edit.php?id=<?php echo $property['property_id']; ?>" class="btn btn-primary">
+=======
+                        <a href="edit.php?id=<?php echo $property['property_id']; ?>" class="btn btn-warning">
+>>>>>>> c9ccaba (Initial commit)
                             <i class="fas fa-edit"></i>
                             <span class="icon-edit" style="display: none;"></span>
                             Edit Property
@@ -968,11 +1408,84 @@ try {
                 </div>
             </div>
 
+<<<<<<< HEAD
+=======
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div class="stat-value"><?php echo count($bills); ?></div>
+                    <div class="stat-label">Total Bills</div>
+                </div>
+
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-value">₵ <?php echo number_format($paymentSummary['total_paid'] ?? 0, 2); ?></div>
+                    <div class="stat-label">Total Paid</div>
+                </div>
+
+                <div class="stat-card <?php echo $remainingBalance > 0 ? 'danger' : 'success'; ?>">
+                    <div class="stat-icon">
+                        <i class="fas fa-balance-scale"></i>
+                        <span class="icon-balance" style="display: none;"></span>
+                    </div>
+                    <div class="stat-value">₵ <?php echo number_format($remainingBalance, 2); ?></div>
+                    <div class="stat-label">Remaining Balance</div>
+                </div>
+
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="stat-value"><?php echo $paymentSummary['successful_payments'] ?? 0; ?></div>
+                    <div class="stat-label">Successful Payments</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="action-section">
+                <div class="action-title">
+                    <i class="fas fa-bolt"></i>
+                    Quick Actions
+                </div>
+                <div class="action-buttons">
+                    <a href="../payments/record.php?account=<?php echo urlencode($property['property_number']); ?>" class="btn btn-success">
+                        <i class="fas fa-cash-register"></i>
+                        <span class="icon-cash" style="display: none;"></span>
+                        Record Payment
+                    </a>
+                    <a href="../billing/print.php?property_id=<?php echo $property['property_id']; ?>" class="btn btn-primary">
+                        <i class="fas fa-print"></i>
+                        <span class="icon-print" style="display: none;"></span>
+                        Print Bill
+                    </a>
+                    <a href="../payments/receipts.php?account=<?php echo urlencode($property['property_number']); ?>" class="btn btn-info">
+                        <i class="fas fa-receipt"></i>
+                        <span class="icon-receipt" style="display: none;"></span>
+                        Print Receipt
+                    </a>
+                    <button onclick="showBalanceDetails()" class="btn btn-warning">
+                        <i class="fas fa-balance-scale"></i>
+                        <span class="icon-balance" style="display: none;"></span>
+                        Balance Details
+                    </button>
+                </div>
+            </div>
+
+>>>>>>> c9ccaba (Initial commit)
             <!-- Content Grid -->
             <div class="content-grid">
                 <!-- Left Column -->
                 <div class="left-column">
+<<<<<<< HEAD
                     <!-- Basic Information -->
+=======
+                    <!-- Property Information -->
+>>>>>>> c9ccaba (Initial commit)
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
@@ -984,6 +1497,7 @@ try {
                         <div class="card-body">
                             <div class="info-row">
                                 <div class="info-item">
+<<<<<<< HEAD
                                     <div class="info-label">Property Number</div>
                                     <div class="info-value large"><?php echo htmlspecialchars($property['property_number']); ?></div>
                                 </div>
@@ -991,6 +1505,15 @@ try {
                                     <div class="info-label">Owner Name</div>
                                     <div class="info-value large"><?php echo htmlspecialchars($property['owner_name']); ?></div>
                                 </div>
+=======
+                                    <div class="info-label">Owner Name</div>
+                                    <div class="info-value large"><?php echo htmlspecialchars($property['owner_name']); ?></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Property Number</div>
+                                    <div class="info-value large"><?php echo htmlspecialchars($property['property_number']); ?></div>
+                                </div>
+>>>>>>> c9ccaba (Initial commit)
                             </div>
                             
                             <div class="info-row">
@@ -1003,7 +1526,27 @@ try {
                                 <div class="info-item">
                                     <div class="info-label">Gender</div>
                                     <div class="info-value">
+<<<<<<< HEAD
                                         <?php echo $property['gender'] ? htmlspecialchars($property['gender']) : 'Not specified'; ?>
+=======
+                                        <?php if ($property['gender']): ?>
+                                            <span class="gender-icon">
+                                                <?php if ($property['gender'] == 'Male'): ?>
+                                                    <i class="fas fa-mars"></i>
+                                                    <span class="icon-male" style="display: none;"></span>
+                                                <?php elseif ($property['gender'] == 'Female'): ?>
+                                                    <i class="fas fa-venus"></i>
+                                                    <span class="icon-female" style="display: none;"></span>
+                                                <?php else: ?>
+                                                    <i class="fas fa-user"></i>
+                                                    <span class="icon-user" style="display: none;"></span>
+                                                <?php endif; ?>
+                                                <?php echo htmlspecialchars($property['gender']); ?>
+                                            </span>
+                                        <?php else: ?>
+                                            Not specified
+                                        <?php endif; ?>
+>>>>>>> c9ccaba (Initial commit)
                                     </div>
                                 </div>
                             </div>
@@ -1014,11 +1557,30 @@ try {
                                     <div class="info-value"><?php echo htmlspecialchars($property['structure']); ?></div>
                                 </div>
                                 <div class="info-item">
+<<<<<<< HEAD
                                     <div class="info-label">Property Use</div>
                                     <div class="info-value">
                                         <span class="badge <?php echo $property['property_use'] == 'Residential' ? 'badge-info' : 'badge-teal'; ?>">
                                             <?php echo $property['property_use']; ?>
                                         </span>
+=======
+                                    <div class="info-label">Property Type</div>
+                                    <div class="info-value"><?php echo htmlspecialchars($property['property_type']); ?></div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <div class="info-label">Property Use</div>
+                                    <div class="info-value"><?php echo htmlspecialchars($property['property_use']); ?></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Number of Rooms</div>
+                                    <div class="info-value">
+                                        <i class="fas fa-bed"></i>
+                                        <span class="icon-bed" style="display: none;"></span>
+                                        <?php echo number_format($property['number_of_rooms']); ?> rooms
+>>>>>>> c9ccaba (Initial commit)
                                     </div>
                                 </div>
                             </div>
@@ -1029,6 +1591,7 @@ try {
                                     <div class="info-value"><?php echo htmlspecialchars($property['ownership_type']); ?></div>
                                 </div>
                                 <div class="info-item">
+<<<<<<< HEAD
                                     <div class="info-label">Property Type</div>
                                     <div class="info-value"><?php echo htmlspecialchars($property['property_type']); ?></div>
                                 </div>
@@ -1040,6 +1603,8 @@ try {
                                     <div class="info-value large"><?php echo $property['number_of_rooms']; ?> rooms</div>
                                 </div>
                                 <div class="info-item">
+=======
+>>>>>>> c9ccaba (Initial commit)
                                     <div class="info-label">Batch</div>
                                     <div class="info-value">
                                         <?php echo $property['batch'] ? htmlspecialchars($property['batch']) : 'Not assigned'; ?>
@@ -1054,7 +1619,11 @@ try {
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="fas fa-map-marker-alt"></i>
+<<<<<<< HEAD
                                 <span class="icon-map-marker-alt" style="display: none;"></span>
+=======
+                                <span class="icon-map-marker" style="display: none;"></span>
+>>>>>>> c9ccaba (Initial commit)
                                 Location Information
                             </h3>
                         </div>
@@ -1065,14 +1634,35 @@ try {
                                     <div class="info-value"><?php echo htmlspecialchars($property['zone_name'] ?? 'Not assigned'); ?></div>
                                 </div>
                                 <div class="info-item">
+<<<<<<< HEAD
                                     <div class="info-label">Coordinates</div>
                                     <div class="info-value"><?php echo $property['latitude']; ?>, <?php echo $property['longitude']; ?></div>
+=======
+                                    <div class="info-label">Sub-Zone</div>
+                                    <div class="info-value"><?php echo htmlspecialchars($property['sub_zone_name'] ?? 'Not assigned'); ?></div>
+>>>>>>> c9ccaba (Initial commit)
                                 </div>
                             </div>
                             
                             <div class="info-item">
+<<<<<<< HEAD
                                 <div class="info-label">Location</div>
                                 <div class="info-value"><?php echo nl2br(htmlspecialchars($property['location'])); ?></div>
+=======
+                                <div class="info-label">Location Description</div>
+                                <div class="info-value"><?php echo nl2br(htmlspecialchars($property['location'] ?? 'Not provided')); ?></div>
+                            </div>
+                            
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <div class="info-label">Latitude</div>
+                                    <div class="info-value"><?php echo $property['latitude']; ?></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Longitude</div>
+                                    <div class="info-value"><?php echo $property['longitude']; ?></div>
+                                </div>
+>>>>>>> c9ccaba (Initial commit)
                             </div>
                             
                             <?php if ($property['latitude'] && $property['longitude']): ?>
@@ -1087,7 +1677,11 @@ try {
                             <h3 class="card-title">
                                 <i class="fas fa-file-invoice"></i>
                                 <span class="icon-file-invoice" style="display: none;"></span>
+<<<<<<< HEAD
                                 Bills & Payments
+=======
+                                Bills History
+>>>>>>> c9ccaba (Initial commit)
                             </h3>
                         </div>
                         <div class="card-body">
@@ -1098,7 +1692,12 @@ try {
                                             <tr>
                                                 <th>Year</th>
                                                 <th>Bill Number</th>
+<<<<<<< HEAD
                                                 <th>Amount</th>
+=======
+                                                <th>Current Bill</th>
+                                                <th>Amount Payable</th>
+>>>>>>> c9ccaba (Initial commit)
                                                 <th>Status</th>
                                                 <th>Generated</th>
                                             </tr>
@@ -1108,6 +1707,10 @@ try {
                                                 <tr>
                                                     <td><?php echo $bill['billing_year']; ?></td>
                                                     <td><?php echo htmlspecialchars($bill['bill_number']); ?></td>
+<<<<<<< HEAD
+=======
+                                                    <td>₵ <?php echo number_format($bill['current_bill'], 2); ?></td>
+>>>>>>> c9ccaba (Initial commit)
                                                     <td>₵ <?php echo number_format($bill['amount_payable'], 2); ?></td>
                                                     <td>
                                                         <span class="badge <?php 
@@ -1129,6 +1732,13 @@ try {
                                     <span class="icon-file-invoice" style="display: none;"></span>
                                     <h4>No Bills Found</h4>
                                     <p>No bills have been generated for this property yet.</p>
+<<<<<<< HEAD
+=======
+                                    <a href="../billing/generate.php?property_id=<?php echo $property['property_id']; ?>" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i>
+                                        Generate First Bill
+                                    </a>
+>>>>>>> c9ccaba (Initial commit)
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -1142,7 +1752,11 @@ try {
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="fas fa-money-bill-wave"></i>
+<<<<<<< HEAD
                                 <span class="icon-money-bill-wave" style="display: none;"></span>
+=======
+                                <span class="icon-money-bill" style="display: none;"></span>
+>>>>>>> c9ccaba (Initial commit)
                                 Financial Summary
                             </h3>
                         </div>
@@ -1176,6 +1790,7 @@ try {
                                 </div>
                             </div>
                             
+<<<<<<< HEAD
                             <!-- Bill Calculation Breakdown -->
                             <?php if ($fee_info): ?>
                                 <div class="bill-breakdown">
@@ -1197,10 +1812,75 @@ try {
                                         <span>₵ <?php echo number_format($property['current_bill'], 2); ?></span>
                                     </div>
                                 </div>
+=======
+                            <!-- Remaining Balance Highlight -->
+                            <div class="balance-highlight <?php echo $remainingBalance <= 0 ? 'paid' : ''; ?>">
+                                <h4>
+                                    <i class="fas fa-balance-scale"></i>
+                                    <span class="icon-balance" style="display: none;"></span>
+                                    <?php echo $remainingBalance <= 0 ? 'Account Fully Paid' : 'Outstanding Balance'; ?>
+                                </h4>
+                                <div class="balance-amount">
+                                    ₵ <?php echo number_format($remainingBalance, 2); ?>
+                                </div>
+                                <?php if ($remainingBalance > 0): ?>
+                                    <p style="margin: 10px 0 0 0; font-size: 14px; color: #92400e;">
+                                        This amount needs to be paid
+                                    </p>
+                                <?php else: ?>
+                                    <p style="margin: 10px 0 0 0; font-size: 14px; color: #065f46;">
+                                        ✅ All bills have been settled
+                                    </p>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <?php if ($remainingBalance > 0): ?>
+                                <a href="../payments/record.php?account=<?php echo urlencode($property['property_number']); ?>" class="btn btn-success" style="width: 100%; justify-content: center; margin-top: 15px;">
+                                    <i class="fas fa-cash-register"></i>
+                                    <span class="icon-cash" style="display: none;"></span>
+                                    Record Payment
+                                </a>
+>>>>>>> c9ccaba (Initial commit)
                             <?php endif; ?>
                         </div>
                     </div>
                     
+<<<<<<< HEAD
+=======
+                    <!-- Payment Summary -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-chart-line"></i>
+                                Payment Summary
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-item" style="margin-bottom: 15px;">
+                                <div class="info-label">Total Paid</div>
+                                <div class="info-value currency">₵ <?php echo number_format($paymentSummary['total_paid'] ?? 0, 2); ?></div>
+                            </div>
+                            
+                            <div class="info-item" style="margin-bottom: 15px;">
+                                <div class="info-label">Remaining Balance</div>
+                                <div class="info-value balance <?php echo $remainingBalance <= 0 ? 'zero' : ''; ?>">
+                                    ₵ <?php echo number_format($remainingBalance, 2); ?>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item" style="margin-bottom: 15px;">
+                                <div class="info-label">Successful Payments</div>
+                                <div class="info-value"><?php echo number_format($paymentSummary['successful_payments'] ?? 0); ?></div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <div class="info-label">Total Transactions</div>
+                                <div class="info-value"><?php echo number_format($paymentSummary['total_transactions'] ?? 0); ?></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+>>>>>>> c9ccaba (Initial commit)
                     <!-- Recent Payments -->
                     <div class="card">
                         <div class="card-header">
@@ -1212,7 +1892,11 @@ try {
                         </div>
                         <div class="card-body">
                             <?php if (!empty($payments)): ?>
+<<<<<<< HEAD
                                 <?php foreach ($payments as $payment): ?>
+=======
+                                <?php foreach (array_slice($payments, 0, 5) as $payment): ?>
+>>>>>>> c9ccaba (Initial commit)
                                     <div style="border-bottom: 1px solid #e2e8f0; padding: 15px 0;">
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                                             <strong>₵ <?php echo number_format($payment['amount_paid'], 2); ?></strong>
@@ -1221,20 +1905,53 @@ try {
                                             </span>
                                         </div>
                                         <div style="font-size: 12px; color: #718096;">
+<<<<<<< HEAD
                                             <?php echo htmlspecialchars($payment['payment_method']); ?> - 
                                             <?php echo date('M j, Y', strtotime($payment['payment_date'])); ?>
+=======
+                                            <?php echo htmlspecialchars($payment['payment_method']); ?>
+                                            <?php if (!empty($payment['payment_channel'])): ?>
+                                                (<?php echo htmlspecialchars($payment['payment_channel']); ?>)
+                                            <?php endif; ?>
+                                            - <?php echo date('M j, Y', strtotime($payment['payment_date'])); ?>
+>>>>>>> c9ccaba (Initial commit)
                                         </div>
                                         <div style="font-size: 12px; color: #718096;">
                                             Ref: <?php echo htmlspecialchars($payment['payment_reference']); ?>
                                         </div>
+<<<<<<< HEAD
                                     </div>
                                 <?php endforeach; ?>
+=======
+                                        <?php if (!empty($payment['processed_by_first_name'])): ?>
+                                            <div style="font-size: 12px; color: #718096;">
+                                                By: <?php echo htmlspecialchars($payment['processed_by_first_name'] . ' ' . $payment['processed_by_last_name']); ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                                
+                                <?php if (count($payments) > 5): ?>
+                                    <div style="text-align: center; margin-top: 15px;">
+                                        <a href="../payments/history.php?account=<?php echo urlencode($property['property_number']); ?>" class="btn btn-info">
+                                            View All Payments
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
+>>>>>>> c9ccaba (Initial commit)
                             <?php else: ?>
                                 <div class="empty-state">
                                     <i class="fas fa-credit-card"></i>
                                     <span class="icon-credit-card" style="display: none;"></span>
                                     <h4>No Payments</h4>
                                     <p>No payments recorded yet.</p>
+<<<<<<< HEAD
+=======
+                                    <a href="../payments/record.php?account=<?php echo urlencode($property['property_number']); ?>" class="btn btn-success">
+                                        <i class="fas fa-plus"></i>
+                                        Record First Payment
+                                    </a>
+>>>>>>> c9ccaba (Initial commit)
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -1280,6 +1997,14 @@ try {
     </div>
     
     <script>
+<<<<<<< HEAD
+=======
+        // Global variables
+        const remainingBalance = <?php echo $remainingBalance; ?>;
+        const propertyName = <?php echo json_encode($property['owner_name'] . "'s Property"); ?>;
+        const propertyNumber = <?php echo json_encode($property['property_number']); ?>;
+        
+>>>>>>> c9ccaba (Initial commit)
         // Check if Font Awesome loaded, if not show emoji icons
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
@@ -1293,8 +2018,285 @@ try {
                     });
                 }
             }, 100);
+<<<<<<< HEAD
         });
 
+=======
+            
+            // Display balance notification
+            displayBalanceNotification();
+        });
+
+        function displayBalanceNotification() {
+            // Show balance status notification on page load
+            if (remainingBalance > 0) {
+                setTimeout(() => {
+                    showNotification(`⚠️ Outstanding balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 'warning');
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    showNotification('✅ Account fully paid - No outstanding balance', 'success');
+                }, 2000);
+            }
+        }
+
+        // Show detailed balance information
+        function showBalanceDetails() {
+            const balanceModal = document.createElement('div');
+            balanceModal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 10000;
+                display: flex; align-items: center; justify-content: center;
+                animation: fadeIn 0.3s ease; cursor: pointer;
+            `;
+            
+            const balanceContent = document.createElement('div');
+            balanceContent.style.cssText = `
+                background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 90%;
+                box-shadow: 0 25px 80px rgba(0,0,0,0.4); text-align: center;
+                animation: modalSlideIn 0.4s ease; cursor: default;
+            `;
+            
+            const amountPayable = <?php echo $property['amount_payable']; ?>;
+            const totalPaid = <?php echo $paymentSummary['total_paid'] ?? 0; ?>;
+            const paymentProgress = amountPayable > 0 ? (totalPaid / amountPayable) * 100 : 100;
+            
+            balanceContent.innerHTML = `
+                <h3 style="margin: 0 0 20px 0; color: #2d3748; display: flex; align-items: center; gap: 10px; justify-content: center;">
+                    <i class="fas fa-balance-scale" style="color: #4299e1;"></i>
+                    ⚖️ Balance Analysis
+                </h3>
+                <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h4 style="margin: 0 0 15px 0; color: #4299e1; font-size: 18px;">${propertyName}</h4>
+                    <p style="margin: 0 0 20px 0; color: #64748b;">Property: ${propertyNumber}</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div style="text-align: left;">
+                            <strong style="color: #2d3748;">Total Amount Payable:</strong>
+                            <div style="font-size: 24px; font-weight: bold; color: #4299e1; margin-top: 5px;">
+                                ₵ ${amountPayable.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                            </div>
+                        </div>
+                        <div style="text-align: left;">
+                            <strong style="color: #2d3748;">Total Paid:</strong>
+                            <div style="font-size: 24px; font-weight: bold; color: #059669; margin-top: 5px;">
+                                ₵ ${totalPaid.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <strong style="color: #2d3748;">Payment Progress:</strong>
+                        <div style="background: #e2e8f0; height: 12px; border-radius: 6px; margin: 10px 0; overflow: hidden;">
+                            <div style="background: linear-gradient(90deg, #10b981, #059669); height: 100%; width: ${Math.min(paymentProgress, 100)}%; transition: width 1s ease;"></div>
+                        </div>
+                        <div style="font-size: 14px; color: #64748b;">${paymentProgress.toFixed(1)}% Completed</div>
+                    </div>
+                    <div style="border: 3px solid ${remainingBalance > 0 ? '#f59e0b' : '#10b981'}; 
+                                background: ${remainingBalance > 0 ? '#fef3c7' : '#d1fae5'}; 
+                                padding: 20px; border-radius: 12px; margin-top: 20px;">
+                        <h4 style="margin: 0 0 10px 0; color: ${remainingBalance > 0 ? '#92400e' : '#065f46'};">
+                            ${remainingBalance > 0 ? '⚠️ Outstanding Balance' : '✅ Account Status'}
+                        </h4>
+                        <div style="font-size: 36px; font-weight: bold; color: ${remainingBalance > 0 ? '#92400e' : '#065f46'}; margin: 15px 0;">
+                            ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: ${remainingBalance > 0 ? '#92400e' : '#065f46'};">
+                            ${remainingBalance > 0 ? 'This amount needs to be paid to clear the account' : 'All bills have been fully settled'}
+                        </p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
+                    ${remainingBalance > 0 ? `
+                        <a href="../payments/record.php?account=${encodeURIComponent(propertyNumber)}" style="
+                            background: #10b981; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                            text-decoration: none; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                            align-items: center; gap: 8px; font-size: 14px;">
+                            <i class="fas fa-cash-register"></i> 💳 Record Payment
+                        </a>
+                        <a href="../billing/print.php?property_id=<?php echo $property['property_id']; ?>" style="
+                            background: #4299e1; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                            text-decoration: none; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                            align-items: center; gap: 8px; font-size: 14px;">
+                            <i class="fas fa-print"></i> 🖨️ Print Bill
+                        </a>
+                    ` : `
+                        <a href="../billing/print.php?property_id=<?php echo $property['property_id']; ?>" style="
+                            background: #4299e1; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                            text-decoration: none; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                            align-items: center; gap: 8px; font-size: 14px;">
+                            <i class="fas fa-print"></i> 🖨️ Print Receipt
+                        </a>
+                    `}
+                    <button onclick="printPropertyDetails()" style="
+                        background: #64748b; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                        cursor: pointer; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                        align-items: center; gap: 8px; font-size: 14px;">
+                        <i class="fas fa-print"></i> 🖨️ Print Details
+                    </button>
+                    <button onclick="this.closest('.balance-modal').remove()" style="
+                        background: #94a3b8; color: white; padding: 12px 20px; border: none; border-radius: 8px;
+                        cursor: pointer; font-weight: 600; transition: all 0.3s; display: inline-flex;
+                        align-items: center; gap: 8px; font-size: 14px;">
+                        <i class="fas fa-times"></i> ❌ Close
+                    </button>
+                </div>
+            `;
+            
+            balanceModal.className = 'balance-modal';
+            balanceModal.appendChild(balanceContent);
+            document.body.appendChild(balanceModal);
+            
+            // Close modal when clicking backdrop
+            balanceModal.addEventListener('click', function(e) {
+                if (e.target === balanceModal) {
+                    balanceModal.remove();
+                }
+            });
+        }
+
+        // Print functionality
+        function printPropertyDetails() {
+            const printWindow = window.open('', '_blank');
+            const propertyData = {
+                name: propertyName,
+                number: propertyNumber,
+                owner: <?php echo json_encode($property['owner_name']); ?>,
+                structure: <?php echo json_encode($property['structure']); ?>,
+                propertyUse: <?php echo json_encode($property['property_use']); ?>,
+                location: <?php echo json_encode($property['location'] ?? 'Not provided'); ?>,
+                amountPayable: <?php echo $property['amount_payable']; ?>,
+                remainingBalance: remainingBalance,
+                rooms: <?php echo $property['number_of_rooms']; ?>
+            };
+            
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Property Details - ${propertyData.name}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; border-bottom: 2px solid #4299e1; padding-bottom: 20px; margin-bottom: 30px; }
+                        .detail-row { display: flex; margin-bottom: 10px; }
+                        .label { font-weight: bold; width: 150px; }
+                        .value { flex: 1; }
+                        .amount { font-size: 24px; color: #dc2626; font-weight: bold; }
+                        .balance { font-size: 28px; color: ${propertyData.remainingBalance > 0 ? '#dc2626' : '#059669'}; font-weight: bold; }
+                        .balance-section { border: 2px solid ${propertyData.remainingBalance > 0 ? '#fbbf24' : '#10b981'}; 
+                                         background: ${propertyData.remainingBalance > 0 ? '#fef3c7' : '#d1fae5'}; 
+                                         padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; }
+                        @media print { body { margin: 0; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>🏠 Property Profile - Officer Portal</h1>
+                        <h2>${propertyData.name}</h2>
+                        <p>Property Number: ${propertyData.number}</p>
+                    </div>
+                    <div class="details">
+                        <div class="detail-row">
+                            <div class="label">Property Name:</div>
+                            <div class="value">${propertyData.name}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="label">Property Number:</div>
+                            <div class="value">${propertyData.number}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="label">Owner Name:</div>
+                            <div class="value">${propertyData.owner}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="label">Structure:</div>
+                            <div class="value">${propertyData.structure}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="label">Property Use:</div>
+                            <div class="value">${propertyData.propertyUse}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="label">Number of Rooms:</div>
+                            <div class="value">${propertyData.rooms} rooms</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="label">Location:</div>
+                            <div class="value">${propertyData.location}</div>
+                        </div>
+                        <div class="detail-row" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0;">
+                            <div class="label">Amount Payable:</div>
+                            <div class="value amount">₵ ${propertyData.amountPayable.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                        </div>
+                    </div>
+                    <div class="balance-section">
+                        <h3>${propertyData.remainingBalance > 0 ? '⚠️ Outstanding Balance' : '✅ Account Status'}</h3>
+                        <div class="balance">₵ ${propertyData.remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                        <p>${propertyData.remainingBalance > 0 ? 'This amount needs to be paid to clear the account' : 'All bills have been fully settled'}</p>
+                    </div>
+                    <div style="margin-top: 50px; text-align: center; color: #64748b; font-size: 14px;">
+                        Generated by Officer Portal on ${new Date().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 500);
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 100px; right: 20px; z-index: 10001;
+                background: ${type === 'success' ? '#d1fae5' : type === 'error' ? '#fee2e2' : type === 'warning' ? '#fef3c7' : '#dbeafe'};
+                color: ${type === 'success' ? '#065f46' : type === 'error' ? '#991b1b' : type === 'warning' ? '#92400e' : '#1e40af'};
+                border: 1px solid ${type === 'success' ? '#9ae6b4' : type === 'error' ? '#f87171' : type === 'warning' ? '#fbbf24' : '#93c5fd'};
+                border-radius: 10px; padding: 15px 20px; max-width: 300px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-weight: 500;
+                animation: slideInRight 0.3s ease, slideOutRight 0.3s ease 2.7s forwards;
+            `;
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Add animations if not already present
+            if (!document.getElementById('notificationAnimations')) {
+                const style = document.createElement('style');
+                style.id = 'notificationAnimations';
+                style.textContent = `
+                    @keyframes slideInRight { 
+                        from { transform: translateX(100%); opacity: 0; } 
+                        to { transform: translateX(0); opacity: 1; } 
+                    }
+                    @keyframes slideOutRight { 
+                        from { transform: translateX(0); opacity: 1; } 
+                        to { transform: translateX(100%); opacity: 0; } 
+                    }
+                    @keyframes modalSlideIn {
+                        from { transform: scale(0.8) translateY(-20px); opacity: 0; }
+                        to { transform: scale(1) translateY(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+
+>>>>>>> c9ccaba (Initial commit)
         // Sidebar toggle
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -1358,6 +2360,72 @@ try {
             }
         });
 
+<<<<<<< HEAD
+=======
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + P for print
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                printPropertyDetails();
+            }
+            
+            // Ctrl/Cmd + B for balance info
+            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+                e.preventDefault();
+                showBalanceDetails();
+            }
+            
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                const modals = document.querySelectorAll('.balance-modal, .user-dropdown.show');
+                modals.forEach(modal => {
+                    if (modal.classList && modal.classList.contains('balance-modal')) {
+                        modal.remove();
+                    } else if (modal.classList && modal.classList.contains('show')) {
+                        modal.classList.remove('show');
+                    }
+                });
+            }
+        });
+
+        // Balance monitoring and alerts
+        function checkBalanceAlerts() {
+            const alerts = [];
+            
+            if (remainingBalance > 0) {
+                if (remainingBalance > 1000) {
+                    alerts.push({
+                        type: 'danger',
+                        message: `🚨 High outstanding balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`
+                    });
+                } else if (remainingBalance > 500) {
+                    alerts.push({
+                        type: 'warning', 
+                        message: `⚠️ Moderate outstanding balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`
+                    });
+                } else {
+                    alerts.push({
+                        type: 'info',
+                        message: `ℹ️ Low outstanding balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`
+                    });
+                }
+            }
+            
+            return alerts;
+        }
+
+        // Display balance alerts on page load
+        setTimeout(() => {
+            const alerts = checkBalanceAlerts();
+            alerts.forEach((alert, index) => {
+                setTimeout(() => {
+                    showNotification(alert.message, alert.type);
+                }, index * 1000);
+            });
+        }, 3000);
+
+>>>>>>> c9ccaba (Initial commit)
         // Initialize map if coordinates are available
         <?php if ($property['latitude'] && $property['longitude']): ?>
         function initMap() {
@@ -1375,7 +2443,11 @@ try {
             const marker = new google.maps.Marker({
                 position: propertyLocation,
                 map: map,
+<<<<<<< HEAD
                 title: '<?php echo addslashes($property['owner_name'] . "'s Property"); ?>',
+=======
+                title: '<?php echo addslashes($property['owner_name']); ?>\'s Property',
+>>>>>>> c9ccaba (Initial commit)
                 icon: {
                     url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
                 }
@@ -1391,10 +2463,20 @@ try {
                             Property: <?php echo addslashes($property['property_number']); ?>
                         </p>
                         <p style="margin-bottom: 5px; font-size: 12px; color: #718096;">
+<<<<<<< HEAD
                             <?php echo addslashes($property['structure']); ?> - <?php echo $property['number_of_rooms']; ?> rooms
                         </p>
                         <p style="margin-bottom: 0; font-size: 12px; color: #718096;">
                             <?php echo addslashes($property['property_use']); ?>
+=======
+                            Structure: <?php echo addslashes($property['structure']); ?>
+                        </p>
+                        <p style="margin-bottom: 5px; font-size: 12px; color: #718096;">
+                            Rooms: <?php echo $property['number_of_rooms']; ?>
+                        </p>
+                        <p style="margin-bottom: 0; font-size: 12px; font-weight: bold; color: ${remainingBalance > 0 ? '#dc2626' : '#059669'};">
+                            Balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}
+>>>>>>> c9ccaba (Initial commit)
                         </p>
                     </div>
                 `
@@ -1410,6 +2492,15 @@ try {
             initMap();
         });
         <?php endif; ?>
+<<<<<<< HEAD
     </script>
 </body>
 </html>
+=======
+
+        console.log('✅ Officer property profile page initialized successfully');
+        console.log(`💰 Remaining Balance: ₵ ${remainingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`);
+    </script>
+</body>
+</html>
+>>>>>>> c9ccaba (Initial commit)

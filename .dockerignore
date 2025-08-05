@@ -1,0 +1,14 @@
+.git
+.gitignore
+README.md
+docker-compose.yml
+Dockerfile
+.env.example
+node_modules
+.DS_Store
+.vscode
+.idea
+*.log
+vendor
+composer.lock
+setup-docker.bat

@@ -2,6 +2,11 @@
 /**
  * Admin Dashboard for QUICKBILL 305
  * Updated with Fixed Revenue Calculation for Current Year and Enhanced Charts
+<<<<<<< HEAD
+=======
+ * Fixed Sidebar Toggle Functionality
+ * FIXED: User ID reference error
+>>>>>>> c9ccaba (Initial commit)
  */
 
 // Define application constant
@@ -22,6 +27,10 @@ require_once '../includes/security.php';
 // Initialize auth and security
 initAuth();
 initSecurity();
+<<<<<<< HEAD
+=======
+require_once '../includes/restriction_warning.php';
+>>>>>>> c9ccaba (Initial commit)
 
 // Check if user is logged in
 if (!isLoggedIn()) {
@@ -36,6 +45,10 @@ if (!isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> c9ccaba (Initial commit)
 $currentUser = getCurrentUser();
 $userDisplayName = getUserDisplayName($currentUser);
 
@@ -152,9 +165,12 @@ try {
         
         $billsByZone = $zoneData;
         
+<<<<<<< HEAD
         // Debug: Show what we found
         error_log("Bills by Zone Query Results: " . print_r($billsByZone, true));
         
+=======
+>>>>>>> c9ccaba (Initial commit)
     } catch (Exception $e) {
         error_log("Error fetching bills by zone: " . $e->getMessage());
         $billsByZone = [];
@@ -184,9 +200,12 @@ try {
             $monthlyPayments[$row['month']] = floatval($row['total_paid']);
         }
         
+<<<<<<< HEAD
         // Debug: Show what we found
         error_log("Monthly Payments Query Results: " . print_r($monthlyPayments, true));
         
+=======
+>>>>>>> c9ccaba (Initial commit)
     } catch (Exception $e) {
         error_log("Error fetching monthly payments: " . $e->getMessage());
         // Initialize empty array
@@ -214,6 +233,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - <?php echo APP_NAME; ?></title>
 
+<<<<<<< HEAD
     <!-- Chart.js from CDNJS (CSP-friendly) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     
@@ -248,6 +268,10 @@ try {
 
     <!-- Bootstrap for backup -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+=======
+    <!-- Local Chart.js -->
+    <script src="../assets/js/chart.min.js"></script>
+>>>>>>> c9ccaba (Initial commit)
     
     <style>
         * {
@@ -262,7 +286,11 @@ try {
             overflow-x: hidden;
         }
 
+<<<<<<< HEAD
         /* Custom Icons (fallback if Font Awesome fails) */
+=======
+        /* Emoji Icons */
+>>>>>>> c9ccaba (Initial commit)
         .icon-dashboard::before { content: "📊"; }
         .icon-users::before { content: "👥"; }
         .icon-building::before { content: "🏢"; }
@@ -279,12 +307,20 @@ try {
         .icon-logout::before { content: "🚪"; }
         .icon-money::before { content: "💰"; }
         .icon-plus::before { content: "➕"; }
+<<<<<<< HEAD
         .icon-server::before { content: "🖥️"; }
         .icon-database::before { content: "💾"; }
         .icon-shield::before { content: "🛡️"; }
         .icon-user-plus::before { content: "👤➕"; }
         .icon-history::before { content: "📜"; }
         .icon-question::before { content: "❓"; }
+=======
+        .icon-user-plus::before { content: "👤➕"; }
+        .icon-history::before { content: "📜"; }
+        .icon-question::before { content: "❓"; }
+        .icon-user::before { content: "👤"; }
+        .icon-chevron-down::before { content: "⌄"; }
+>>>>>>> c9ccaba (Initial commit)
 
         /* Top Navigation */
         .top-nav {
@@ -317,10 +353,26 @@ try {
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
+<<<<<<< HEAD
+=======
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+>>>>>>> c9ccaba (Initial commit)
         }
 
         .toggle-btn:hover {
             background: rgba(255,255,255,0.3);
+<<<<<<< HEAD
+=======
+            transform: scale(1.05);
+        }
+
+        .toggle-btn:active {
+            transform: scale(0.95);
+>>>>>>> c9ccaba (Initial commit)
         }
 
         .brand {
@@ -328,6 +380,12 @@ try {
             font-weight: bold;
             color: white;
             text-decoration: none;
+<<<<<<< HEAD
+=======
+            display: flex;
+            align-items: center;
+            gap: 10px;
+>>>>>>> c9ccaba (Initial commit)
         }
 
         .user-section {
@@ -398,6 +456,26 @@ try {
             transform: rotate(180deg);
         }
 
+<<<<<<< HEAD
+=======
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+>>>>>>> c9ccaba (Initial commit)
         /* User Dropdown */
         .user-dropdown {
             position: absolute;
@@ -481,7 +559,15 @@ try {
             border-bottom: none;
         }
 
+<<<<<<< HEAD
         .dropdown-item i {
+=======
+        .dropdown-item .icon-user,
+        .dropdown-item .icon-cog,
+        .dropdown-item .icon-history,
+        .dropdown-item .icon-question,
+        .dropdown-item .icon-logout {
+>>>>>>> c9ccaba (Initial commit)
             width: 20px;
             margin-right: 12px;
             text-align: center;
@@ -504,13 +590,21 @@ try {
             min-height: calc(100vh - 80px);
         }
 
+<<<<<<< HEAD
         /* Sidebar */
+=======
+        /* Sidebar - FIXED */
+>>>>>>> c9ccaba (Initial commit)
         .sidebar {
             width: 280px;
             background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
             color: white;
             transition: all 0.3s ease;
             overflow: hidden;
+<<<<<<< HEAD
+=======
+            flex-shrink: 0;
+>>>>>>> c9ccaba (Initial commit)
         }
 
         .sidebar.hidden {
@@ -521,6 +615,15 @@ try {
         .sidebar-content {
             width: 280px;
             padding: 20px 0;
+<<<<<<< HEAD
+=======
+            transition: all 0.3s ease;
+        }
+
+        .sidebar.hidden .sidebar-content {
+            opacity: 0;
+            transform: translateX(-20px);
+>>>>>>> c9ccaba (Initial commit)
         }
 
         .nav-section {
@@ -548,6 +651,11 @@ try {
             display: block;
             transition: all 0.3s;
             border-left: 3px solid transparent;
+<<<<<<< HEAD
+=======
+            display: flex;
+            align-items: center;
+>>>>>>> c9ccaba (Initial commit)
         }
 
         .nav-link:hover {
@@ -569,12 +677,20 @@ try {
             text-align: center;
         }
 
+<<<<<<< HEAD
         /* Main Content */
+=======
+        /* Main Content - FIXED */
+>>>>>>> c9ccaba (Initial commit)
         .main-content {
             flex: 1;
             padding: 30px;
             background: #f8f9fa;
             transition: all 0.3s ease;
+<<<<<<< HEAD
+=======
+            min-width: 0; /* Allows flex item to shrink */
+>>>>>>> c9ccaba (Initial commit)
         }
 
         /* Welcome Section */
@@ -729,7 +845,14 @@ try {
             transition: all 0.3s;
             text-align: center;
             text-decoration: none;
+<<<<<<< HEAD
             display: inline-block;
+=======
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+>>>>>>> c9ccaba (Initial commit)
         }
 
         .action-btn:hover {
@@ -790,6 +913,7 @@ try {
             font-style: italic;
         }
 
+<<<<<<< HEAD
         /* Custom Chart Styles (Fallback when Chart.js is not available) */
         .custom-line-chart {
             padding: 15px;
@@ -985,12 +1109,35 @@ try {
             }
 
             .sidebar.show {
+=======
+        /* Mobile Responsive - FIXED */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                height: calc(100vh - 80px);
+                top: 80px;
+                left: 0;
+                z-index: 999;
+                transform: translateX(-100%);
+                width: 280px !important; /* Force width on mobile */
+            }
+
+            .sidebar.mobile-show {
+>>>>>>> c9ccaba (Initial commit)
                 transform: translateX(0);
             }
 
             .sidebar.hidden {
                 transform: translateX(-100%);
+<<<<<<< HEAD
                 width: 280px;
+=======
+            }
+
+            .sidebar-content {
+                opacity: 1;
+                transform: none;
+>>>>>>> c9ccaba (Initial commit)
             }
 
             .main-content {
@@ -1006,7 +1153,27 @@ try {
             }
 
             .container {
+<<<<<<< HEAD
                 flex-direction: column;
+=======
+                flex-direction: row; /* Keep flex direction */
+            }
+
+            /* Mobile overlay */
+            .mobile-overlay {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 998;
+                display: none;
+            }
+
+            .mobile-overlay.show {
+                display: block;
+>>>>>>> c9ccaba (Initial commit)
             }
         }
 
@@ -1016,6 +1183,7 @@ try {
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
+<<<<<<< HEAD
     </style>
 </head>
 <body>
@@ -1030,6 +1198,47 @@ try {
             <a href="../admin/index.php" class="brand">
                 <i class="fas fa-receipt"></i>
                 <span class="icon-receipt" style="display: none;"></span>
+=======
+
+        /* Sidebar indicator */
+        .sidebar-indicator {
+            position: fixed;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s;
+        }
+
+        .sidebar-indicator:hover {
+            background: #5a67d8;
+            transform: translateY(-50%) scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-left">
+            <button class="toggle-btn" onclick="toggleSidebar()" id="toggleBtn" title="Toggle Sidebar">
+                <span class="icon-menu"></span>
+            </button>
+
+            <a href="../admin/index.php" class="brand">
+                <span class="icon-receipt"></span>
+>>>>>>> c9ccaba (Initial commit)
                 <?php echo APP_NAME; ?>
             </a>
         </div>
@@ -1050,6 +1259,7 @@ try {
                     display: inline-block;
                 " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
                    onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+<<<<<<< HEAD
                     <i class="fas fa-bell"></i>
                     <span class="icon-bell" style="display: none;"></span>
                 </a>
@@ -1069,6 +1279,11 @@ try {
                     font-weight: bold;
                     animation: pulse 2s infinite;
                 ">3</span>
+=======
+                    <span class="icon-bell"></span>
+                </a>
+                <span class="notification-badge">3</span>
+>>>>>>> c9ccaba (Initial commit)
             </div>
 
             <div class="user-profile" onclick="toggleUserDropdown()" id="userProfile">
@@ -1079,7 +1294,11 @@ try {
                     <div class="user-name"><?php echo htmlspecialchars($userDisplayName); ?></div>
                     <div class="user-role"><?php echo htmlspecialchars(getCurrentUserRole()); ?></div>
                 </div>
+<<<<<<< HEAD
                 <i class="fas fa-chevron-down dropdown-arrow"></i>
+=======
+                <span class="icon-chevron-down dropdown-arrow"></span>
+>>>>>>> c9ccaba (Initial commit)
 
                 <!-- User Dropdown -->
                 <div class="user-dropdown" id="userDropdown">
@@ -1091,6 +1310,7 @@ try {
                         <div class="dropdown-role"><?php echo htmlspecialchars(getCurrentUserRole()); ?></div>
                     </div>
                     <div class="dropdown-menu">
+<<<<<<< HEAD
                         <a href="users/view.php?id=<?php echo $currentUser['id']; ?>" class="dropdown-item">
                             <i class="fas fa-user"></i>
                             <span class="icon-users" style="display: none;"></span>
@@ -1109,12 +1329,32 @@ try {
                         <a href="#" class="dropdown-item" onclick="alert('Help documentation coming soon!')">
                             <i class="fas fa-question-circle"></i>
                             <span class="icon-question" style="display: none;"></span>
+=======
+                        <a href="users/view.php?id=<?php echo $currentUser['user_id']; ?>" class="dropdown-item">
+                            <span class="icon-user"></span>
+                            My Profile
+                        </a>
+                        <a href="settings/index.php" class="dropdown-item">
+                            <span class="icon-cog"></span>
+                            Account Settings
+                        </a>
+                        <a href="logs/user_activity.php" class="dropdown-item">
+                            <span class="icon-history"></span>
+                            Activity Log
+                        </a>
+                        <a href="#" class="dropdown-item" onclick="alert('Help documentation coming soon!')">
+                            <span class="icon-question"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Help & Support
                         </a>
                         <div style="height: 1px; background: #e2e8f0; margin: 10px 0;"></div>
                         <a href="../auth/logout.php" class="dropdown-item logout">
+<<<<<<< HEAD
                             <i class="fas fa-sign-out-alt"></i>
                             <span class="icon-logout" style="display: none;"></span>
+=======
+                            <span class="icon-logout"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Logout
                         </a>
                     </div>
@@ -1131,10 +1371,14 @@ try {
                 <div class="nav-section">
                     <div class="nav-item">
                         <a href="../admin/index.php" class="nav-link active">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-tachometer-alt"></i>
                                 <span class="icon-dashboard" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-dashboard"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Dashboard
                         </a>
                     </div>
@@ -1145,37 +1389,53 @@ try {
                     <div class="nav-title">Core Management</div>
                     <div class="nav-item">
                         <a href="users/index.php" class="nav-link">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-users"></i>
                                 <span class="icon-users" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-users"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Users
                         </a>
                     </div>
                     <div class="nav-item">
                         <a href="businesses/index.php" class="nav-link">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-building"></i>
                                 <span class="icon-building" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-building"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Businesses
                         </a>
                     </div>
                     <div class="nav-item">
                         <a href="properties/index.php" class="nav-link">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-home"></i>
                                 <span class="icon-home" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-home"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Properties
                         </a>
                     </div>
                     <div class="nav-item">
                         <a href="zones/index.php" class="nav-link">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-map-marked-alt"></i>
                                 <span class="icon-map" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-map"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Zones & Areas
                         </a>
                     </div>
@@ -1186,28 +1446,40 @@ try {
                     <div class="nav-title">Billing & Payments</div>
                     <div class="nav-item">
                         <a href="billing/index.php" class="nav-link">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-file-invoice"></i>
                                 <span class="icon-invoice" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-invoice"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Billing
                         </a>
                     </div>
                     <div class="nav-item">
                         <a href="payments/index.php" class="nav-link">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-credit-card"></i>
                                 <span class="icon-credit" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-credit"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Payments
                         </a>
                     </div>
                     <div class="nav-item">
                         <a href="fee_structure/index.php" class="nav-link">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-tags"></i>
                                 <span class="icon-tags" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-tags"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Fee Structure
                         </a>
                     </div>
@@ -1218,28 +1490,40 @@ try {
                     <div class="nav-title">Reports & System</div>
                     <div class="nav-item">
                         <a href="reports/index.php" class="nav-link">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-chart-bar"></i>
                                 <span class="icon-chart" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-chart"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Reports
                         </a>
                     </div>
                     <div class="nav-item">
                         <a href="notifications/index.php" class="nav-link">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-bell"></i>
                                 <span class="icon-bell" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-bell"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Notifications
                         </a>
                     </div>
                     <div class="nav-item">
                         <a href="settings/index.php" class="nav-link">
+<<<<<<< HEAD
                             <span class="nav-icon">
                                 <i class="fas fa-cog"></i>
                                 <span class="icon-cog" style="display: none;"></span>
                             </span>
+=======
+                            <span class="nav-icon icon-cog"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Settings
                         </a>
                     </div>
@@ -1247,6 +1531,14 @@ try {
             </div>
         </div>
 
+<<<<<<< HEAD
+=======
+        <!-- Sidebar Indicator for when sidebar is hidden -->
+        <div class="sidebar-indicator" id="sidebarIndicator" onclick="showSidebar()" title="Show Sidebar">
+            <span class="icon-menu"></span>
+        </div>
+
+>>>>>>> c9ccaba (Initial commit)
         <!-- Main Content -->
         <div class="main-content" id="mainContent">
             <!-- Welcome Section -->
@@ -1261,8 +1553,12 @@ try {
                     <div class="stat-header">
                         <div class="stat-title">Revenue (<?php echo date('Y'); ?>)</div>
                         <div class="stat-icon">
+<<<<<<< HEAD
                             <i class="fas fa-money-bill-wave"></i>
                             <span class="icon-money" style="display: none;"></span>
+=======
+                            <span class="icon-money"></span>
+>>>>>>> c9ccaba (Initial commit)
                         </div>
                     </div>
                     <div class="stat-value">₵ <?php echo number_format($totalRevenue, 2); ?></div>
@@ -1279,8 +1575,12 @@ try {
                     <div class="stat-header">
                         <div class="stat-title">Total Businesses</div>
                         <div class="stat-icon">
+<<<<<<< HEAD
                             <i class="fas fa-building"></i>
                             <span class="icon-building" style="display: none;"></span>
+=======
+                            <span class="icon-building"></span>
+>>>>>>> c9ccaba (Initial commit)
                         </div>
                     </div>
                     <div class="stat-value"><?php echo number_format($businessCount); ?></div>
@@ -1290,8 +1590,12 @@ try {
                     <div class="stat-header">
                         <div class="stat-title">Total Properties</div>
                         <div class="stat-icon">
+<<<<<<< HEAD
                             <i class="fas fa-home"></i>
                             <span class="icon-home" style="display: none;"></span>
+=======
+                            <span class="icon-home"></span>
+>>>>>>> c9ccaba (Initial commit)
                         </div>
                     </div>
                     <div class="stat-value"><?php echo number_format($propertyCount); ?></div>
@@ -1301,8 +1605,12 @@ try {
                     <div class="stat-header">
                         <div class="stat-title">Total Users</div>
                         <div class="stat-icon">
+<<<<<<< HEAD
                             <i class="fas fa-users"></i>
                             <span class="icon-users" style="display: none;"></span>
+=======
+                            <span class="icon-users"></span>
+>>>>>>> c9ccaba (Initial commit)
                         </div>
                     </div>
                     <div class="stat-value"><?php echo number_format($userCount); ?></div>
@@ -1317,6 +1625,7 @@ try {
                 <div class="card-body">
                     <div class="actions-grid">
                         <a href="users/add.php" class="action-btn purple">
+<<<<<<< HEAD
                             <i class="fas fa-user-plus"></i>
                             <span class="icon-user-plus" style="display: none;"></span>
                             Add User
@@ -1354,6 +1663,37 @@ try {
                         <a href="properties/index.php" class="action-btn purple">
                             <i class="fas fa-home"></i>
                             <span class="icon-home" style="display: none;"></span>
+=======
+                            <span class="icon-user-plus"></span>
+                            Add User
+                        </a>
+                        <a href="businesses/add.php" class="action-btn">
+                            <span class="icon-plus"></span>
+                            Add Business
+                        </a>
+                        <a href="properties/add.php" class="action-btn success">
+                            <span class="icon-plus"></span>
+                            Add Property
+                        </a>
+                        <a href="payments/record.php" class="action-btn info">
+                            <span class="icon-money"></span>
+                            Record Payment
+                        </a>
+                        <a href="billing/generate.php" class="action-btn warning">
+                            <span class="icon-invoice"></span>
+                            Generate Bills
+                        </a>
+                        <a href="users/index.php" class="action-btn info">
+                            <span class="icon-users"></span>
+                            Manage Users
+                        </a>
+                        <a href="businesses/index.php" class="action-btn success">
+                            <span class="icon-building"></span>
+                            Manage Businesses
+                        </a>
+                        <a href="properties/index.php" class="action-btn purple">
+                            <span class="icon-home"></span>
+>>>>>>> c9ccaba (Initial commit)
                             Manage Properties
                         </a>
                     </div>
@@ -1382,6 +1722,7 @@ try {
     </div>
 
     <script>
+<<<<<<< HEAD
         // Check if Font Awesome loaded, if not show emoji icons
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
@@ -1409,23 +1750,141 @@ try {
         });
 
         // Enhanced Chart.js Configuration from the original code
+=======
+        // Chart data
+>>>>>>> c9ccaba (Initial commit)
         const monthlyPaymentsData = <?php echo json_encode(array_values($monthlyPayments)); ?>;
         const billsByZoneLabels = <?php echo json_encode(array_keys($billsByZone)); ?>;
         const billsByZoneData = <?php echo json_encode(array_values($billsByZone)); ?>;
 
+<<<<<<< HEAD
         function initializeCharts() {
             // Check if Chart.js is available
             if (typeof Chart === 'undefined' || window.chartsUnavailable) {
                 console.log('Chart.js not available, creating custom charts');
                 createCustomCharts();
+=======
+        // Global variables
+        let isMobile = window.innerWidth <= 768;
+
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing dashboard...');
+            console.log('Chart.js available:', typeof Chart !== 'undefined');
+            console.log('Monthly payments data:', monthlyPaymentsData);
+            console.log('Bills by zone data:', billsByZoneLabels, billsByZoneData);
+            
+            // Initialize mobile detection
+            checkMobile();
+            
+            // Restore sidebar state
+            restoreSidebarState();
+            
+            setTimeout(function() {
+                initializeCharts();
+            }, 300);
+        });
+
+        // Check if mobile
+        function checkMobile() {
+            isMobile = window.innerWidth <= 768;
+        }
+
+        // FIXED: Sidebar toggle function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const indicator = document.getElementById('sidebarIndicator');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            if (isMobile) {
+                // Mobile behavior
+                if (sidebar.classList.contains('mobile-show')) {
+                    closeMobileSidebar();
+                } else {
+                    openMobileSidebar();
+                }
+            } else {
+                // Desktop behavior
+                sidebar.classList.toggle('hidden');
+                const isHidden = sidebar.classList.contains('hidden');
+                
+                // Show/hide indicator
+                if (isHidden) {
+                    setTimeout(() => {
+                        indicator.style.display = 'flex';
+                    }, 300);
+                } else {
+                    indicator.style.display = 'none';
+                }
+                
+                // Save state
+                localStorage.setItem('sidebarHidden', isHidden);
+                
+                console.log('Sidebar toggled, hidden:', isHidden);
+            }
+        }
+
+        // Mobile sidebar functions
+        function openMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            sidebar.classList.add('mobile-show');
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            sidebar.classList.remove('mobile-show');
+            overlay.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Show sidebar (from indicator)
+        function showSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const indicator = document.getElementById('sidebarIndicator');
+            
+            sidebar.classList.remove('hidden');
+            indicator.style.display = 'none';
+            localStorage.setItem('sidebarHidden', false);
+        }
+
+        // Restore sidebar state
+        function restoreSidebarState() {
+            const sidebar = document.getElementById('sidebar');
+            const indicator = document.getElementById('sidebarIndicator');
+            const sidebarHidden = localStorage.getItem('sidebarHidden');
+            
+            if (!isMobile && sidebarHidden === 'true') {
+                sidebar.classList.add('hidden');
+                indicator.style.display = 'flex';
+            }
+        }
+
+        function initializeCharts() {
+            // Check if Chart.js is available
+            if (typeof Chart === 'undefined') {
+                console.log('Chart.js not available, showing fallback message');
+                showChartFallbacks();
+>>>>>>> c9ccaba (Initial commit)
                 return;
             }
 
             try {
+<<<<<<< HEAD
                 // Try to use Chart.js first
                 console.log('Attempting to create Chart.js charts...');
                 
                 // Enhanced Monthly Payments Line Chart (from first code)
+=======
+                console.log('Creating Chart.js charts...');
+                
+                // Monthly Payments Line Chart
+>>>>>>> c9ccaba (Initial commit)
                 const paymentsChart = new Chart(document.getElementById('paymentsChart').getContext('2d'), {
                     type: 'line',
                     data: {
@@ -1454,22 +1913,33 @@ try {
                                 grid: {
                                     color: '#e2e8f0'
                                 },
+<<<<<<< HEAD
                                 title: {
                                     display: true,
                                     text: 'Amount Paid (₵)'
+=======
+                                ticks: {
+                                    callback: function(value) {
+                                        return '₵ ' + value.toLocaleString();
+                                    }
+>>>>>>> c9ccaba (Initial commit)
                                 }
                             },
                             x: {
                                 grid: {
                                     display: false
+<<<<<<< HEAD
                                 },
                                 title: {
                                     display: true,
                                     text: 'Month'
+=======
+>>>>>>> c9ccaba (Initial commit)
                                 }
                             }
                         },
                         plugins: {
+<<<<<<< HEAD
                             tooltip: {
                                 enabled: true,
                                 callbacks: {
@@ -1480,6 +1950,15 @@ try {
                                         }
                                         label += context.parsed.y.toLocaleString('en-US', { style: 'currency', currency: 'GHS' });
                                         return label;
+=======
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Payments: ₵ ' + context.parsed.y.toLocaleString();
+>>>>>>> c9ccaba (Initial commit)
                                     }
                                 }
                             }
@@ -1487,6 +1966,7 @@ try {
                     }
                 });
 
+<<<<<<< HEAD
                 // Enhanced Bills by Zone Pie Chart (from first code)
                 const zoneChart = new Chart(document.getElementById('zoneChart').getContext('2d'), {
                     type: 'pie',
@@ -1496,13 +1976,29 @@ try {
                             label: 'Bills (₵)',
                             data: billsByZoneData.length > 0 ? billsByZoneData : [1],
                             backgroundColor: [
+=======
+                // Bills by Zone Pie Chart
+                const hasZoneData = billsByZoneData.length > 0 && billsByZoneData.some(val => val > 0);
+                const zoneChart = new Chart(document.getElementById('zoneChart').getContext('2d'), {
+                    type: 'pie',
+                    data: {
+                        labels: hasZoneData ? billsByZoneLabels : ['No Data Available'],
+                        datasets: [{
+                            label: 'Bills (₵)',
+                            data: hasZoneData ? billsByZoneData : [1],
+                            backgroundColor: hasZoneData ? [
+>>>>>>> c9ccaba (Initial commit)
                                 '#667eea',
                                 '#48bb78',
                                 '#4299e1',
                                 '#ed8936',
                                 '#9f7aea',
                                 '#f56565'
+<<<<<<< HEAD
                             ],
+=======
+                            ] : ['#e2e8f0'],
+>>>>>>> c9ccaba (Initial commit)
                             borderColor: '#fff',
                             borderWidth: 2
                         }]
@@ -1512,7 +2008,11 @@ try {
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
+<<<<<<< HEAD
                                 display: true,
+=======
+                                display: hasZoneData,
+>>>>>>> c9ccaba (Initial commit)
                                 position: 'bottom',
                                 labels: {
                                     padding: 15,
@@ -1522,6 +2022,7 @@ try {
                                 }
                             },
                             tooltip: {
+<<<<<<< HEAD
                                 enabled: true,
                                 callbacks: {
                                     label: function(context) {
@@ -1531,6 +2032,13 @@ try {
                                         }
                                         label += context.parsed.toLocaleString('en-US', { style: 'currency', currency: 'GHS' });
                                         return label;
+=======
+                                enabled: hasZoneData,
+                                callbacks: {
+                                    label: function(context) {
+                                        if (!hasZoneData) return '';
+                                        return context.label + ': ₵ ' + context.parsed.toLocaleString();
+>>>>>>> c9ccaba (Initial commit)
                                     }
                                 }
                             }
@@ -1541,6 +2049,7 @@ try {
                 console.log('Chart.js charts created successfully');
             } catch (error) {
                 console.error('Error creating Chart.js charts:', error);
+<<<<<<< HEAD
                 console.log('Falling back to custom charts');
                 createCustomCharts();
             }
@@ -1765,6 +2274,21 @@ try {
             }
         });
 
+=======
+                showChartFallbacks();
+            }
+        }
+
+        function showChartFallbacks() {
+            // Show fallback messages for charts
+            const paymentsContainer = document.getElementById('paymentsChart').parentElement;
+            const zoneContainer = document.getElementById('zoneChart').parentElement;
+            
+            paymentsContainer.innerHTML = '<div class="no-data-message">📊 Chart will appear here when Chart.js is available</div>';
+            zoneContainer.innerHTML = '<div class="no-data-message">🍰 Chart will appear here when Chart.js is available</div>';
+        }
+
+>>>>>>> c9ccaba (Initial commit)
         // User dropdown toggle
         function toggleUserDropdown() {
             const dropdown = document.getElementById('userDropdown');
@@ -1785,6 +2309,7 @@ try {
             }
         });
 
+<<<<<<< HEAD
         // Mobile sidebar toggle
         function toggleMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -1800,6 +2325,33 @@ try {
         });
 
         // Add smooth hover effects
+=======
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const wasMobile = isMobile;
+            checkMobile();
+            
+            // If switching between mobile and desktop
+            if (wasMobile !== isMobile) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('mobileOverlay');
+                const indicator = document.getElementById('sidebarIndicator');
+                
+                // Reset all states
+                sidebar.classList.remove('mobile-show', 'hidden');
+                overlay.classList.remove('show');
+                indicator.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                
+                // Apply appropriate state
+                if (!isMobile) {
+                    restoreSidebarState();
+                }
+            }
+        });
+
+        // Add enhanced interactions
+>>>>>>> c9ccaba (Initial commit)
         document.addEventListener('DOMContentLoaded', function() {
             // Add hover effects to stat cards
             const statCards = document.querySelectorAll('.stat-card');
@@ -1822,6 +2374,18 @@ try {
                     }, 100);
                 }, 5000);
             }
+<<<<<<< HEAD
+=======
+
+            // Add click feedback to toggle button
+            const toggleBtn = document.getElementById('toggleBtn');
+            toggleBtn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
+            });
+>>>>>>> c9ccaba (Initial commit)
         });
     </script>
 </body>

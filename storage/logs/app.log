@@ -346,3 +346,98 @@
 [2025-07-16 16:08:28] [DEBUG] Bill found: BILL2025B000007
 [2025-07-16 16:08:28] [DEBUG] Account search successful with valid bill
 [2025-07-16 16:08:49] [INFO] Payment recorded: GHS 1 for Kwabena Ewusi Enterprise (BIZ000007) via Cash by user admin
+<<<<<<< HEAD
+=======
+[2025-07-17 10:52:16] [INFO] Business created: Media General (ID: 9) by user admin
+[2025-07-17 10:53:24] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-17 10:53:24] [DEBUG] Business found: Media General
+[2025-07-17 10:53:24] [DEBUG] Bill found: BILL2025B000009
+[2025-07-17 10:53:24] [DEBUG] Account search successful with valid bill
+[2025-07-17 10:53:44] [INFO] Payment recorded: GHS 200 for Media General (BIZ000001) via Cash by user admin
+[2025-07-17 12:56:22] [INFO] Business created: Bel Aqua (ID: 10) by user admin
+[2025-07-17 12:57:37] [DEBUG] Account search attempt - Number: BIZ000002, Type: Business
+[2025-07-17 12:57:37] [DEBUG] Account not found - Number: BIZ000002, Type: Business
+[2025-07-17 12:57:58] [DEBUG] Account search attempt - Number: BIZ0000010, Type: Business
+[2025-07-17 12:57:58] [DEBUG] Account not found - Number: BIZ0000010, Type: Business
+[2025-07-17 12:58:20] [DEBUG] Account search attempt - Number: BIZ000010, Type: Business
+[2025-07-17 12:58:20] [DEBUG] Business found: Bel Aqua
+[2025-07-17 12:58:20] [DEBUG] Bill found: BILL2025B000010
+[2025-07-17 12:58:20] [DEBUG] Account search successful with valid bill
+[2025-07-17 12:58:32] [INFO] Payment recorded: GHS 500 for Bel Aqua (BIZ000010) via Cash by user admin
+[2025-07-17 14:08:53] [INFO] Business created: KabTech Consulting (ID: 11) by user admin
+[2025-07-17 14:09:46] [DEBUG] Account search attempt - Number: BIZ000011, Type: Business
+[2025-07-17 14:09:46] [DEBUG] Business found: KabTech Consulting
+[2025-07-17 14:09:46] [DEBUG] Bill found: BILL2025B000011
+[2025-07-17 14:09:46] [DEBUG] Account search successful with valid bill
+[2025-07-17 14:10:03] [INFO] Payment recorded: GHS 500 for KabTech Consulting (BIZ000011) via Cash by user admin
+[2025-07-17 14:18:55] [INFO] Business created: NTDA (ID: 12) by user admin
+[2025-07-17 14:19:42] [DEBUG] Account search attempt - Number: BIZ000012, Type: Business
+[2025-07-17 14:19:42] [DEBUG] Business found: NTDA
+[2025-07-17 14:19:42] [DEBUG] Bill found: BILL2025B000012
+[2025-07-17 14:19:42] [DEBUG] Account search successful with valid bill
+[2025-07-17 14:19:57] [INFO] Payment recorded: GHS 1000 for NTDA (BIZ000012) via Cash by user admin
+[2025-07-18 09:54:10] [INFO] Business created: FK Farms (ID: 13) by user admin
+[2025-07-18 09:58:49] [DEBUG] Account search attempt - Number: BIZ000013, Type: Business
+[2025-07-18 09:58:49] [DEBUG] Business found: FK Farms
+[2025-07-18 09:58:49] [DEBUG] Bill found: BILL2025B000013
+[2025-07-18 09:58:49] [DEBUG] Account search successful with valid bill
+[2025-07-18 10:02:29] [INFO] Payment recorded: GHS 500 for FK Farms (BIZ000013) via Cash by user admin
+[2025-07-19 13:22:24] [INFO] Business created: TV 3 (ID: 14) by user admin
+[2025-07-21 12:26:20] [INFO] Business created: Spare Parts Sales Outlets (Second-hand) (ID: 16) by user Joojo
+[2025-07-21 13:27:16] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 13:31:58] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 13:33:12] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 13:37:11] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 14:13:56] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 14:14:43] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 14:35:54] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:05:38] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:06:57] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:07:32] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:11:29] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:19:10] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:30:16] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:37:07] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:42:44] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:47:56] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:51:36] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-21 15:57:45] [INFO] Successfully generated 10 QR codes for bulk print
+[2025-07-22 07:35:39] [INFO] Business created: GTUC (ID: 17) by user Joojo
+[2025-07-22 09:05:16] [INFO] Successfully generated 13 QR codes for bulk print
+[2025-07-22 13:07:32] [INFO] Successfully generated 13 QR codes for bulk print
+[2025-07-22 13:07:52] [INFO] Successfully generated 1 QR codes for bulk print
+[2025-07-23 10:26:38] [INFO] Successfully generated 13 QR codes for bulk print
+[2025-07-23 10:27:24] [INFO] Successfully generated 1 QR codes for bulk print
+[2025-07-24 09:54:26] [INFO] Successfully generated 13 QR codes for bulk print
+[2025-07-24 10:00:21] [INFO] Successfully generated 13 QR codes for bulk print
+[2025-07-29 09:53:56] [INFO] QR code generated successfully for bill ID 32, file size: 6613 bytes
+[2025-07-29 10:04:28] [INFO] QR code generated successfully for bill ID 31, file size: 6559 bytes
+[2025-07-29 10:37:19] [INFO] QR code generated successfully for bill ID 33, file size: 6994 bytes
+[2025-07-29 10:42:31] [INFO] QR code generated successfully for bill ID 32, file size: 6613 bytes
+[2025-07-29 11:05:04] [INFO] QR code generated successfully for bill ID 29, file size: 6688 bytes
+[2025-07-29 11:05:17] [INFO] QR code generated successfully for bill ID 29, file size: 6688 bytes
+[2025-07-29 11:33:05] [INFO] Successfully generated 13 QR codes for bulk print
+[2025-07-29 12:35:08] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-07-29 12:35:08] [DEBUG] Business found: Media General
+[2025-07-29 12:35:08] [DEBUG] Bill found: BILL2025B000009
+[2025-07-29 12:35:08] [DEBUG] Account search successful with valid bill
+[2025-07-29 12:35:47] [INFO] Payment recorded: GHS 50 for Media General (BIZ000001) via Cash by user admin
+[2025-07-29 12:39:47] [INFO] User created: ID 7, Username: dufie by User ID: 1
+[2025-07-29 12:54:38] [INFO] Business created: Yaw Smocks (ID: 18) by user admin
+[2025-07-29 12:55:45] [DEBUG] Account search attempt - Number: BIZ000018, Type: Business
+[2025-07-29 12:55:45] [DEBUG] Business found: Yaw Smocks
+[2025-07-29 12:55:45] [DEBUG] Bill found: BILL2025B000018
+[2025-07-29 12:55:45] [DEBUG] Account search successful with valid bill
+[2025-07-29 13:29:47] [INFO] User created: ID 8, Username: Isacc by User ID: 1
+[2025-07-29 13:36:21] [DEBUG] Account search attempt - Number: PROP000001, Type: Property
+[2025-07-29 13:36:21] [DEBUG] Property found: Beatrice Akueteh
+[2025-07-29 13:36:21] [DEBUG] Bill found: BILL2025P000005
+[2025-07-29 13:36:21] [DEBUG] Account search successful with valid bill
+[2025-07-29 13:36:34] [INFO] Payment recorded: GHS 200 for Beatrice Akueteh (PROP000001) via Cash by user admin
+[2025-10-01 07:14:09] [INFO] Business created: KabTech Consulting (ID: 18) by user Joojo
+[2025-11-05 07:18:17] [DEBUG] Account search attempt - Number: BIZ000001, Type: Business
+[2025-11-05 07:18:17] [DEBUG] Business found: KabTech Consulting
+[2025-11-05 07:18:17] [DEBUG] Bill found: BILL2025B000018
+[2025-11-05 07:18:17] [DEBUG] Account search successful with valid bill
+[2025-11-05 07:18:38] [INFO] Payment recorded: GHS 300 for KabTech Consulting (BIZ000001) via Cash by user Joojo
+>>>>>>> c9ccaba (Initial commit)

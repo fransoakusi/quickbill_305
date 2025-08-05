@@ -250,6 +250,7 @@ function hasPermission($permission) {
         return $permission !== 'restrictions.view';
     }
     
+<<<<<<< HEAD
     // Define role-based permissions
     $permissions = [
         'Admin' => [
@@ -267,6 +268,15 @@ function hasPermission($permission) {
             'audit.view'
         ],
         
+=======
+    // Admin has all permissions except restrictions.view (same as Super Admin)
+    if ($role === 'Admin') {
+        return $permission !== 'restrictions.view';
+    }
+    
+    // Define role-based permissions for other roles
+    $permissions = [
+>>>>>>> c9ccaba (Initial commit)
         'Officer' => [
             'businesses.view', 'businesses.create', 'businesses.edit',
             'properties.view', 'properties.create', 'properties.edit',
@@ -604,21 +614,43 @@ function getCurrentUserPermissions() {
     
     $role = getCurrentUserRole();
     
+<<<<<<< HEAD
     $permissions = [
         'Admin' => [
+=======
+    // Super Admin and Admin have all permissions except restrictions.view
+    if ($role === 'Super Admin' || $role === 'Admin') {
+        // Return a comprehensive list of all available permissions except restrictions.view
+        return [
+>>>>>>> c9ccaba (Initial commit)
             'users.view', 'users.create', 'users.edit', 'users.delete',
             'businesses.view', 'businesses.create', 'businesses.edit', 'businesses.delete',
             'properties.view', 'properties.create', 'properties.edit', 'properties.delete',
             'zones.view', 'zones.create', 'zones.edit', 'zones.delete',
             'billing.view', 'billing.create', 'billing.edit', 'billing.generate',
+<<<<<<< HEAD
             'payments.view', 'payments.create', 'payments.edit',
             'fees.view', 'fees.edit',
+=======
+            'payments.view', 'payments.create', 'payments.edit', 'payments.delete',
+            'fees.view', 'fees.edit', 'fees.create', 'fees.delete',
+>>>>>>> c9ccaba (Initial commit)
             'reports.view', 'reports.generate',
             'notifications.view', 'notifications.send',
             'settings.view', 'settings.edit',
             'backup.create', 'backup.restore',
+<<<<<<< HEAD
             'audit.view'
         ],
+=======
+            'audit.view',
+            'map.view'
+            // Note: 'restrictions.view' is intentionally excluded
+        ];
+    }
+    
+    $permissions = [
+>>>>>>> c9ccaba (Initial commit)
         'Officer' => [
             'businesses.view', 'businesses.create', 'businesses.edit',
             'properties.view', 'properties.create', 'properties.edit',

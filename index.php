@@ -150,6 +150,11 @@ try {
         .icon-cog::before { content: "⚙️"; }
         .icon-login::before { content: "🚪"; }
         .icon-rocket::before { content: "🚀"; }
+<<<<<<< HEAD
+=======
+        .icon-menu::before { content: "☰"; }
+        .icon-close::before { content: "✕"; }
+>>>>>>> c9ccaba (Initial commit)
         
         /* Navigation */
         .navbar {
@@ -188,6 +193,10 @@ try {
             color: var(--primary-purple);
             text-decoration: none;
             transition: var(--transition);
+<<<<<<< HEAD
+=======
+            z-index: 1001;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .logo:hover {
@@ -239,6 +248,62 @@ try {
             color: var(--primary-purple);
             text-decoration: none;
         }
+<<<<<<< HEAD
+=======
+
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-purple);
+            cursor: pointer;
+            z-index: 1001;
+            position: relative;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-link {
+            color: var(--dark-text);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            transition: var(--transition);
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .mobile-nav-link:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary-purple);
+            text-decoration: none;
+        }
+>>>>>>> c9ccaba (Initial commit)
         
         /* Hero Section */
         .hero {
@@ -686,6 +751,10 @@ try {
             justify-content: center;
             font-size: 0.9rem;
             color: var(--white);
+<<<<<<< HEAD
+=======
+            flex-shrink: 0;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .activity-icon.success { background: var(--success-green); }
@@ -821,11 +890,19 @@ try {
         
         .feature-list li {
             display: flex;
+<<<<<<< HEAD
             align-items: center;
+=======
+            align-items: flex-start;
+>>>>>>> c9ccaba (Initial commit)
             gap: 0.75rem;
             margin: 0.75rem 0;
             color: var(--medium-gray);
             font-size: 0.95rem;
+<<<<<<< HEAD
+=======
+            line-height: 1.5;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .feature-list li::before {
@@ -833,6 +910,11 @@ try {
             color: var(--success-green);
             font-weight: bold;
             font-size: 1.1rem;
+<<<<<<< HEAD
+=======
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         /* CTA Section */
@@ -929,12 +1011,66 @@ try {
             transform: translateY(0);
         }
         
+<<<<<<< HEAD
         /* Responsive Design */
         @media (max-width: 768px) {
+=======
+        /* Enhanced Responsive Design */
+        
+        /* Tablet Styles (768px - 1024px) */
+        @media (max-width: 1024px) {
+            .hero-container {
+                gap: 4rem;
+            }
+            
+            .hero-title {
+                font-size: 3.5rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .cta-title {
+                font-size: 2.5rem;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2.5rem;
+            }
+            
+            .dashboard-nav {
+                gap: 0.5rem;
+            }
+            
+            .dashboard-nav-item {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        /* Mobile Styles (Below 768px) */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+>>>>>>> c9ccaba (Initial commit)
             .hero-container {
                 grid-template-columns: 1fr;
                 text-align: center;
                 gap: 3rem;
+<<<<<<< HEAD
             }
             
             .hero-title {
@@ -957,21 +1093,167 @@ try {
                 display: none;
             }
             
+=======
+                padding: 0 1.5rem;
+            }
+            
+            .hero-title {
+                font-size: 2.8rem;
+                line-height: 1.2;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+                max-width: 100%;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+                gap: 1rem;
+            }
+            
+            .btn {
+                padding: 1rem 1.5rem;
+                font-size: 0.95rem;
+            }
+            
+            .hero-stats {
+                justify-content: center;
+                gap: 1.5rem;
+                flex-wrap: wrap;
+            }
+            
+            .hero-stat-number {
+                font-size: 1.8rem;
+            }
+            
+            .hero-stat-label {
+                font-size: 0.8rem;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+                line-height: 1.2;
+            }
+            
+            .section-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .cta-title {
+                font-size: 2.2rem;
+                line-height: 1.2;
+            }
+            
+            .cta-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .nav-container {
+                padding: 0 1.5rem;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+            }
+            
+            .logo-icon {
+                font-size: 1.8rem;
+            }
+            
+            .dashboard-mockup {
+                transform: none;
+                border-radius: 16px;
+            }
+            
+            .dashboard-mockup:hover {
+                transform: scale(1.02);
+            }
+            
+            .dashboard-header {
+                padding: 1rem 1.5rem;
+            }
+            
+            .dashboard-title {
+                font-size: 1rem;
+            }
+            
+            .dashboard-nav {
+                display: none;
+            }
+            
+            .dashboard-content {
+                padding: 1.5rem;
+            }
+            
+>>>>>>> c9ccaba (Initial commit)
             .dashboard-stats {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 0.75rem;
             }
             
+<<<<<<< HEAD
+=======
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.7rem;
+            }
+            
+            .stat-change {
+                font-size: 0.7rem;
+            }
+            
+>>>>>>> c9ccaba (Initial commit)
             .dashboard-main {
                 grid-template-columns: 1fr;
                 gap: 1rem;
             }
             
+<<<<<<< HEAD
+=======
+            .chart-card,
+            .activity-feed {
+                padding: 1rem;
+            }
+            
+            .chart-area {
+                height: 150px;
+            }
+            
+            .activity-text {
+                font-size: 0.8rem;
+            }
+            
+            .activity-time {
+                font-size: 0.7rem;
+            }
+            
+            .features-section {
+                padding: 5rem 0;
+            }
+            
+            .features-container {
+                padding: 0 1.5rem;
+            }
+            
+            .section-header {
+                margin-bottom: 3rem;
+            }
+            
+>>>>>>> c9ccaba (Initial commit)
             .features-grid {
                 grid-template-columns: 1fr;
                 gap: 2rem;
             }
             
+<<<<<<< HEAD
             .hero-stats {
                 justify-content: center;
             }
@@ -980,17 +1262,233 @@ try {
         @media (max-width: 480px) {
             .dashboard-stats {
                 grid-template-columns: 1fr;
+=======
+            .feature-card {
+                padding: 2rem;
+            }
+            
+            .feature-icon {
+                font-size: 2.5rem;
+            }
+            
+            .feature-title {
+                font-size: 1.3rem;
+            }
+            
+            .feature-description {
+                font-size: 0.95rem;
+            }
+            
+            .feature-list li {
+                font-size: 0.9rem;
+            }
+            
+            .cta-section {
+                padding: 5rem 0;
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .footer-container {
+                padding: 0 1.5rem;
+            }
+        }
+        
+        /* Small Mobile Styles (Below 480px) */
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .hero-container {
+                padding: 0 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .hero-badge {
+                font-size: 0.8rem;
+                padding: 0.4rem 1rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                display: grid;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .hero-buttons {
                 flex-direction: column;
+<<<<<<< HEAD
                 align-items: center;
+=======
+                align-items: stretch;
+                gap: 0.75rem;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .btn {
                 width: 100%;
+<<<<<<< HEAD
                 max-width: 300px;
                 justify-content: center;
+=======
+                justify-content: center;
+                padding: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+            
+            .section-subtitle,
+            .cta-subtitle {
+                font-size: 1rem;
+            }
+            
+            .features-container,
+            .cta-container,
+            .footer-container {
+                padding: 0 1rem;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .dashboard-content {
+                padding: 1rem;
+            }
+            
+            .chart-card,
+            .activity-feed {
+                padding: 1rem;
+            }
+            
+            .activity-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Landscape Mobile Optimization */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .hero {
+                min-height: auto;
+                padding: 6rem 0 4rem;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .hero-badge {
+                margin-bottom: 1rem;
+            }
+            
+            .hero-buttons {
+                margin-bottom: 1.5rem;
+            }
+            
+            .hero-stats {
+                margin-top: 1rem;
+            }
+        }
+
+        /* High DPI Display Optimization */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .dashboard-mockup {
+                box-shadow: 0 25px 100px rgba(0, 0, 0, 0.25);
+            }
+            
+            .btn {
+                box-shadow: var(--shadow-medium);
+            }
+            
+            .feature-card {
+                box-shadow: var(--shadow-light);
+            }
+        }
+
+        /* Reduced Motion Preferences */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .hero::before {
+                animation: none;
+            }
+            
+            .chart-line {
+                animation: none;
+                height: 60%;
+            }
+            
+            .activity-item {
+                animation: none;
+                opacity: 1;
+            }
+        }
+
+        /* Dark mode support (if preferred) */
+        @media (prefers-color-scheme: dark) {
+            .dashboard-content {
+                background: #f5f5f5;
+            }
+        }
+
+        /* Enhanced Focus States for Accessibility */
+        .btn:focus,
+        .nav-link:focus,
+        .mobile-nav-link:focus,
+        .mobile-menu-toggle:focus {
+            outline: 2px solid var(--primary-purple);
+            outline-offset: 2px;
+        }
+
+        /* Improved Touch Targets for Mobile */
+        @media (max-width: 768px) {
+            .btn,
+            .nav-link,
+            .mobile-nav-link,
+            .mobile-menu-toggle {
+                min-height: 44px;
+                min-width: 44px;
+>>>>>>> c9ccaba (Initial commit)
             }
         }
     </style>
@@ -1006,6 +1504,11 @@ try {
                 </div>
                 <?php echo APP_NAME; ?>
             </a>
+<<<<<<< HEAD
+=======
+            
+            <!-- Desktop Navigation -->
+>>>>>>> c9ccaba (Initial commit)
             <div class="nav-links">
                 <a href="#home" class="nav-link">Home</a>
                 <a href="#features" class="nav-link">Features</a>
@@ -1017,6 +1520,28 @@ try {
                     Get Started
                 </a>
             </div>
+<<<<<<< HEAD
+=======
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars" id="menuIcon"></i>
+                <span class="icon-menu" style="display: none;" id="menuIconFallback"></span>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#home" class="mobile-nav-link">Home</a>
+            <a href="#features" class="mobile-nav-link">Features</a>
+            <a href="#about" class="mobile-nav-link">About Us</a>
+            <a href="#status" class="mobile-nav-link">System Status</a>
+            <a href="auth/login.php" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i>
+                <span class="icon-login" style="display: none;"></span>
+                Get Started
+            </a>
+>>>>>>> c9ccaba (Initial commit)
         </div>
     </nav>
 
@@ -1282,10 +1807,13 @@ try {
                     <span class="icon-rocket" style="display: none;"></span>
                     Access Dashboard
                 </a>
+<<<<<<< HEAD
                 <a href="auth/register.php" class="btn btn-secondary">
                     <i class="fas fa-user-plus"></i>
                     Register Account
                 </a>
+=======
+>>>>>>> c9ccaba (Initial commit)
             </div>
         </div>
     </section>
@@ -1316,6 +1844,47 @@ try {
             }, 100);
         });
 
+<<<<<<< HEAD
+=======
+        // Mobile Menu Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuIcon = document.getElementById('menuIcon');
+            let isMenuOpen = false;
+
+            mobileMenuToggle.addEventListener('click', function() {
+                isMenuOpen = !isMenuOpen;
+                mobileMenu.classList.toggle('active');
+                
+                // Update icon
+                if (isMenuOpen) {
+                    menuIcon.className = 'fas fa-times';
+                } else {
+                    menuIcon.className = 'fas fa-bars';
+                }
+            });
+
+            // Close menu when clicking on mobile nav links
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    isMenuOpen = false;
+                    mobileMenu.classList.remove('active');
+                    menuIcon.className = 'fas fa-bars';
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (isMenuOpen && !mobileMenuToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    isMenuOpen = false;
+                    mobileMenu.classList.remove('active');
+                    menuIcon.className = 'fas fa-bars';
+                }
+            });
+        });
+
+>>>>>>> c9ccaba (Initial commit)
         // Enhanced navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
@@ -1433,6 +2002,7 @@ try {
             heroObserver.observe(heroSection);
         }
 
+<<<<<<< HEAD
         // Add parallax effect to hero background
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
@@ -1441,6 +2011,18 @@ try {
                 hero.style.transform = `translateY(${scrolled * 0.5}px)`;
             }
         });
+=======
+        // Add parallax effect to hero background (disabled on mobile for performance)
+        if (window.innerWidth > 768) {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const hero = document.querySelector('.hero');
+                if (hero && scrolled < window.innerHeight) {
+                    hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+                }
+            });
+        }
+>>>>>>> c9ccaba (Initial commit)
 
         // Add floating animation to feature cards on load
         function addFloatingAnimation() {
@@ -1469,6 +2051,46 @@ try {
                 this.style.animation = 'pulse 2s infinite';
             });
         });
+<<<<<<< HEAD
+=======
+
+        // Handle orientation change for mobile devices
+        window.addEventListener('orientationchange', function() {
+            setTimeout(function() {
+                window.scrollTo(0, 0);
+            }, 100);
+        });
+
+        // Optimize for touch devices
+        if ('ontouchstart' in window) {
+            document.body.classList.add('touch-device');
+            
+            // Remove hover effects on touch devices
+            const hoverElements = document.querySelectorAll('.feature-card, .btn, .dashboard-mockup');
+            hoverElements.forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.classList.add('touch-active');
+                });
+                element.addEventListener('touchend', function() {
+                    setTimeout(() => {
+                        this.classList.remove('touch-active');
+                    }, 300);
+                });
+            });
+        }
+
+        // Performance optimization: Disable animations on low-end devices
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) {
+            document.documentElement.style.setProperty('--transition', 'none');
+        }
+
+        // Intersection Observer for performance optimization
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (mediaQuery.matches) {
+            // Disable animations for users who prefer reduced motion
+            document.documentElement.style.setProperty('--transition', 'none');
+        }
+>>>>>>> c9ccaba (Initial commit)
     </script>
 </body>
 </html>

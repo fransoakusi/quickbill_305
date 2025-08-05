@@ -1,0 +1,3 @@
+@echo off
+echo Viewing QuickBill 305 logs...
+docker-compose logs -f

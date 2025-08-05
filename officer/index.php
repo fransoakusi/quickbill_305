@@ -22,7 +22,11 @@ require_once '../includes/security.php';
 // Initialize auth and security
 initAuth();
 initSecurity();
+<<<<<<< HEAD
 
+=======
+require_once '../includes/restriction_warning.php';
+>>>>>>> c9ccaba (Initial commit)
 // Check if user is logged in
 if (!isLoggedIn()) {
     header('Location: ../auth/login.php');
@@ -869,7 +873,11 @@ $myContribution = $todayPayments > 0 ? round(($myTodayPayments / $todayPayments)
                 <div class="nav-section">
                     <div class="nav-title">Payments & Bills</div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="../payments/record.php" class="nav-link <?php echo ($currentDir === 'payments' && $currentPage === 'record.php') ? 'active' : ''; ?>">
+=======
+                        <a href="payments/record.php" class="nav-link <?php echo ($currentDir === 'payments' && $currentPage === 'record.php') ? 'active' : ''; ?>">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-cash-register"></i>
                                 <span class="icon-money" style="display: none;"></span>
@@ -878,7 +886,11 @@ $myContribution = $todayPayments > 0 ? round(($myTodayPayments / $todayPayments)
                         </a>
                     </div>
                     <div class="nav-item">
+<<<<<<< HEAD
                         <a href="../payments/search.php" class="nav-link <?php echo ($currentDir === 'payments' && $currentPage === 'search.php') ? 'active' : ''; ?>">
+=======
+                        <a href="properties/search.php" class="nav-link <?php echo ($currentDir === 'payments' && $currentPage === 'search.php') ? 'active' : ''; ?>">
+>>>>>>> c9ccaba (Initial commit)
                             <span class="nav-icon">
                                 <i class="fas fa-search"></i>
                                 <span class="icon-search" style="display: none;"></span>
@@ -886,6 +898,7 @@ $myContribution = $todayPayments > 0 ? round(($myTodayPayments / $todayPayments)
                             Search Accounts
                         </a>
                     </div>
+<<<<<<< HEAD
                     <div class="nav-item">
                         <a href="../billing/generate.php" class="nav-link <?php echo ($currentDir === 'billing' && $currentPage === 'generate.php') ? 'active' : ''; ?>">
                             <span class="nav-icon">
@@ -904,6 +917,9 @@ $myContribution = $todayPayments > 0 ? round(($myTodayPayments / $todayPayments)
                             Print Bills
                         </a>
                     </div>
+=======
+                    
+>>>>>>> c9ccaba (Initial commit)
                 </div>
                 
                 <!-- Maps & Locations -->
@@ -1012,11 +1028,15 @@ $myContribution = $todayPayments > 0 ? round(($myTodayPayments / $todayPayments)
                             <span class="icon-money" style="display: none;"></span>
                             Record Payment
                         </a>
+<<<<<<< HEAD
                         <a href="billing/generate.php" class="action-btn warning">
                             <i class="fas fa-file-invoice"></i>
                             <span class="icon-receipt" style="display: none;"></span>
                             Generate Bills
                         </a>
+=======
+                      
+>>>>>>> c9ccaba (Initial commit)
                         <a href="payments/search.php" class="action-btn purple">
                             <i class="fas fa-search"></i>
                             <span class="icon-search" style="display: none;"></span>
@@ -1077,6 +1097,7 @@ $myContribution = $todayPayments > 0 ? round(($myTodayPayments / $todayPayments)
                 </div>
             </div>
 
+<<<<<<< HEAD
             <!-- Officer Capabilities -->
             <div class="alert fade-in">
                 <h4>⚡ Officer Capabilities</h4>
@@ -1099,6 +1120,9 @@ $myContribution = $todayPayments > 0 ? round(($myTodayPayments / $todayPayments)
                     <a href="map/businesses.php" style="color: #2d5aa0; font-weight: bold;">use interactive maps</a> for location management.
                 </p>
             </div>
+=======
+         
+>>>>>>> c9ccaba (Initial commit)
         </div>
     </div>
 

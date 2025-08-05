@@ -2,6 +2,10 @@
 /**
  * Login Page for QUICKBILL 305
  * Handles user authentication and redirects to appropriate dashboards
+<<<<<<< HEAD
+=======
+ * Enhanced with System Restriction Checks
+>>>>>>> c9ccaba (Initial commit)
  */
 
 // Define application constant
@@ -23,6 +27,72 @@ require_once '../includes/security.php';
 initAuth();
 initSecurity();
 
+<<<<<<< HEAD
+=======
+// Add restriction check function
+function checkSystemRestriction() {
+    try {
+        $db = new Database();
+        
+        // Get current restriction status
+        $restrictionCheck = $db->fetchRow("
+            SELECT sr.*, ss.setting_value as system_restricted,
+                   DATEDIFF(sr.restriction_end_date, CURDATE()) as days_remaining
+            FROM system_restrictions sr
+            LEFT JOIN system_settings ss ON ss.setting_key = 'system_restricted'
+            WHERE sr.is_active = 1
+            ORDER BY sr.created_at DESC
+            LIMIT 1
+        ");
+        
+        // Default return values for when no restrictions exist
+        if (!$restrictionCheck) {
+            return [
+                'restricted' => false,
+                'days_remaining' => 0,
+                'warning_days' => 0,
+                'end_date' => '',
+                'end_date_time' => '',
+                'in_warning_period' => false,
+                'overdue' => false
+            ];
+        }
+        
+        $isSystemRestricted = ($restrictionCheck['system_restricted'] === 'true');
+        $daysRemaining = intval($restrictionCheck['days_remaining']);
+        $warningDays = intval($restrictionCheck['warning_days']);
+        $endDate = date('F j, Y', strtotime($restrictionCheck['restriction_end_date']));
+        $endDateTime = date('F j, Y \a\t g:i A', strtotime($restrictionCheck['restriction_end_date'] . ' 23:59:59'));
+        
+        return [
+            'restricted' => $isSystemRestricted,
+            'days_remaining' => $daysRemaining,
+            'warning_days' => $warningDays,
+            'end_date' => $endDate,
+            'end_date_time' => $endDateTime,
+            'in_warning_period' => ($daysRemaining <= $warningDays && $daysRemaining > 0),
+            'overdue' => $daysRemaining <= 0
+        ];
+        
+    } catch (Exception $e) {
+        writeLog("Login restriction check error: " . $e->getMessage(), 'ERROR');
+        // Return default values on error
+        return [
+            'restricted' => false,
+            'days_remaining' => 0,
+            'warning_days' => 0,
+            'end_date' => '',
+            'end_date_time' => '',
+            'in_warning_period' => false,
+            'overdue' => false
+        ];
+    }
+}
+
+// Get restriction status
+$restrictionStatus = checkSystemRestriction();
+
+>>>>>>> c9ccaba (Initial commit)
 // Redirect if already logged in
 if (isLoggedIn()) {
     $userRole = getCurrentUserRole();
@@ -51,7 +121,11 @@ if (isLoggedIn()) {
 $error = '';
 $success = '';
 
+<<<<<<< HEAD
 // Handle login form submission
+=======
+// Enhanced login form submission with restriction checks
+>>>>>>> c9ccaba (Initial commit)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verify CSRF token
     if (!verifyCsrfToken()) {
@@ -64,6 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($username) || empty($password)) {
             $error = 'Please enter both username and password.';
         } else {
+<<<<<<< HEAD
             $loginResult = loginUser($username, $password, $remember_me);
             
             if ($loginResult['success']) {
@@ -97,6 +172,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             } else {
                 $error = $loginResult['message'];
+=======
+            // RESTRICTION CHECK: Before attempting login
+            $proceedWithLogin = false;
+            
+            // First check if user is Super Admin - Super Admin ALWAYS bypasses restrictions
+            $isSuperAdminUser = false;
+            try {
+                $db = new Database();
+                $userCheck = $db->fetchRow("
+                    SELECT u.user_id, ur.role_name 
+                    FROM users u 
+                    JOIN user_roles ur ON u.role_id = ur.role_id 
+                    WHERE (u.username = ? OR u.email = ?) AND u.is_active = 1
+                ", [$username, $username]);
+                
+                if ($userCheck && $userCheck['role_name'] === 'Super Admin') {
+                    $isSuperAdminUser = true;
+                }
+            } catch (Exception $e) {
+                writeLog("User role check error: " . $e->getMessage(), 'ERROR');
+            }
+            
+            // Super Admin ALWAYS bypasses restrictions
+            if ($isSuperAdminUser) {
+                $proceedWithLogin = true;
+            } 
+            // For non-Super Admin users, check if system is restricted
+            elseif (!empty($restrictionStatus['restricted']) && $restrictionStatus['restricted']) {
+                $error = 'System is currently restricted until ' . htmlspecialchars($restrictionStatus['end_date'] ?? 'Unknown Date') . '. Only Super Admin can access the system.';
+                
+                // Log the blocked login attempt
+                if (function_exists('logActivity')) {
+                    logActivity('BLOCKED_LOGIN_ATTEMPT_DURING_RESTRICTION', [
+                        'username' => $username,
+                        'ip_address' => getClientIP(),
+                        'restriction_end_date' => $restrictionStatus['end_date'] ?? 'Unknown'
+                    ]);
+                }
+            } else {
+                // System not restricted, proceed normally for all users
+                $proceedWithLogin = true;
+            }
+            
+            // Proceed with login if allowed
+            if ($proceedWithLogin && empty($error)) {
+                $loginResult = loginUser($username, $password, $remember_me);
+                
+                if ($loginResult['success']) {
+                    // Check if it's first login
+                    if ($loginResult['first_login']) {
+                        header('Location: first_login.php');
+                    } else {
+                        // Redirect based on role
+                        $userRole = $loginResult['user']['role_name'];
+                        
+                        switch ($userRole) {
+                            case 'Super Admin':
+                            case 'Admin':
+                                header('Location: ../admin/index.php');
+                                break;
+                            case 'Officer':
+                                header('Location: ../officer/index.php');
+                                break;
+                            case 'Revenue Officer':
+                                header('Location: ../revenue_officer/index.php');
+                                break;
+                            case 'Data Collector':
+                                header('Location: ../data_collector/index.php');
+                                break;
+                            default:
+                                logout();
+                                $error = 'Invalid user role. Please contact administrator.';
+                                break;
+                        }
+                    }
+                    exit();
+                } else {
+                    $error = $loginResult['message'];
+                }
+>>>>>>> c9ccaba (Initial commit)
             }
         }
     }
@@ -127,6 +282,12 @@ if (isset($_GET['success'])) {
             break;
     }
 }
+<<<<<<< HEAD
+=======
+
+// Determine if form should be disabled (never disable for potential Super Admin login)
+$formDisabled = false; // Always allow login attempts - restriction check happens server-side
+>>>>>>> c9ccaba (Initial commit)
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -208,7 +369,11 @@ if (isset($_GET['success'])) {
             display: flex;
             align-items: center;
             justify-content: center;
+<<<<<<< HEAD
             padding: 20px;
+=======
+            padding: 15px;
+>>>>>>> c9ccaba (Initial commit)
             position: relative;
             z-index: 2;
         }
@@ -221,12 +386,25 @@ if (isset($_GET['success'])) {
             box-shadow: var(--shadow-heavy);
             border: 1px solid rgba(255, 255, 255, 0.2);
             overflow: hidden;
+<<<<<<< HEAD
             max-width: 450px;
+=======
+            max-width: 440px;
+>>>>>>> c9ccaba (Initial commit)
             width: 100%;
             animation: slideInUp 0.8s ease-out;
             position: relative;
         }
         
+<<<<<<< HEAD
+=======
+        /* Enhanced login card styling when restricted */
+        .login-card.restricted {
+            border: 2px solid rgba(229, 62, 62, 0.3);
+            box-shadow: var(--shadow-heavy), 0 0 30px rgba(229, 62, 62, 0.2);
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         @keyframes slideInUp {
             from {
                 opacity: 0;
@@ -241,7 +419,11 @@ if (isset($_GET['success'])) {
         .login-header {
             background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
             color: var(--white);
+<<<<<<< HEAD
             padding: 3rem 2rem;
+=======
+            padding: 1.2rem 2rem 1rem 2rem; /* Further reduced from 1.8rem to 1.2rem top, 1rem bottom */
+>>>>>>> c9ccaba (Initial commit)
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -265,6 +447,7 @@ if (isset($_GET['success'])) {
         }
         
         .login-logo {
+<<<<<<< HEAD
             width: 80px;
             height: 80px;
             background: rgba(255, 255, 255, 0.2);
@@ -274,6 +457,17 @@ if (isset($_GET['success'])) {
             justify-content: center;
             margin: 0 auto 1.5rem;
             font-size: 2.5rem;
+=======
+            width: 50px; /* Further reduced from 60px */
+            height: 50px; /* Further reduced from 60px */
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 14px; /* Reduced from 16px */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.7rem; /* Reduced from 1rem */
+            font-size: 1.75rem; /* Reduced from 2rem */
+>>>>>>> c9ccaba (Initial commit)
             animation: pulse 2s infinite;
             position: relative;
             z-index: 2;
@@ -285,9 +479,15 @@ if (isset($_GET['success'])) {
         }
         
         .login-header h1 {
+<<<<<<< HEAD
             font-size: 2rem;
             font-weight: 800;
             margin: 0 0 0.5rem 0;
+=======
+            font-size: 1.75rem; /* Reduced from 2rem */
+            font-weight: 800;
+            margin: 0 0 0.4rem 0; /* Reduced from 0.5rem */
+>>>>>>> c9ccaba (Initial commit)
             letter-spacing: -0.02em;
             position: relative;
             z-index: 2;
@@ -296,27 +496,114 @@ if (isset($_GET['success'])) {
         .login-header p {
             margin: 0;
             opacity: 0.9;
+<<<<<<< HEAD
             font-size: 1rem;
+=======
+            font-size: 0.9rem; /* Reduced from 1rem */
+>>>>>>> c9ccaba (Initial commit)
             font-weight: 500;
             position: relative;
             z-index: 2;
         }
         
         .login-body {
+<<<<<<< HEAD
             padding: 2.5rem;
             background: var(--white);
         }
         
         .form-group {
             margin-bottom: 1.5rem;
+=======
+            padding: 2rem; /* Reduced from 2.5rem */
+            background: var(--white);
+        }
+        
+        /* Restriction Notice Styles */
+        .restriction-notice {
+            background: linear-gradient(135deg, rgba(229, 62, 62, 0.95), rgba(197, 48, 48, 0.95));
+            color: white;
+            padding: 18px; /* Reduced from 20px */
+            border-radius: 15px;
+            margin-bottom: 20px; /* Reduced from 25px */
+            text-align: center;
+            animation: fadeInDown 0.5s ease-out;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .restriction-notice::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+        
+        .restriction-notice.warning {
+            background: linear-gradient(135deg, rgba(237, 137, 54, 0.95), rgba(221, 107, 32, 0.95));
+        }
+        
+        .restriction-notice.info {
+            background: linear-gradient(135deg, rgba(66, 153, 225, 0.95), rgba(49, 130, 206, 0.95));
+        }
+        
+        .restriction-notice-icon {
+            font-size: 28px; /* Reduced from 32px */
+            margin-bottom: 8px; /* Reduced from 10px */
+            display: block;
+        }
+        
+        .restriction-notice-title {
+            font-size: 16px; /* Reduced from 18px */
+            font-weight: bold;
+            margin-bottom: 6px; /* Reduced from 8px */
+            position: relative;
+            z-index: 2;
+        }
+        
+        .restriction-notice-message {
+            font-size: 13px; /* Reduced from 14px */
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+            line-height: 1.4;
+        }
+        
+        .restriction-countdown {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 8px; /* Reduced from 10px */
+            margin-top: 8px; /* Reduced from 10px */
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+            font-size: 13px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem; /* Reduced from 1.5rem */
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .form-label {
             font-weight: 600;
             color: var(--dark-text);
+<<<<<<< HEAD
             margin-bottom: 0.75rem;
             display: block;
             font-size: 0.95rem;
+=======
+            margin-bottom: 0.6rem; /* Reduced from 0.75rem */
+            display: block;
+            font-size: 0.9rem; /* Reduced from 0.95rem */
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .input-group {
@@ -331,11 +618,19 @@ if (isset($_GET['success'])) {
             border: 2px solid #e2e8f0;
             border-right: none;
             color: var(--medium-gray);
+<<<<<<< HEAD
             padding: 0.75rem 1rem;
             border-radius: 12px 0 0 12px;
             display: flex;
             align-items: center;
             font-size: 1.1rem;
+=======
+            padding: 0.7rem 0.9rem; /* Slightly reduced from 0.75rem 1rem */
+            border-radius: 12px 0 0 12px;
+            display: flex;
+            align-items: center;
+            font-size: 1rem; /* Reduced from 1.1rem */
+>>>>>>> c9ccaba (Initial commit)
             transition: var(--transition);
         }
         
@@ -343,8 +638,13 @@ if (isset($_GET['success'])) {
             border: 2px solid #e2e8f0;
             border-left: none;
             border-radius: 0 12px 12px 0;
+<<<<<<< HEAD
             padding: 0.75rem 1rem;
             font-size: 1rem;
+=======
+            padding: 0.7rem 1rem; /* Slightly reduced from 0.75rem */
+            font-size: 0.95rem; /* Reduced from 1rem */
+>>>>>>> c9ccaba (Initial commit)
             transition: var(--transition);
             background: var(--white);
             color: var(--dark-text);
@@ -362,12 +662,25 @@ if (isset($_GET['success'])) {
             border-color: var(--primary-purple);
         }
         
+<<<<<<< HEAD
+=======
+        .form-control:disabled {
+            background-color: #f5f5f5;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .toggle-password {
             background: var(--light-gray);
             border: 2px solid #e2e8f0;
             border-left: none;
             color: var(--medium-gray);
+<<<<<<< HEAD
             padding: 0.75rem;
+=======
+            padding: 0.7rem; /* Slightly reduced from 0.75rem */
+>>>>>>> c9ccaba (Initial commit)
             border-radius: 0 12px 12px 0;
             cursor: pointer;
             transition: var(--transition);
@@ -380,6 +693,14 @@ if (isset($_GET['success'])) {
             color: var(--primary-purple);
         }
         
+<<<<<<< HEAD
+=======
+        .toggle-password:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+>>>>>>> c9ccaba (Initial commit)
         .form-control.password-input {
             border-radius: 0;
             border-left: none;
@@ -390,10 +711,17 @@ if (isset($_GET['success'])) {
             background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
             border: none;
             color: var(--white);
+<<<<<<< HEAD
             padding: 1rem 2rem;
             border-radius: 12px;
             font-weight: 600;
             font-size: 1rem;
+=======
+            padding: 0.9rem 2rem; /* Slightly reduced from 1rem */
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem; /* Reduced from 1rem */
+>>>>>>> c9ccaba (Initial commit)
             width: 100%;
             transition: var(--transition);
             position: relative;
@@ -426,22 +754,46 @@ if (isset($_GET['success'])) {
         }
         
         .btn-login:disabled {
+<<<<<<< HEAD
             background: var(--medium-gray);
+=======
+            background: #9ca3af;
+>>>>>>> c9ccaba (Initial commit)
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
         
+<<<<<<< HEAD
         .alert {
             border-radius: 12px;
             margin-bottom: 1.5rem;
             padding: 1rem 1.25rem;
+=======
+        .btn-login:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-login:disabled::before {
+            display: none;
+        }
+        
+        .alert {
+            border-radius: 12px;
+            margin-bottom: 1.25rem; /* Reduced from 1.5rem */
+            padding: 0.9rem 1.1rem; /* Slightly reduced from 1rem 1.25rem */
+>>>>>>> c9ccaba (Initial commit)
             border: none;
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 0.75rem;
             animation: fadeInDown 0.5s ease-out;
+<<<<<<< HEAD
+=======
+            font-size: 0.9rem;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         @keyframes fadeInDown {
@@ -471,7 +823,11 @@ if (isset($_GET['success'])) {
             display: flex;
             align-items: center;
             gap: 0.75rem;
+<<<<<<< HEAD
             margin-bottom: 1.5rem;
+=======
+            margin-bottom: 1.25rem; /* Reduced from 1.5rem */
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .form-check-input {
@@ -489,7 +845,11 @@ if (isset($_GET['success'])) {
         }
         
         .form-check-label {
+<<<<<<< HEAD
             font-size: 0.95rem;
+=======
+            font-size: 0.9rem; /* Reduced from 0.95rem */
+>>>>>>> c9ccaba (Initial commit)
             color: var(--medium-gray);
             cursor: pointer;
             user-select: none;
@@ -498,9 +858,15 @@ if (isset($_GET['success'])) {
         .system-info {
             background: var(--light-gray);
             border-radius: 12px;
+<<<<<<< HEAD
             padding: 1.25rem;
             margin-top: 2rem;
             font-size: 0.9rem;
+=======
+            padding: 1rem; /* Reduced from 1.25rem */
+            margin-top: 1.5rem; /* Reduced from 2rem */
+            font-size: 0.85rem; /* Reduced from 0.9rem */
+>>>>>>> c9ccaba (Initial commit)
             color: var(--medium-gray);
             border: 1px solid #e2e8f0;
         }
@@ -508,7 +874,11 @@ if (isset($_GET['success'])) {
         .system-info-item {
             display: flex;
             justify-content: space-between;
+<<<<<<< HEAD
             margin-bottom: 0.5rem;
+=======
+            margin-bottom: 0.4rem; /* Reduced from 0.5rem */
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .system-info-item:last-child {
@@ -540,11 +910,19 @@ if (isset($_GET['success'])) {
         
         .back-to-home {
             position: absolute;
+<<<<<<< HEAD
             top: 2rem;
             left: 2rem;
             background: rgba(255, 255, 255, 0.2);
             color: var(--white);
             padding: 0.75rem 1.5rem;
+=======
+            top: 1.5rem; /* Reduced from 2rem */
+            left: 1.5rem; /* Reduced from 2rem */
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 0.6rem 1.2rem; /* Slightly reduced from 0.75rem 1.5rem */
+>>>>>>> c9ccaba (Initial commit)
             border-radius: 50px;
             text-decoration: none;
             font-weight: 500;
@@ -552,6 +930,10 @@ if (isset($_GET['success'])) {
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: var(--transition);
             z-index: 3;
+<<<<<<< HEAD
+=======
+            font-size: 0.9rem;
+>>>>>>> c9ccaba (Initial commit)
         }
         
         .back-to-home:hover {
@@ -564,6 +946,7 @@ if (isset($_GET['success'])) {
         /* Responsive Design */
         @media (max-width: 576px) {
             .login-container {
+<<<<<<< HEAD
                 padding: 1rem;
             }
             
@@ -577,15 +960,73 @@ if (isset($_GET['success'])) {
             
             .login-header h1 {
                 font-size: 1.5rem;
+=======
+                padding: 10px;
+            }
+            
+            .login-header {
+                padding: 1.4rem 1.2rem 1.2rem 1.2rem; /* Further reduced for mobile */
+            }
+            
+            .login-body {
+                padding: 1.5rem 1.2rem; /* Reduced from 2rem 1.5rem */
+            }
+            
+            .login-header h1 {
+                font-size: 1.4rem; /* Reduced from 1.5rem */
+            }
+            
+            .login-header p {
+                font-size: 0.85rem;
+            }
+            
+            .login-logo {
+                width: 50px; /* Further reduced for mobile */
+                height: 50px;
+                font-size: 1.6rem;
+                margin-bottom: 0.8rem;
+>>>>>>> c9ccaba (Initial commit)
             }
             
             .back-to-home {
                 position: relative;
                 top: 0;
                 left: 0;
+<<<<<<< HEAD
                 margin-bottom: 1rem;
                 display: inline-block;
                 width: auto;
+=======
+                margin-bottom: 0.8rem; /* Reduced from 1rem */
+                display: inline-block;
+                width: auto;
+                font-size: 0.85rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .restriction-notice {
+                padding: 12px; /* Reduced from 15px */
+                font-size: 12px; /* Reduced from 13px */
+            }
+            
+            .restriction-notice-title {
+                font-size: 14px; /* Reduced from 16px */
+            }
+            
+            .restriction-notice-icon {
+                font-size: 24px; /* Reduced from 28px */
+                margin-bottom: 6px;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem; /* Further reduced for mobile */
+            }
+            
+            .system-info {
+                margin-top: 1.2rem; /* Reduced from 1.5rem */
+                padding: 0.8rem; /* Reduced from 1rem */
+                font-size: 0.8rem;
+>>>>>>> c9ccaba (Initial commit)
             }
         }
         
@@ -640,6 +1081,42 @@ if (isset($_GET['success'])) {
             </div>
             
             <div class="login-body">
+<<<<<<< HEAD
+=======
+                <!-- System Restriction Notice -->
+                <?php if (!empty($restrictionStatus['restricted']) && $restrictionStatus['restricted']): ?>
+                    <div class="restriction-notice">
+                        <span class="restriction-notice-icon">🔒</span>
+                        <div class="restriction-notice-title">System Currently Restricted</div>
+                        <div class="restriction-notice-message">
+                            The system is under maintenance restriction until <?php echo htmlspecialchars($restrictionStatus['end_date'] ?? 'Unknown Date'); ?>.
+                            <br><strong>Super Admin can still login normally.</strong>
+                        </div>
+                    </div>
+                <?php elseif (!empty($restrictionStatus['in_warning_period']) && $restrictionStatus['in_warning_period']): ?>
+                    <div class="restriction-notice warning">
+                        <span class="restriction-notice-icon">⚠️</span>
+                        <div class="restriction-notice-title">System Restriction Warning</div>
+                        <div class="restriction-notice-message">
+                            System will be restricted in <?php echo intval($restrictionStatus['days_remaining'] ?? 0); ?> day<?php echo (intval($restrictionStatus['days_remaining'] ?? 0) === 1) ? '' : 's'; ?> on <?php echo htmlspecialchars($restrictionStatus['end_date'] ?? 'Unknown Date'); ?>.
+                            <br><small><em>Super Admin will retain full access during restrictions.</em></small>
+                        </div>
+                        <div class="restriction-countdown">
+                            <?php echo intval($restrictionStatus['days_remaining'] ?? 0); ?> day<?php echo (intval($restrictionStatus['days_remaining'] ?? 0) === 1) ? '' : 's'; ?> remaining
+                        </div>
+                    </div>
+                <?php elseif (!empty($restrictionStatus['overdue']) && $restrictionStatus['overdue']): ?>
+                    <div class="restriction-notice info">
+                        <span class="restriction-notice-icon">🔴</span>
+                        <div class="restriction-notice-title">Restriction Overdue</div>
+                        <div class="restriction-notice-message">
+                            System restriction was scheduled for <?php echo htmlspecialchars($restrictionStatus['end_date'] ?? 'Unknown Date'); ?>.
+                            <br><strong>Super Admin can still login normally.</strong>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+>>>>>>> c9ccaba (Initial commit)
                 <?php if ($error): ?>
                     <div class="alert alert-danger" role="alert">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -730,14 +1207,35 @@ if (isset($_GET['success'])) {
                     </div>
                     <div class="system-info-item">
                         <span class="system-info-label">Status:</span>
+<<<<<<< HEAD
                         <span style="color: var(--success-green); font-weight: 600;">Online</span>
                     </div>
+=======
+                        <span style="color: <?php echo (!empty($restrictionStatus['restricted']) && $restrictionStatus['restricted']) ? 'var(--warning-orange)' : 'var(--success-green)'; ?>; font-weight: 600;">
+                            <?php echo (!empty($restrictionStatus['restricted']) && $restrictionStatus['restricted']) ? 'Restricted (Super Admin Access)' : 'Online'; ?>
+                        </span>
+                    </div>
+                    <?php if ((!empty($restrictionStatus['restricted']) && $restrictionStatus['restricted']) || (!empty($restrictionStatus['in_warning_period']) && $restrictionStatus['in_warning_period'])): ?>
+                    <div class="system-info-item">
+                        <span class="system-info-label">Restriction End:</span>
+                        <span style="color: var(--warning-orange); font-weight: 600;">
+                            <?php echo htmlspecialchars($restrictionStatus['end_date'] ?? 'Unknown Date'); ?>
+                        </span>
+                    </div>
+                    <?php endif; ?>
+>>>>>>> c9ccaba (Initial commit)
                 </div>
             </div>
         </div>
     </div>
     
     <script>
+<<<<<<< HEAD
+=======
+        // Restriction status for JavaScript
+        const restrictionStatus = <?php echo json_encode($restrictionStatus); ?>;
+        
+>>>>>>> c9ccaba (Initial commit)
         // Check if Font Awesome loaded, if not show emoji icons
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
@@ -783,6 +1281,22 @@ if (isset($_GET['success'])) {
                 loginBtn.style.transform = 'translateY(0)';
             });
             
+<<<<<<< HEAD
+=======
+            // Handle restricted form
+            if (restrictionStatus.restricted) {
+                console.log('System is currently restricted');
+                
+                // Show additional info on form click for restricted users
+                loginForm.addEventListener('click', function(e) {
+                    if (loginBtn.disabled) {
+                        e.preventDefault();
+                        alert('System is currently restricted. Only Super Admin can access the system.\n\nRestriction ends on: ' + restrictionStatus.end_date);
+                    }
+                });
+            }
+            
+>>>>>>> c9ccaba (Initial commit)
             // Auto-focus on username field
             const usernameField = document.getElementById('username');
             if (usernameField) {
@@ -860,6 +1374,19 @@ if (isset($_GET['success'])) {
                 }
             `;
             document.head.appendChild(style);
+<<<<<<< HEAD
+=======
+
+            // Show warning countdown for warning period
+            if (restrictionStatus.in_warning_period && !restrictionStatus.restricted) {
+                console.log('System will be restricted in ' + restrictionStatus.days_remaining + ' days');
+            }
+
+            // Show additional messaging for overdue restrictions
+            if (restrictionStatus.overdue && !restrictionStatus.restricted) {
+                console.log('System restriction is overdue. Scheduled for: ' + restrictionStatus.end_date);
+            }
+>>>>>>> c9ccaba (Initial commit)
         });
     </script>
 </body>
